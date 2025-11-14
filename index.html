@@ -256,13 +256,32 @@
             color: #888;
         }
         
-        .expired-message {
-            text-align: center;
-            color: #ff4444;
-            font-size: 18px;
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            width: 100%;
+            max-width: 380px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
             font-weight: 700;
-            margin-top: 20px;
-            text-shadow: 0 0 10px rgba(255,68,68,0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-btn {
+            background: linear-gradient(145deg, #ff4444, #cc0000);
+            color: #ffffff;
+        }
+        
+        .close-btn:active {
+            transform: scale(0.95);
         }
 
         /* СТРАНИЦА ПРОСРОЧКИ */
@@ -295,6 +314,18 @@
             color: #cccccc;
             line-height: 1.5;
             margin-bottom: 30px;
+        }
+        
+        .new-ticket-btn {
+            background: linear-gradient(145deg, #00ff88, #00cc6a);
+            color: #000000;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -371,8 +402,8 @@
                     Билет закроется автоматически через <span id="displayTimer">15</span> сек
                 </div>
                 
-                <div class="expired-message" id="expiredMessage" style="display: none;">
-                    ⚠️ Время действия билета истекло!
+                <div class="action-buttons">
+                    <button class="action-btn close-btn" onclick="closeTicket()">Закрыть билет</button>
                 </div>
             </div>
         </div>
@@ -387,6 +418,7 @@
                 Для получения нового билета<br>
                 обратитесь к администратору.
             </div>
+            <button class="new-ticket-btn" onclick="createNewTicket()">Создать новый билет</button>
         </div>
     </div>
 
@@ -408,6 +440,7 @@
         let timeLeft = 15;
         let ticketActivationTime = null;
         let totalTimeLeft = TOTAL_TICKET_TIME;
+        let isFirstActivation = true;
         
         function addNumber(number) {
             if (enteredCode.length < maxCodeLength) {
@@ -449,17 +482,31 @@
         }
         
         function activateTicket() {
-            // Сохраняем время активации в localStorage
-            ticketActivationTime = new Date().getTime();
-            localStorage.setItem('ticketActivationTime', ticketActivationTime);
-            localStorage.setItem('ticketActivated', 'true');
+            // Сохраняем время активации в localStorage только при первой активации
+            if (isFirstActivation) {
+                ticketActivationTime = new Date().getTime();
+                localStorage.setItem('ticketActivationTime', ticketActivationTime);
+                localStorage.setItem('ticketActivated', 'true');
+                isFirstActivation = false;
+                
+                // Отправляем данные боту только при первой активации
+                const data = {
+                    action: "ticket_activated",
+                    code: enteredCode,
+                    timestamp: new Date().toISOString(),
+                    status: "success"
+                };
+                tg.sendData(JSON.stringify(data));
+            }
             
             showTicket();
         }
         
         function showTicket() {
             // Проверяем не истекло ли общее время
-            checkTotalTime();
+            if (!checkTotalTime()) {
+                return;
+            }
             
             document.getElementById('codeInputPage').style.display = 'none';
             document.getElementById('ticketPage').style.display = 'flex';
@@ -467,7 +514,7 @@
             
             const now = new Date();
             document.getElementById('activationTime').textContent = 
-                now.toLocaleTimeString('ru-RU') + ' ' + 
+                now.toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'}) + ' ' + 
                 now.toLocaleDateString('ru-RU');
             
             // Обновляем оставшееся общее время
@@ -476,17 +523,6 @@
             // Запускаем таймеры
             startCountdown();
             startAutoClose();
-            
-            // Отправляем данные боту
-            const data = {
-                action: "ticket_activated",
-                code: enteredCode,
-                timestamp: new Date().toISOString(),
-                status: "success",
-                total_time_left: totalTimeLeft
-            };
-            
-            tg.sendData(JSON.stringify(data));
         }
         
         function checkTotalTime() {
@@ -551,31 +587,24 @@
             document.getElementById('codeInputPage').style.display = 'flex';
             enteredCode = '';
             updateCodeDisplay();
-            
-            // Обновляем общее время при закрытии
-            updateTotalTime();
-        }
-        
-        function updateTotalTime() {
-            if (ticketActivationTime) {
-                const currentTime = new Date().getTime();
-                const elapsed = currentTime - ticketActivationTime;
-                totalTimeLeft = TOTAL_TICKET_TIME - elapsed;
-                
-                if (totalTimeLeft <= 0) {
-                    showExpiredPage();
-                }
-            }
         }
         
         function showExpiredPage() {
             document.getElementById('codeInputPage').style.display = 'none';
             document.getElementById('ticketPage').style.display = 'none';
             document.getElementById('expiredPage').style.display = 'flex';
-            
-            // Очищаем данные билета
+        }
+        
+        function createNewTicket() {
+            // Очищаем данные и создаем новый билет
             localStorage.removeItem('ticketActivationTime');
             localStorage.removeItem('ticketActivated');
+            ticketActivationTime = null;
+            totalTimeLeft = TOTAL_TICKET_TIME;
+            isFirstActivation = true;
+            
+            document.getElementById('expiredPage').style.display = 'none';
+            document.getElementById('codeInputPage').style.display = 'flex';
         }
         
         function showError() {
@@ -599,11 +628,15 @@
                 const savedTime = localStorage.getItem('ticketActivationTime');
                 if (savedTime) {
                     ticketActivationTime = parseInt(savedTime);
+                    isFirstActivation = false;
                     if (checkTotalTime()) {
                         showTicket();
+                        return;
                     }
                 }
             }
+            // Если нет активного билета, показываем страницу ввода кода
+            document.getElementById('codeInputPage').style.display = 'flex';
         }
         
         // Очистка всего кода при долгом нажатии backspace
