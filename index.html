@@ -3,71 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ввести код</title>
+    <title>Городской Транспорт</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        * {
             margin: 0;
-            padding: 20px;
-            background: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .container {
-            width: 100%;
-            max-width: 400px;
-        }
-        .input-group {
-            margin: 20px 0;
-        }
-        input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid var(--tg-theme-button-color, #2481cc);
-            border-radius: 10px;
-            font-size: 16px;
+            padding: 0;
             box-sizing: border-box;
         }
-        button {
-            width: 100%;
-            padding: 15px;
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            padding: 20px;
+            height: 100vh;
+        }
+        
+        .container {
+            max-width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: var(--tg-theme-hint-color, #999999);
+        }
+        
+        .code-display {
+            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .code-placeholder {
+            color: var(--tg-theme-hint-color, #999999);
+            font-size: 18px;
+        }
+        
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        
+        .key {
+            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            border: none;
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: 500;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .key:active {
+            background: var(--tg-theme-button-color, #2481cc);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            transform: scale(0.95);
+        }
+        
+        .scan-button {
             background: var(--tg-theme-button-color, #2481cc);
             color: var(--tg-theme-button-text-color, #ffffff);
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 12px;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: 500;
             cursor: pointer;
-            margin-top: 10px;
-            font-weight: bold;
+            margin-bottom: 12px;
+            transition: all 0.2s;
         }
-        button:active {
+        
+        .scan-button:active {
             opacity: 0.8;
+            transform: scale(0.98);
         }
-        .title {
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 30px;
-        }
-        .cancel-btn {
-            background: #666;
+        
+        .zero-key {
+            grid-column: 2;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="title">🎮 Введите ваш код</div>
-        
-        <div class="input-group">
-            <input type="text" id="codeInput" placeholder="Введите код здесь..." maxlength="50" autofocus>
+        <div class="header">
+            <div class="title">Городской Транспорт</div>
+            <div class="subtitle">Введите код с наклейки</div>
         </div>
         
-        <button onclick="submitCode()">✅ Отправить код</button>
-        <button onclick="closeApp()" class="cancel-btn">❌ Отмена</button>
+        <div class="code-display">
+            <div class="code-placeholder" id="codePlaceholder">Код не введен</div>
+            <div id="codeDisplay" style="display: none;"></div>
+        </div>
+        
+        <div class="keyboard">
+            <button class="key" onclick="addNumber(1)">1</button>
+            <button class="key" onclick="addNumber(2)">2</button>
+            <button class="key" onclick="addNumber(3)">3</button>
+            <button class="key" onclick="addNumber(4)">4</button>
+            <button class="key" onclick="addNumber(5)">5</button>
+            <button class="key" onclick="addNumber(6)">6</button>
+            <button class="key" onclick="addNumber(7)">7</button>
+            <button class="key" onclick="addNumber(8)">8</button>
+            <button class="key" onclick="addNumber(9)">9</button>
+        </div>
+        
+        <button class="scan-button" onclick="submitCode()">Сканировать</button>
+        <button class="key zero-key" onclick="addNumber(0)">0</button>
     </div>
 
     <script>
@@ -77,19 +149,46 @@
         tg.expand();
         tg.MainButton.hide();
         
-        function submitCode() {
-            const code = document.getElementById('codeInput').value.trim();
+        let enteredCode = '';
+        const maxCodeLength = 6; // Максимальная длина кода
+        
+        function addNumber(number) {
+            if (enteredCode.length < maxCodeLength) {
+                enteredCode += number;
+                updateCodeDisplay();
+            }
+        }
+        
+        function updateCodeDisplay() {
+            const codePlaceholder = document.getElementById('codePlaceholder');
+            const codeDisplay = document.getElementById('codeDisplay');
             
-            if (!code) {
-                alert("Пожалуйста, введите код");
+            if (enteredCode.length > 0) {
+                codePlaceholder.style.display = 'none';
+                codeDisplay.style.display = 'block';
+                codeDisplay.textContent = enteredCode.split('').join(' ');
+            } else {
+                codePlaceholder.style.display = 'block';
+                codeDisplay.style.display = 'none';
+            }
+        }
+        
+        function submitCode() {
+            if (enteredCode.length === 0) {
+                showAlert('Пожалуйста, введите код');
+                return;
+            }
+            
+            if (enteredCode.length < 4) {
+                showAlert('Код должен содержать минимум 4 цифры');
                 return;
             }
             
             const data = {
-                action: "submit_code",
-                code: code,
+                action: "scan_code",
+                code: enteredCode,
                 timestamp: new Date().toISOString(),
-                user: tg.initDataUnsafe.user || {}
+                transport_type: "городской_транспорт"
             };
             
             // Отправляем данные боту
@@ -99,19 +198,37 @@
             tg.close();
         }
         
-        function closeApp() {
-            tg.close();
+        function showAlert(message) {
+            if (tg.showAlert) {
+                tg.showAlert(message);
+            } else {
+                alert(message);
+            }
         }
         
-        // Enter для отправки
-        document.getElementById('codeInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                submitCode();
-            }
+        // Обработчик для кнопки назад (если нужно очистить код)
+        function clearCode() {
+            enteredCode = '';
+            updateCodeDisplay();
+        }
+        
+        // Добавляем обработчик для кнопки назад (долгое нажатие на 0)
+        let clearTimer;
+        const zeroButton = document.querySelector('.zero-key');
+        
+        zeroButton.addEventListener('touchstart', function() {
+            clearTimer = setTimeout(clearCode, 1000);
         });
         
-        // Фокус на input при загрузке
-        document.getElementById('codeInput').focus();
+        zeroButton.addEventListener('touchend', function() {
+            clearTimeout(clearTimer);
+        });
+        
+        zeroButton.addEventListener('click', function() {
+            if (enteredCode.length === 0) {
+                addNumber(0);
+            }
+        });
     </script>
 </body>
 </html>
