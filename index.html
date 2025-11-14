@@ -117,57 +117,134 @@
             background: #cc0000;
             transform: scale(0.95);
         }
-        
-        /* Авто-отправка при полном вводе */
-        .auto-submit-notice {
+
+        /* Стили для страницы билета */
+        .ticket-page {
+            display: none;
             text-align: center;
-            font-size: 14px;
-            color: #888888;
+            width: 100%;
+        }
+
+        .ticket {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 30px rgba(255,255,255,0.2);
+        }
+
+        .ticket-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+
+        .ticket-info {
+            font-size: 16px;
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        .ticket-qr {
+            width: 150px;
+            height: 150px;
+            background: #ffffff;
+            margin: 20px auto;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        .success-message {
+            color: #4CAF50;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 16px;
             margin-top: 20px;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="title">Введите код с наклейки</div>
+    <!-- Страница ввода кода -->
+    <div id="codeInputPage">
+        <div class="header">
+            <div class="title">Введите код с наклейки</div>
+        </div>
+        
+        <div class="code-display" id="codeDisplay">
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
+        </div>
+        
+        <div class="keyboard">
+            <button class="key" onclick="addNumber(1)">1</button>
+            <button class="key" onclick="addNumber(2)">2</button>
+            <button class="key" onclick="addNumber(3)">3</button>
+            <button class="key" onclick="addNumber(4)">4</button>
+            <button class="key" onclick="addNumber(5)">5</button>
+            <button class="key" onclick="addNumber(6)">6</button>
+            <button class="key" onclick="addNumber(7)">7</button>
+            <button class="key" onclick="addNumber(8)">8</button>
+            <button class="key" onclick="addNumber(9)">9</button>
+        </div>
+        
+        <div class="bottom-row">
+            <button class="backspace-key" onclick="backspace()">⌫</button>
+            <button class="key zero-key" onclick="addNumber(0)">0</button>
+            <div style="width: 70px;"></div>
+        </div>
+
+        <div class="error-message" id="errorMessage">Неверный код! Попробуйте снова.</div>
     </div>
-    
-    <div class="code-display" id="codeDisplay">
-        <div class="code-dot"></div>
-        <div class="code-dot"></div>
-        <div class="code-dot"></div>
-        <div class="code-dot"></div>
-        <div class="code-dot"></div>
-        <div class="code-dot"></div>
+
+    <!-- Страница билета -->
+    <div class="ticket-page" id="ticketPage">
+        <div class="success-message">✅ Билет успешно активирован!</div>
+        
+        <div class="ticket">
+            <div class="ticket-title">🎫 ЭЛЕКТРОННЫЙ БИЛЕТ</div>
+            
+            <div class="ticket-info">
+                <strong>Маршрут:</strong> Городской транспорт<br>
+                <strong>Тип:</strong> Единый билет<br>
+                <strong>Срок действия:</strong> 90 минут<br>
+                <strong>Цена:</strong> 50 руб.<br>
+                <strong>Время активации:</strong> <span id="activationTime"></span><br>
+                <strong>Статус:</strong> <span style="color: #4CAF50;">АКТИВИРОВАН</span>
+            </div>
+            
+            <div class="ticket-qr">
+                QR-CODE<br>БИЛЕТА
+            </div>
+            
+            <div class="ticket-info" style="text-align: center;">
+                <strong>Код билета:</strong> 123456<br>
+                Предъявите кондуктору
+            </div>
+        </div>
     </div>
-    
-    <div class="keyboard">
-        <button class="key" onclick="addNumber(1)">1</button>
-        <button class="key" onclick="addNumber(2)">2</button>
-        <button class="key" onclick="addNumber(3)">3</button>
-        <button class="key" onclick="addNumber(4)">4</button>
-        <button class="key" onclick="addNumber(5)">5</button>
-        <button class="key" onclick="addNumber(6)">6</button>
-        <button class="key" onclick="addNumber(7)">7</button>
-        <button class="key" onclick="addNumber(8)">8</button>
-        <button class="key" onclick="addNumber(9)">9</button>
-    </div>
-    
-    <div class="bottom-row">
-        <button class="backspace-key" onclick="backspace()">⌫</button>
-        <button class="key zero-key" onclick="addNumber(0)">0</button>
-        <div style="width: 70px;"></div> <!-- Пустой элемент для выравнивания -->
-    </div>
-    
-    <div class="auto-submit-notice">Код отправится автоматически после ввода 6 цифр</div>
 
     <script>
         const tg = window.Telegram.WebApp;
+        const CORRECT_CODE = "123456"; // Правильный код
         
-        // Устанавливаем темную тему
         tg.setHeaderColor('#000000');
         tg.setBackgroundColor('#000000');
-        
         tg.expand();
         tg.MainButton.hide();
         
@@ -179,9 +256,9 @@
                 enteredCode += number;
                 updateCodeDisplay();
                 
-                // Автоматическая отправка при полном вводе
+                // Автоматическая проверка при полном вводе
                 if (enteredCode.length === maxCodeLength) {
-                    setTimeout(submitCode, 300);
+                    setTimeout(checkCode, 300);
                 }
             }
         }
@@ -190,6 +267,7 @@
             if (enteredCode.length > 0) {
                 enteredCode = enteredCode.slice(0, -1);
                 updateCodeDisplay();
+                hideError();
             }
         }
         
@@ -205,26 +283,48 @@
             });
         }
         
-        function submitCode() {
-            if (enteredCode.length === 0) {
-                showAlert('Пожалуйста, введите код');
-                return;
+        function checkCode() {
+            if (enteredCode === CORRECT_CODE) {
+                showTicket();
+            } else {
+                showError();
             }
+        }
+        
+        function showTicket() {
+            document.getElementById('codeInputPage').style.display = 'none';
+            document.getElementById('ticketPage').style.display = 'block';
             
-            if (enteredCode.length < maxCodeLength) {
-                showAlert(`Код должен содержать ${maxCodeLength} цифр`);
-                return;
-            }
+            // Устанавливаем текущее время
+            const now = new Date();
+            document.getElementById('activationTime').textContent = 
+                now.toLocaleTimeString('ru-RU') + ' ' + 
+                now.toLocaleDateString('ru-RU');
             
+            // Отправляем данные о успешной активации боту
             const data = {
-                action: "scan_code",
+                action: "ticket_activated",
                 code: enteredCode,
                 timestamp: new Date().toISOString(),
-                transport_type: "городской_транспорт"
+                status: "success"
             };
             
             tg.sendData(JSON.stringify(data));
-            tg.close();
+        }
+        
+        function showError() {
+            document.getElementById('errorMessage').style.display = 'block';
+            
+            // Очищаем код через секунду
+            setTimeout(() => {
+                enteredCode = '';
+                updateCodeDisplay();
+                hideError();
+            }, 1000);
+        }
+        
+        function hideError() {
+            document.getElementById('errorMessage').style.display = 'none';
         }
         
         function showAlert(message) {
@@ -250,7 +350,8 @@
         function clearAllCode() {
             enteredCode = '';
             updateCodeDisplay();
-            showAlert('Весь код очищен');
+            hideError();
+            showAlert('Код очищен');
         }
     </script>
 </body>
