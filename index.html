@@ -25,59 +25,57 @@
             height: 100%;
             display: flex;
             flex-direction: column;
+            align-items: center;
         }
         
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            width: 100%;
         }
         
         .title {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-        
-        .subtitle {
-            font-size: 16px;
-            color: var(--tg-theme-hint-color, #999999);
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--tg-theme-text-color, #000000);
         }
         
         .code-display {
-            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 30px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: 500;
-            letter-spacing: 2px;
-            min-height: 60px;
             display: flex;
-            align-items: center;
             justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
         }
         
-        .code-placeholder {
-            color: var(--tg-theme-hint-color, #999999);
-            font-size: 18px;
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--tg-theme-button-color, #2481cc);
+            border-radius: 50%;
+        }
+        
+        .code-dot.filled {
+            background: var(--tg-theme-button-color, #2481cc);
         }
         
         .keyboard {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            gap: 20px;
             margin-bottom: 20px;
-            flex-grow: 1;
+            width: 100%;
+            max-width: 300px;
         }
         
         .key {
-            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            border: none;
-            border-radius: 12px;
+            background: transparent;
+            border: 2px solid var(--tg-theme-button-color, #2481cc);
+            border-radius: 50%;
             font-size: 24px;
             font-weight: 500;
-            height: 60px;
+            color: var(--tg-theme-button-color, #2481cc);
+            width: 70px;
+            height: 70px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -95,12 +93,14 @@
             background: var(--tg-theme-button-color, #2481cc);
             color: var(--tg-theme-button-text-color, #ffffff);
             border: none;
-            border-radius: 12px;
-            padding: 18px;
+            border-radius: 25px;
+            padding: 15px 40px;
             font-size: 18px;
             font-weight: 500;
             cursor: pointer;
-            margin-bottom: 12px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 300px;
             transition: all 0.2s;
         }
         
@@ -117,13 +117,16 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="title">Городской Транспорт</div>
-            <div class="subtitle">Введите код с наклейки</div>
+            <div class="title">Введите код с наклейки</div>
         </div>
         
-        <div class="code-display">
-            <div class="code-placeholder" id="codePlaceholder">Код не введен</div>
-            <div id="codeDisplay" style="display: none;"></div>
+        <div class="code-display" id="codeDisplay">
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
         </div>
         
         <div class="keyboard">
@@ -150,7 +153,7 @@
         tg.MainButton.hide();
         
         let enteredCode = '';
-        const maxCodeLength = 6; // Максимальная длина кода
+        const maxCodeLength = 6; // 6 кружков как на скриншоте
         
         function addNumber(number) {
             if (enteredCode.length < maxCodeLength) {
@@ -160,17 +163,15 @@
         }
         
         function updateCodeDisplay() {
-            const codePlaceholder = document.getElementById('codePlaceholder');
-            const codeDisplay = document.getElementById('codeDisplay');
+            const dots = document.querySelectorAll('.code-dot');
             
-            if (enteredCode.length > 0) {
-                codePlaceholder.style.display = 'none';
-                codeDisplay.style.display = 'block';
-                codeDisplay.textContent = enteredCode.split('').join(' ');
-            } else {
-                codePlaceholder.style.display = 'block';
-                codeDisplay.style.display = 'none';
-            }
+            dots.forEach((dot, index) => {
+                if (index < enteredCode.length) {
+                    dot.classList.add('filled');
+                } else {
+                    dot.classList.remove('filled');
+                }
+            });
         }
         
         function submitCode() {
@@ -179,8 +180,8 @@
                 return;
             }
             
-            if (enteredCode.length < 4) {
-                showAlert('Код должен содержать минимум 4 цифры');
+            if (enteredCode.length < maxCodeLength) {
+                showAlert(`Код должен содержать ${maxCodeLength} цифр`);
                 return;
             }
             
@@ -206,29 +207,23 @@
             }
         }
         
-        // Обработчик для кнопки назад (если нужно очистить код)
-        function clearCode() {
-            enteredCode = '';
-            updateCodeDisplay();
-        }
-        
-        // Добавляем обработчик для кнопки назад (долгое нажатие на 0)
+        // Обработчик для очистки кода (долгое нажатие на 0)
         let clearTimer;
         const zeroButton = document.querySelector('.zero-key');
         
         zeroButton.addEventListener('touchstart', function() {
-            clearTimer = setTimeout(clearCode, 1000);
+            clearTimer = setTimeout(clearCode, 1500);
         });
         
         zeroButton.addEventListener('touchend', function() {
             clearTimeout(clearTimer);
         });
         
-        zeroButton.addEventListener('click', function() {
-            if (enteredCode.length === 0) {
-                addNumber(0);
-            }
-        });
+        function clearCode() {
+            enteredCode = '';
+            updateCodeDisplay();
+            showAlert('Код очищен');
+        }
     </script>
 </body>
 </html>
