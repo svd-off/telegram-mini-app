@@ -13,14 +13,26 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #000000;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%);
             color: #ffffff;
-            padding: 60px 20px 30px 20px;
             height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* СТРАНИЦА ВВОДА КОДА */
+        .code-input-page {
+            padding: 70px 30px 40px 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            height: 100%;
         }
         
         .header {
@@ -29,234 +41,352 @@
         }
         
         .title {
-            font-size: 20px;
-            font-weight: 500;
+            font-size: 24px;
+            font-weight: 700;
             color: #ffffff;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 20px rgba(255,255,255,0.3);
         }
         
         .code-display {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-bottom: 60px;
+            gap: 25px;
+            margin-bottom: 70px;
         }
         
         .code-dot {
-            width: 14px;
-            height: 14px;
-            border: 2px solid #ffffff;
+            width: 18px;
+            height: 18px;
+            border: 3px solid #ffffff;
             border-radius: 50%;
             background: transparent;
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
         }
         
         .code-dot.filled {
-            background: #ffffff;
+            background: #00ff88;
+            border-color: #00ff88;
+            box-shadow: 0 0 25px rgba(0,255,136,0.5);
+            transform: scale(1.1);
         }
         
         .keyboard {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
+            gap: 20px;
             margin-bottom: 25px;
             width: 100%;
-            max-width: 300px;
+            max-width: 320px;
         }
         
         .key {
-            background: #ffffff;
-            border: none;
+            background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
+            border: 2px solid #444;
             border-radius: 50%;
-            font-size: 24px;
-            font-weight: 500;
-            color: #000000;
-            width: 70px;
-            height: 70px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            width: 80px;
+            height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.1s;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
         
         .key:active {
-            background: #cccccc;
-            transform: scale(0.95);
+            background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+            transform: scale(0.92);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
         
         .bottom-row {
             display: flex;
             justify-content: center;
-            gap: 25px;
+            gap: 20px;
             width: 100%;
-            max-width: 300px;
+            max-width: 320px;
         }
         
         .zero-key {
-            width: 70px;
-            height: 70px;
+            width: 80px;
+            height: 80px;
         }
         
         .backspace-key {
-            background: #ff4444;
+            background: linear-gradient(145deg, #ff4444, #cc0000);
             border: none;
             border-radius: 50%;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
             color: #ffffff;
-            width: 70px;
-            height: 70px;
+            width: 80px;
+            height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.1s;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 25px rgba(255,68,68,0.3);
         }
         
         .backspace-key:active {
-            background: #cc0000;
-            transform: scale(0.95);
+            transform: scale(0.92);
+            box-shadow: 0 4px 15px rgba(255,68,68,0.4);
         }
-
-        /* Стили для страницы билета */
-        .ticket-page {
-            display: none;
-            text-align: center;
-            width: 100%;
-        }
-
-        .ticket {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            border-radius: 20px;
-            padding: 30px;
-            margin: 20px 0;
-            border: 2px solid #ffffff;
-            box-shadow: 0 0 30px rgba(255,255,255,0.2);
-        }
-
-        .ticket-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #4CAF50;
-        }
-
-        .ticket-info {
-            font-size: 16px;
-            margin: 10px 0;
-            text-align: left;
-        }
-
-        .ticket-qr {
-            width: 150px;
-            height: 150px;
-            background: #ffffff;
-            margin: 20px auto;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: #000000;
-            font-weight: bold;
-        }
-
-        .success-message {
-            color: #4CAF50;
-            font-size: 18px;
-            margin: 20px 0;
-        }
-
+        
         .error-message {
             color: #ff4444;
             font-size: 16px;
-            margin-top: 20px;
+            margin-top: 25px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255,68,68,0.5);
             display: none;
+            font-weight: 600;
+        }
+
+        /* СТРАНИЦА БИЛЕТА */
+        .ticket-page {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%);
+        }
+        
+        .ticket-header {
+            padding: 30px 20px 20px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+        }
+        
+        .success-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #000000;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .timer {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000000;
+            margin-top: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .ticket-container {
+            flex: 1;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .ticket {
+            background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+            border-radius: 25px;
+            padding: 35px;
+            width: 100%;
+            max-width: 380px;
+            border: 3px solid #00ff88;
+            box-shadow: 0 20px 50px rgba(0,255,136,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ticket::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00ff88, #00cc6a, #00ff88);
+        }
+        
+        .ticket-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            text-align: center;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0,255,136,0.5);
+        }
+        
+        .ticket-info {
+            font-size: 16px;
+            margin: 12px 0;
+            text-align: left;
+            line-height: 1.5;
+        }
+        
+        .ticket-info strong {
+            color: #00ff88;
+            font-weight: 700;
+        }
+        
+        .ticket-qr {
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            margin: 25px auto;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #000000;
+            font-weight: 800;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 3px solid #00ff88;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            width: 100%;
+            max-width: 380px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .close-btn {
+            background: linear-gradient(145deg, #ff4444, #cc0000);
+            color: #ffffff;
+            box-shadow: 0 8px 25px rgba(255,68,68,0.3);
+        }
+        
+        .close-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 15px rgba(255,68,68,0.4);
+        }
+        
+        .reopen-btn {
+            background: linear-gradient(145deg, #00ff88, #00cc6a);
+            color: #000000;
+            box-shadow: 0 8px 25px rgba(0,255,136,0.3);
+        }
+        
+        .reopen-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 15px rgba(0,255,136,0.4);
         }
     </style>
 </head>
 <body>
     <!-- Страница ввода кода -->
-    <div id="codeInputPage">
-        <div class="header">
-            <div class="title">Введите код с наклейки</div>
-        </div>
-        
-        <div class="code-display" id="codeDisplay">
-            <div class="code-dot"></div>
-            <div class="code-dot"></div>
-            <div class="code-dot"></div>
-            <div class="code-dot"></div>
-            <div class="code-dot"></div>
-            <div class="code-dot"></div>
-        </div>
-        
-        <div class="keyboard">
-            <button class="key" onclick="addNumber(1)">1</button>
-            <button class="key" onclick="addNumber(2)">2</button>
-            <button class="key" onclick="addNumber(3)">3</button>
-            <button class="key" onclick="addNumber(4)">4</button>
-            <button class="key" onclick="addNumber(5)">5</button>
-            <button class="key" onclick="addNumber(6)">6</button>
-            <button class="key" onclick="addNumber(7)">7</button>
-            <button class="key" onclick="addNumber(8)">8</button>
-            <button class="key" onclick="addNumber(9)">9</button>
-        </div>
-        
-        <div class="bottom-row">
-            <button class="backspace-key" onclick="backspace()">⌫</button>
-            <button class="key zero-key" onclick="addNumber(0)">0</button>
-            <div style="width: 70px;"></div>
-        </div>
-
-        <div class="error-message" id="errorMessage">Неверный код! Попробуйте снова.</div>
-    </div>
-
-    <!-- Страница билета -->
-    <div class="ticket-page" id="ticketPage">
-        <div class="success-message">✅ Билет успешно активирован!</div>
-        
-        <div class="ticket">
-            <div class="ticket-title">🎫 ЭЛЕКТРОННЫЙ БИЛЕТ</div>
-            
-            <div class="ticket-info">
-                <strong>Маршрут:</strong> Городской транспорт<br>
-                <strong>Тип:</strong> Единый билет<br>
-                <strong>Срок действия:</strong> 90 минут<br>
-                <strong>Цена:</strong> 50 руб.<br>
-                <strong>Время активации:</strong> <span id="activationTime"></span><br>
-                <strong>Статус:</strong> <span style="color: #4CAF50;">АКТИВИРОВАН</span>
+    <div class="container">
+        <div class="code-input-page" id="codeInputPage">
+            <div class="header">
+                <div class="title">Введите код с наклейки</div>
             </div>
             
-            <div class="ticket-qr">
-                QR-CODE<br>БИЛЕТА
+            <div class="code-display" id="codeDisplay">
+                <div class="code-dot"></div>
+                <div class="code-dot"></div>
+                <div class="code-dot"></div>
+                <div class="code-dot"></div>
+                <div class="code-dot"></div>
+                <div class="code-dot"></div>
             </div>
             
-            <div class="ticket-info" style="text-align: center;">
-                <strong>Код билета:</strong> 123456<br>
-                Предъявите кондуктору
+            <div class="keyboard">
+                <button class="key" onclick="addNumber(1)">1</button>
+                <button class="key" onclick="addNumber(2)">2</button>
+                <button class="key" onclick="addNumber(3)">3</button>
+                <button class="key" onclick="addNumber(4)">4</button>
+                <button class="key" onclick="addNumber(5)">5</button>
+                <button class="key" onclick="addNumber(6)">6</button>
+                <button class="key" onclick="addNumber(7)">7</button>
+                <button class="key" onclick="addNumber(8)">8</button>
+                <button class="key" onclick="addNumber(9)">9</button>
+            </div>
+            
+            <div class="bottom-row">
+                <button class="backspace-key" onclick="backspace()">⌫</button>
+                <button class="key zero-key" onclick="addNumber(0)">0</button>
+                <div style="width: 80px;"></div>
+            </div>
+
+            <div class="error-message" id="errorMessage">❌ Неверный код!</div>
+        </div>
+
+        <!-- Страница билета -->
+        <div class="ticket-page" id="ticketPage">
+            <div class="ticket-header">
+                <div class="success-title">✅ БИЛЕТ АКТИВИРОВАН</div>
+                <div class="timer" id="timer">15</div>
+            </div>
+            
+            <div class="ticket-container">
+                <div class="ticket">
+                    <div class="ticket-title">🎫 ЭЛЕКТРОННЫЙ БИЛЕТ</div>
+                    
+                    <div class="ticket-info">
+                        <strong>Маршрут:</strong> Городской транспорт<br>
+                        <strong>Тип билета:</strong> Единый<br>
+                        <strong>Срок действия:</strong> 90 минут<br>
+                        <strong>Стоимость:</strong> 50 рублей<br>
+                        <strong>Время активации:</strong> <span id="activationTime"></span><br>
+                        <strong>Статус:</strong> <span style="color: #00ff88;">● АКТИВЕН</span>
+                    </div>
+                    
+                    <div class="ticket-qr">
+                        QR-CODE<br>БИЛЕТА
+                    </div>
+                    
+                    <div class="ticket-info" style="text-align: center; font-weight: 700;">
+                        <strong>Код билета:</strong> 123456<br>
+                        Предъявите кондуктору
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="action-btn close-btn" onclick="closeTicket()">Закрыть</button>
+                    <button class="action-btn reopen-btn" onclick="reopenTicket()">Открыть снова</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        const CORRECT_CODE = "123456"; // Правильный код
+        const CORRECT_CODE = "123456";
         
-        tg.setHeaderColor('#000000');
-        tg.setBackgroundColor('#000000');
+        tg.setHeaderColor('#0c0c0c');
+        tg.setBackgroundColor('#0c0c0c');
         tg.expand();
         tg.MainButton.hide();
         
         let enteredCode = '';
         const maxCodeLength = 6;
+        let countdownTimer;
+        let timeLeft = 15;
         
         function addNumber(number) {
             if (enteredCode.length < maxCodeLength) {
                 enteredCode += number;
                 updateCodeDisplay();
                 
-                // Автоматическая проверка при полном вводе
                 if (enteredCode.length === maxCodeLength) {
                     setTimeout(checkCode, 300);
                 }
@@ -293,15 +423,17 @@
         
         function showTicket() {
             document.getElementById('codeInputPage').style.display = 'none';
-            document.getElementById('ticketPage').style.display = 'block';
+            document.getElementById('ticketPage').style.display = 'flex';
             
-            // Устанавливаем текущее время
             const now = new Date();
             document.getElementById('activationTime').textContent = 
                 now.toLocaleTimeString('ru-RU') + ' ' + 
                 now.toLocaleDateString('ru-RU');
             
-            // Отправляем данные о успешной активации боту
+            // Запускаем таймер
+            startCountdown();
+            
+            // Отправляем данные боту
             const data = {
                 action: "ticket_activated",
                 code: enteredCode,
@@ -312,27 +444,46 @@
             tg.sendData(JSON.stringify(data));
         }
         
+        function startCountdown() {
+            timeLeft = 15;
+            document.getElementById('timer').textContent = timeLeft;
+            
+            countdownTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdownTimer);
+                    closeTicket();
+                }
+            }, 1000);
+        }
+        
+        function closeTicket() {
+            clearInterval(countdownTimer);
+            document.getElementById('ticketPage').style.display = 'none';
+            document.getElementById('codeInputPage').style.display = 'flex';
+            enteredCode = '';
+            updateCodeDisplay();
+        }
+        
+        function reopenTicket() {
+            clearInterval(countdownTimer);
+            startCountdown();
+        }
+        
         function showError() {
             document.getElementById('errorMessage').style.display = 'block';
             
-            // Очищаем код через секунду
             setTimeout(() => {
                 enteredCode = '';
                 updateCodeDisplay();
                 hideError();
-            }, 1000);
+            }, 1500);
         }
         
         function hideError() {
             document.getElementById('errorMessage').style.display = 'none';
-        }
-        
-        function showAlert(message) {
-            if (tg.showAlert) {
-                tg.showAlert(message);
-            } else {
-                alert(message);
-            }
         }
         
         // Очистка всего кода при долгом нажатии backspace
@@ -351,7 +502,6 @@
             enteredCode = '';
             updateCodeDisplay();
             hideError();
-            showAlert('Код очищен');
         }
     </script>
 </body>
