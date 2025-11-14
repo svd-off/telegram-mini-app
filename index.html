@@ -185,6 +185,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
         }
         
         .ticket {
@@ -248,47 +249,52 @@
             border: 3px solid #00ff88;
         }
         
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-            width: 100%;
-            max-width: 380px;
+        .total-time {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
         }
         
-        .action-btn {
-            flex: 1;
-            padding: 18px;
-            border: none;
-            border-radius: 15px;
-            font-size: 16px;
+        .expired-message {
+            text-align: center;
+            color: #ff4444;
+            font-size: 18px;
             font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            margin-top: 20px;
+            text-shadow: 0 0 10px rgba(255,68,68,0.5);
+        }
+
+        /* СТРАНИЦА ПРОСРОЧКИ */
+        .expired-page {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
         }
         
-        .close-btn {
-            background: linear-gradient(145deg, #ff4444, #cc0000);
-            color: #ffffff;
-            box-shadow: 0 8px 25px rgba(255,68,68,0.3);
+        .expired-icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(255,68,68,0.5);
         }
         
-        .close-btn:active {
-            transform: scale(0.95);
-            box-shadow: 0 4px 15px rgba(255,68,68,0.4);
+        .expired-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #ff4444;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(255,68,68,0.3);
         }
         
-        .reopen-btn {
-            background: linear-gradient(145deg, #00ff88, #00cc6a);
-            color: #000000;
-            box-shadow: 0 8px 25px rgba(0,255,136,0.3);
-        }
-        
-        .reopen-btn:active {
-            transform: scale(0.95);
-            box-shadow: 0 4px 15px rgba(0,255,136,0.4);
+        .expired-text {
+            font-size: 16px;
+            color: #cccccc;
+            line-height: 1.5;
+            margin-bottom: 30px;
         }
     </style>
 </head>
@@ -347,6 +353,7 @@
                         <strong>Срок действия:</strong> 90 минут<br>
                         <strong>Стоимость:</strong> 50 рублей<br>
                         <strong>Время активации:</strong> <span id="activationTime"></span><br>
+                        <strong>Осталось времени:</strong> <span id="remainingTime">1:30:00</span><br>
                         <strong>Статус:</strong> <span style="color: #00ff88;">● АКТИВЕН</span>
                     </div>
                     
@@ -360,10 +367,25 @@
                     </div>
                 </div>
                 
-                <div class="action-buttons">
-                    <button class="action-btn close-btn" onclick="closeTicket()">Закрыть</button>
-                    <button class="action-btn reopen-btn" onclick="reopenTicket()">Открыть снова</button>
+                <div class="total-time">
+                    Билет закроется автоматически через <span id="displayTimer">15</span> сек
                 </div>
+                
+                <div class="expired-message" id="expiredMessage" style="display: none;">
+                    ⚠️ Время действия билета истекло!
+                </div>
+            </div>
+        </div>
+
+        <!-- Страница просроченного билета -->
+        <div class="expired-page" id="expiredPage">
+            <div class="expired-icon">⏰</div>
+            <div class="expired-title">ВРЕМЯ ИСТЕКЛО</div>
+            <div class="expired-text">
+                Срок действия вашего билета истек.<br>
+                Общее время использования: 1.5 часа<br><br>
+                Для получения нового билета<br>
+                обратитесь к администратору.
             </div>
         </div>
     </div>
@@ -371,6 +393,7 @@
     <script>
         const tg = window.Telegram.WebApp;
         const CORRECT_CODE = "123456";
+        const TOTAL_TICKET_TIME = 90 * 60 * 1000; // 1.5 часа в миллисекундах
         
         tg.setHeaderColor('#0c0c0c');
         tg.setBackgroundColor('#0c0c0c');
@@ -380,7 +403,11 @@
         let enteredCode = '';
         const maxCodeLength = 6;
         let countdownTimer;
+        let autoCloseTimer;
+        let totalTimeTimer;
         let timeLeft = 15;
+        let ticketActivationTime = null;
+        let totalTimeLeft = TOTAL_TICKET_TIME;
         
         function addNumber(number) {
             if (enteredCode.length < maxCodeLength) {
@@ -415,61 +442,140 @@
         
         function checkCode() {
             if (enteredCode === CORRECT_CODE) {
-                showTicket();
+                activateTicket();
             } else {
                 showError();
             }
         }
         
+        function activateTicket() {
+            // Сохраняем время активации в localStorage
+            ticketActivationTime = new Date().getTime();
+            localStorage.setItem('ticketActivationTime', ticketActivationTime);
+            localStorage.setItem('ticketActivated', 'true');
+            
+            showTicket();
+        }
+        
         function showTicket() {
+            // Проверяем не истекло ли общее время
+            checkTotalTime();
+            
             document.getElementById('codeInputPage').style.display = 'none';
             document.getElementById('ticketPage').style.display = 'flex';
+            document.getElementById('expiredPage').style.display = 'none';
             
             const now = new Date();
             document.getElementById('activationTime').textContent = 
                 now.toLocaleTimeString('ru-RU') + ' ' + 
                 now.toLocaleDateString('ru-RU');
             
-            // Запускаем таймер
+            // Обновляем оставшееся общее время
+            updateRemainingTime();
+            
+            // Запускаем таймеры
             startCountdown();
+            startAutoClose();
             
             // Отправляем данные боту
             const data = {
                 action: "ticket_activated",
                 code: enteredCode,
                 timestamp: new Date().toISOString(),
-                status: "success"
+                status: "success",
+                total_time_left: totalTimeLeft
             };
             
             tg.sendData(JSON.stringify(data));
         }
         
+        function checkTotalTime() {
+            const savedTime = localStorage.getItem('ticketActivationTime');
+            if (savedTime) {
+                const currentTime = new Date().getTime();
+                const elapsed = currentTime - parseInt(savedTime);
+                totalTimeLeft = TOTAL_TICKET_TIME - elapsed;
+                
+                if (totalTimeLeft <= 0) {
+                    showExpiredPage();
+                    return false;
+                }
+            } else {
+                totalTimeLeft = TOTAL_TICKET_TIME;
+            }
+            return true;
+        }
+        
+        function updateRemainingTime() {
+            if (totalTimeLeft <= 0) {
+                showExpiredPage();
+                return;
+            }
+            
+            const hours = Math.floor(totalTimeLeft / (60 * 60 * 1000));
+            const minutes = Math.floor((totalTimeLeft % (60 * 60 * 1000)) / (60 * 1000));
+            const seconds = Math.floor((totalTimeLeft % (60 * 1000)) / 1000);
+            
+            document.getElementById('remainingTime').textContent = 
+                `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
         function startCountdown() {
             timeLeft = 15;
             document.getElementById('timer').textContent = timeLeft;
+            document.getElementById('displayTimer').textContent = timeLeft;
             
+            clearInterval(countdownTimer);
             countdownTimer = setInterval(() => {
                 timeLeft--;
                 document.getElementById('timer').textContent = timeLeft;
+                document.getElementById('displayTimer').textContent = timeLeft;
                 
                 if (timeLeft <= 0) {
                     clearInterval(countdownTimer);
-                    closeTicket();
                 }
             }, 1000);
         }
         
+        function startAutoClose() {
+            clearTimeout(autoCloseTimer);
+            autoCloseTimer = setTimeout(() => {
+                closeTicket();
+            }, 15000);
+        }
+        
         function closeTicket() {
             clearInterval(countdownTimer);
+            clearTimeout(autoCloseTimer);
             document.getElementById('ticketPage').style.display = 'none';
             document.getElementById('codeInputPage').style.display = 'flex';
             enteredCode = '';
             updateCodeDisplay();
+            
+            // Обновляем общее время при закрытии
+            updateTotalTime();
         }
         
-        function reopenTicket() {
-            clearInterval(countdownTimer);
-            startCountdown();
+        function updateTotalTime() {
+            if (ticketActivationTime) {
+                const currentTime = new Date().getTime();
+                const elapsed = currentTime - ticketActivationTime;
+                totalTimeLeft = TOTAL_TICKET_TIME - elapsed;
+                
+                if (totalTimeLeft <= 0) {
+                    showExpiredPage();
+                }
+            }
+        }
+        
+        function showExpiredPage() {
+            document.getElementById('codeInputPage').style.display = 'none';
+            document.getElementById('ticketPage').style.display = 'none';
+            document.getElementById('expiredPage').style.display = 'flex';
+            
+            // Очищаем данные билета
+            localStorage.removeItem('ticketActivationTime');
+            localStorage.removeItem('ticketActivated');
         }
         
         function showError() {
@@ -484,6 +590,20 @@
         
         function hideError() {
             document.getElementById('errorMessage').style.display = 'none';
+        }
+        
+        // Проверяем есть ли активный билет при загрузке
+        function checkExistingTicket() {
+            const isActivated = localStorage.getItem('ticketActivated');
+            if (isActivated === 'true') {
+                const savedTime = localStorage.getItem('ticketActivationTime');
+                if (savedTime) {
+                    ticketActivationTime = parseInt(savedTime);
+                    if (checkTotalTime()) {
+                        showTicket();
+                    }
+                }
+            }
         }
         
         // Очистка всего кода при долгом нажатии backspace
@@ -503,6 +623,11 @@
             updateCodeDisplay();
             hideError();
         }
+        
+        // Запускаем проверку при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            checkExistingTicket();
+        });
     </script>
 </body>
 </html>
