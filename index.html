@@ -726,13 +726,14 @@
                 localStorage.setItem('ticketActivated', 'true');
                 isFirstActivation = false;
                 
-                const data = {
-                    action: "ticket_activated",
-                    code: enteredCode,
-                    timestamp: new Date().toISOString(),
-                    status: "success"
-                };
-                tg.sendData(JSON.stringify(data));
+                // Показываем уведомление в Telegram
+                if (tg.showPopup) {
+                    tg.showPopup({
+                        title: "✅ Билет активирован!",
+                        message: "Билет успешно активирован. Покажите этот экран кондуктору.",
+                        buttons: [{ type: "ok" }]
+                    });
+                }
             }
             
             showTicket();
