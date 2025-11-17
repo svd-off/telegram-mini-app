@@ -139,10 +139,10 @@
             document.getElementById('errorMessage').style.display = 'none';
         }
 
-        function activateTicket() {
-            tg.sendData(JSON.stringify({ status: 'success' }));
-            tg.close(); // ЗАКРЫВАЕТ МИНИ-ПРИЛОЖЕНИЕ
-        }
+function activateTicket() {
+    tg.sendData(JSON.stringify({ status: 'success' }));
+    tg.close(); // ЗАКРЫВАЕТ ОКНО
+}
 
         function scanCode() {
             alert("Сканирование QR (заглушка)");
