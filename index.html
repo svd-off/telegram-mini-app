@@ -50,7 +50,7 @@
         input:checked + .slider:before { transform: translateX(20px); background: #FFFFFF; }
         .pay-button { background: #30D158; color: #000000; font-size: 18px; font-weight: 600; padding: 18px; border-radius: 16px; text-align: center; margin-top: auto; cursor: pointer; }
         .pay-button:active { background: #28A745; }
-        /* ЭКРАН 3: ФИНАЛЬНЫЙ БИЛЕТ */
+        /* ЭКРАН 3: ФИНАЛЬНЫЙ БИЛЕТ — ЭМОДЗИ КАК БЫЛО */
         .final-ticket { padding: 20px 0; }
         .timer { font-size: 24px; font-weight: 600; text-align: center; margin-bottom: 24px; }
         .ticket-number { display: flex; align-items: center; justify-content: space-between; font-size: 20px; font-weight: 600; color: #FF3B30; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #333; }
@@ -62,12 +62,15 @@
         .info-label { color: #AAAAAA; font-size: 14px; margin-bottom: 4px; }
         .close-button { background: #FF3B30; color: #FFFFFF; font-size: 18px; font-weight: 600; padding: 18px; border-radius: 16px; text-align: center; margin-top: auto; cursor: pointer; }
         .close-button:active { background: #D70015; }
-        /* ДОБАВИЛ: ВКЛАДКА ДЕЙСТВУЮЩИЕ БИЛЕТЫ */
+        /* ВКЛАДКА ДЕЙСТВУЮЩИЕ БИЛЕТЫ + КОРЗИНА */
         .active-tickets-list { flex: 1; overflow-y: auto; }
-        .active-ticket-item { background: #1E1E1E; border-radius: 12px; padding: 16px; margin-bottom: 12px; cursor: pointer; }
+        .active-ticket-item { background: #1E1E1E; border-radius: 12px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
         .active-ticket-item:active { background: #2A2A2C; }
+        .active-ticket-info { flex: 1; }
         .active-ticket-number { font-size: 18px; font-weight: 600; color: #FF3B30; margin-bottom: 4px; }
         .active-ticket-time { font-size: 14px; color: #AAAAAA; }
+        .delete-btn { width: 32px; height: 32px; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FF3B30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>') no-repeat center; background-size: 20px; cursor: pointer; }
+        .delete-btn:active { background-color: #3A3A3C; border-radius: 8px; }
     </style>
 </head>
 <body>
@@ -155,12 +158,12 @@
             </div>
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ - 48.00 ₽</div>
         </div>
-        <!-- ЭКРАН 3: ФИНАЛЬНЫЙ БИЛЕТ — ВЕРНУЛ ЭМОДЗИ КАК БЫЛО -->
+        <!-- ЭКРАН 3: ФИНАЛЬНЫЙ БИЛЕТ — ЭМОДЗИ НА МЕСТЕ -->
         <div id="finalTicketPage" class="page">
             <div class="final-ticket">
                 <div class="timer" id="timer">Действует: 15 сек.</div>
                 <div class="ticket-number">
-                    <span id="currentTicketNumber">1 299 814 483</span>
+                    <span>📄 1 299 814 483</span>
                     <div class="control" onclick="switchToControl()">
                         <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
                         Контроль
@@ -205,7 +208,7 @@
             </div>
             <div class="close-button" onclick="closeTicket()">ЗАКРЫТЬ</div>
         </div>
-        <!-- ДОБАВИЛ: ВКЛАДКА ДЕЙСТВУЮЩИЕ БИЛЕТЫ -->
+        <!-- ВКЛАДКА ДЕЙСТВУЮЩИЕ БИЛЕТЫ + КОРЗИНА -->
         <div id="activeTicketsPage" class="page">
             <div class="ticket-holder" style="flex: 1; display: flex; flex-direction: column;">
                 <div class="ticket-header" style="margin-bottom: 16px;">
@@ -302,7 +305,7 @@
             }));
 
             showPage('finalTicketPage');
-            document.getElementById('currentTicketNumber').textContent = ticketNum;
+            document.querySelector('.ticket-number span').textContent = `📄 ${ticketNum}`;
             startViewTimer();
         }
 
@@ -336,7 +339,24 @@
             alert("Вкладка 'Контроль' пока не работает");
         }
 
-        // === ДОБАВИЛ: ВКЛАДКА ДЕЙСТВУЮЩИЕ БИЛЕТЫ ===
+        // === УДАЛЕНИЕ С КОРЗИНОЙ + ПОДТВЕРЖДЕНИЕ ===
+        function deleteTicket(index) {
+            tg.showPopup({
+                title: "Удалить билет?",
+                message: `Вы уверены, что хотите удалить билет № ${tickets[index].number}?`,
+                buttons: [
+                    { type: 'destructive', text: 'Удалить', id: 'delete' },
+                    { type: 'cancel', text: 'Отмена', id: 'cancel' }
+                ]
+            }, (btnId) => {
+                if (btnId === 'delete') {
+                    tickets.splice(index, 1);
+                    localStorage.setItem('user_tickets', JSON.stringify(tickets));
+                    renderActiveTickets();
+                }
+            });
+        }
+
         function renderActiveTickets() {
             const list = document.getElementById('activeTicketsList');
             list.innerHTML = '';
@@ -345,18 +365,22 @@
                 return;
             }
             const now = Date.now();
-            tickets.forEach(ticket => {
+            tickets.forEach((ticket, index) => {
                 const minsLeft = Math.floor((TOTAL_DURATION - (now - ticket.created_at)) / 60000);
                 const item = document.createElement('div');
                 item.className = 'active-ticket-item';
-                item.onclick = () => {
-                    document.getElementById('currentTicketNumber').textContent = ticket.number;
+                item.onclick = (e) => {
+                    if (e.target.closest('.delete-btn')) return;
+                    document.querySelector('.ticket-number span').textContent = `📄 ${ticket.number}`;
                     showPage('finalTicketPage');
                     startViewTimer();
                 };
                 item.innerHTML = `
-                    <div class="active-ticket-number">Билет № ${ticket.number}</div>
-                    <div class="active-ticket-time">Осталось: ${minsLeft} мин</div>
+                    <div class="active-ticket-info">
+                        <div class="active-ticket-number">Билет № ${ticket.number}</div>
+                        <div class="active-ticket-time">Осталось: ${minsLeft} мин</div>
+                    </div>
+                    <div class="delete-btn" onclick="deleteTicket(${index}); event.stopPropagation();"></div>
                 `;
                 list.appendChild(item);
             });
