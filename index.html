@@ -158,6 +158,11 @@
             display: none;
             font-weight: 500;
         }
+
+        /* Остальные стили для других страниц (оставил как было, но можешь добавить) */
+        .tickets-page, .ticket-page, .expired-page {
+            /* ... (копируй из предыдущего кода, если нужно полный проект) */
+        }
     </style>
 </head>
 <body>
@@ -206,41 +211,55 @@
 
             <div class="error-message" id="errorMessage">Неверный код</div>
         </div>
+
+        <!-- Остальные страницы (ticketsPage, ticketPage, expiredPage) — копируй из твоего исходного кода, чтобы не терять -->
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         const CORRECT_CODE = "123456";
-
+        const TOTAL_TICKET_TIME = 90 * 60 * 1000;
+       
         tg.expand();
         tg.MainButton.hide();
         tg.setHeaderColor('#000000');
         tg.setBackgroundColor('#000000');
-
+       
         let enteredCode = '';
         const maxCodeLength = 6;
+        let countdownTimer;
+        let autoCloseTimer;
+        let timeLeft = 15;
+        let ticketActivationTime = null;
+        let totalTimeLeft = TOTAL_TICKET_TIME;
+        let isFirstActivation = true;
+       
+        // ... (остальные функции как в твоём коде: showCodeInputPage, showTicketsPage и т.д. — вставь их сюда)
 
-        function addNumber(num) {
+        function addNumber(number) {
             if (enteredCode.length < maxCodeLength) {
-                enteredCode += num;
+                enteredCode += number;
                 updateCodeDisplay();
+               
                 if (enteredCode.length === maxCodeLength) {
                     setTimeout(checkCode, 300);
                 }
             }
         }
-
+       
         function backspace() {
-            enteredCode = enteredCode.slice(0, -1);
-            updateCodeDisplay();
-            hideError();
+            if (enteredCode.length > 0) {
+                enteredCode = enteredCode.slice(0, -1);
+                updateCodeDisplay();
+                hideError();
+            }
         }
-
+       
         function updateCodeDisplay() {
             const boxes = document.querySelectorAll('.code-box');
-            boxes.forEach((box, i) => {
-                if (i < enteredCode.length) {
-                    box.textContent = enteredCode[i];
+            boxes.forEach((box, index) => {
+                if (index < enteredCode.length) {
+                    box.textContent = enteredCode[index];
                     box.classList.add('filled');
                 } else {
                     box.textContent = '';
@@ -248,35 +267,57 @@
                 }
             });
         }
-
+       
         function checkCode() {
             if (enteredCode === CORRECT_CODE) {
-                alert("Код верный! Билет активирован.");
+                activateTicket();
             } else {
                 showError();
             }
         }
-
+       
         function showError() {
-            const error = document.getElementById('errorMessage');
-            error.style.display = 'block';
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.style.display = 'block';
+           
             setTimeout(() => {
                 enteredCode = '';
                 updateCodeDisplay();
-                error.style.display = 'none';
+                hideError();
             }, 1500);
         }
-
+       
         function hideError() {
             document.getElementById('errorMessage').style.display = 'none';
         }
-
+       
+        function activateTicket() {
+            if (isFirstActivation) {
+                ticketActivationTime = new Date().getTime();
+                localStorage.setItem('ticketActivationTime', ticketActivationTime);
+                localStorage.setItem('ticketActivated', 'true');
+                isFirstActivation = false;
+            }
+           
+            // Отправляем данные боту для генерации сообщения в чате
+            tg.sendData(JSON.stringify({
+                status: 'success',
+                code: enteredCode,
+                activationTime: new Date(ticketActivationTime).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+                // Можно добавить больше данных для динамики в боте
+            }));
+           
+            showTicketPage(); // Продолжаем показывать страницу билета
+        }
+       
+        // ... (остальные функции: updateTicketInfo, updateRemainingTime и т.д. — вставь из предыдущего)
+       
         function scanCode() {
             alert("Функция сканирования QR-кода (пока заглушка)");
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            updateCodeDisplay();
+       
+        document.addEventListener('DOMContentLoaded', function() {
+            checkExistingTicket();
         });
     </script>
 </body>
