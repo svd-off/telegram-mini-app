@@ -6,168 +6,35 @@
     <title>Городской Транспорт</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #000000;
-            color: #FFFFFF;
-            height: 100vh;
-            overflow: hidden;
-        }
-        .app-container {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            padding: 16px 16px 32px 16px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #000000; color: #FFFFFF; height: 100vh; overflow: hidden; }
+        .app-container { height: 100%; display: flex; flex-direction: column; padding: 16px 16px 32px 16px; }
 
-        /* Code Input Field */
-        .code-input-field {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-        .code-box {
-            width: 40px;
-            height: 52px;
-            border: 1px solid #3A3A3C;
-            border-radius: 8px;
-            background: #1E1E1E;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: 500;
-            color: #FFFFFF;
-        }
-        .code-box.filled {
-            background: #FFFFFF;
-            color: #000000;
-            border-color: #FFFFFF;
-        }
+        .code-input-field { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
+        .code-box { width: 40px; height: 52px; border: 1px solid #3A3A3C; border-radius: 8px; background: #1E1E1E; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 500; color: #FFFFFF; }
+        .code-box.filled { background: #FFFFFF; color: #000000; border-color: #FFFFFF; }
 
-        /* Header (теперь под полем ввода) */
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 32px;
-        }
-        .header-inner {
-            display: flex;
-            align-items: center;
-        }
-        .header-icon {
-            width: 20px;
-            height: 20px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01"/><path d="M15 15h.01"/><path d="M9 15h.01"/><path d="M15 9h.01"/><path d="M5 5h4v4H5z"/><path d="M15 5h4v4h-4z"/><path d="M5 15h4v4H5z"/><path d="M15 15h4v4h-4z"/></svg>') no-repeat center;
-            background-size: contain;
-            margin-right: 8px;
-        }
-        .header-title {
-            font-size: 16px;
-            font-weight: 500;
-            color: #FFFFFF;
-        }
+        .header { display: flex; align-items: center; justify-content: center; margin-bottom: 32px; }
+        .header-inner { display: flex; align-items: center; }
+        .header-icon { width: 20px; height: 20px; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01"/><path d="M15 15h.01"/><path d="M9 15h.01"/><path d="M15 9h.01"/><path d="M5 5h4v4H5z"/><path d="M15 5h4v4h-4z"/><path d="M5 15h4v4H5z"/><path d="M15 15h4v4h-4z"/></svg>') no-repeat center; background-size: contain; margin-right: 8px; }
+        .header-title { font-size: 16px; font-weight: 500; color: #FFFFFF; }
 
-        /* Keyboard Container (обведён белым квадратом) */
-        .keyboard-container {
-            border: 1.5px solid #FFFFFF;
-            border-radius: 16px;
-            padding: 16px;
-            background: #000000;
-        }
+        .keyboard-container { border: 1.5px solid #FFFFFF; border-radius: 16px; padding: 16px; background: #000000; }
+        .keyboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px; }
+        .key { flex: 1; background: #FFFFFF; color: #000000; border: none; border-radius: 12px; font-size: 28px; font-weight: 500; height: 68px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.1s ease; }
+        .key:active { background: #D1D1D6; transform: scale(0.98); }
 
-        /* Keyboard */
-        .keyboard {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        .key {
-            flex: 1;
-            background: #FFFFFF;
-            color: #000000;
-            border: none;
-            border-radius: 12px;
-            font-size: 28px;
-            font-weight: 500;
-            height: 68px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.1s ease;
-        }
-        .key:active {
-            background: #D1D1D6;
-            transform: scale(0.98);
-        }
+        .bottom-row { display: flex; justify-content: space-between; gap: 12px; }
+        .action-btn { flex: 1; background: #1E1E1E; color: #FFFFFF; border: none; border-radius: 12px; font-size: 16px; font-weight: 500; height: 68px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.1s ease; }
+        .action-btn:active { background: #3A3A3C; }
+        .scan-icon { width: 20px; height: 20px; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01"/><path d="M15 15h.01"/><path d="M9 15h.01"/><path d="M15 9h.01"/><path d="M5 5h4v4H5z"/><path d="M15 5h4v4h-4z"/><path d="M5 15h4v4H5z"/><path d="M15 15h4v4h-4z"/></svg>') no-repeat center; background-size: contain; margin-right: 6px; }
+        .backspace-icon { width: 24px; height: 24px; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m7-7-7 7 7 7"/></svg>') no-repeat center; background-size: contain; }
 
-        /* Bottom Row */
-        .bottom-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-        }
-        .action-btn {
-            flex: 1;
-            background: #1E1E1E;
-            color: #FFFFFF;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 500;
-            height: 68px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.1s ease;
-        }
-        .action-btn:active {
-            background: #3A3A3C;
-        }
-        .scan-icon {
-            width: 20px;
-            height: 20px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01"/><path d="M15 15h.01"/><path d="M9 15h.01"/><path d="M15 9h.01"/><path d="M5 5h4v4H5z"/><path d="M15 5h4v4h-4z"/><path d="M5 15h4v4H5z"/><path d="M15 15h4v4h-4z"/></svg>') no-repeat center;
-            background-size: contain;
-            margin-right: 6px;
-        }
-        .backspace-icon {
-            width: 24px;
-            height: 24px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m7-7-7 7 7 7"/></svg>') no-repeat center;
-            background-size: contain;
-        }
-
-        /* Error */
-        .error-message {
-            color: #FF3B30;
-            font-size: 14px;
-            text-align: center;
-            margin-top: 16px;
-            display: none;
-            font-weight: 500;
-        }
-
-        /* Остальные стили для других страниц (оставил как было, но можешь добавить) */
-        .tickets-page, .ticket-page, .expired-page {
-            /* ... (копируй из предыдущего кода, если нужно полный проект) */
-        }
+        .error-message { color: #FF3B30; font-size: 14px; text-align: center; margin-top: 16px; display: none; font-weight: 500; }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- Code Input Page -->
         <div id="codeInputPage">
             <div class="code-input-field" id="codeDisplay">
                 <div class="code-box"></div>
@@ -199,67 +66,49 @@
                 </div>
 
                 <div class="bottom-row">
-                    <button class="action-btn" onclick="scanCode()">
-                        <span class="scan-icon"></span>Сканировать
-                    </button>
+                    <button class="action-btn" onclick="scanCode()"><span class="scan-icon"></span>Сканировать</button>
                     <button class="key" onclick="addNumber(0)">0</button>
-                    <button class="action-btn" onclick="backspace()">
-                        <span class="backspace-icon"></span>
-                    </button>
+                    <button class="action-btn" onclick="backspace()"><span class="backspace-icon"></span></button>
                 </div>
             </div>
 
             <div class="error-message" id="errorMessage">Неверный код</div>
         </div>
-
-        <!-- Остальные страницы (ticketsPage, ticketPage, expiredPage) — копируй из твоего исходного кода, чтобы не терять -->
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         const CORRECT_CODE = "123456";
-        const TOTAL_TICKET_TIME = 90 * 60 * 1000;
-       
+
         tg.expand();
         tg.MainButton.hide();
         tg.setHeaderColor('#000000');
         tg.setBackgroundColor('#000000');
-       
+
         let enteredCode = '';
         const maxCodeLength = 6;
-        let countdownTimer;
-        let autoCloseTimer;
-        let timeLeft = 15;
-        let ticketActivationTime = null;
-        let totalTimeLeft = TOTAL_TICKET_TIME;
-        let isFirstActivation = true;
-       
-        // ... (остальные функции как в твоём коде: showCodeInputPage, showTicketsPage и т.д. — вставь их сюда)
 
-        function addNumber(number) {
+        function addNumber(num) {
             if (enteredCode.length < maxCodeLength) {
-                enteredCode += number;
+                enteredCode += num;
                 updateCodeDisplay();
-               
                 if (enteredCode.length === maxCodeLength) {
                     setTimeout(checkCode, 300);
                 }
             }
         }
-       
+
         function backspace() {
-            if (enteredCode.length > 0) {
-                enteredCode = enteredCode.slice(0, -1);
-                updateCodeDisplay();
-                hideError();
-            }
+            enteredCode = enteredCode.slice(0, -1);
+            updateCodeDisplay();
+            hideError();
         }
-       
+
         function updateCodeDisplay() {
             const boxes = document.querySelectorAll('.code-box');
-            boxes.forEach((box, index) => {
-                if (index < enteredCode.length) {
-                    box.textContent = enteredCode[index];
+            boxes.forEach((box, i) => {
+                if (i < enteredCode.length) {
+                    box.textContent = enteredCode[i];
                     box.classList.add('filled');
                 } else {
                     box.textContent = '';
@@ -267,7 +116,7 @@
                 }
             });
         }
-       
+
         function checkCode() {
             if (enteredCode === CORRECT_CODE) {
                 activateTicket();
@@ -275,50 +124,31 @@
                 showError();
             }
         }
-       
+
         function showError() {
-            const errorElement = document.getElementById('errorMessage');
-            errorElement.style.display = 'block';
-           
+            const error = document.getElementById('errorMessage');
+            error.style.display = 'block';
             setTimeout(() => {
                 enteredCode = '';
                 updateCodeDisplay();
-                hideError();
+                error.style.display = 'none';
             }, 1500);
         }
-       
+
         function hideError() {
             document.getElementById('errorMessage').style.display = 'none';
         }
-       
+
         function activateTicket() {
-            if (isFirstActivation) {
-                ticketActivationTime = new Date().getTime();
-                localStorage.setItem('ticketActivationTime', ticketActivationTime);
-                localStorage.setItem('ticketActivated', 'true');
-                isFirstActivation = false;
-            }
-           
-            // Отправляем данные боту для генерации сообщения в чате
-            tg.sendData(JSON.stringify({
-                status: 'success',
-                code: enteredCode,
-                activationTime: new Date(ticketActivationTime).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
-                // Можно добавить больше данных для динамики в боте
-            }));
-           
-            showTicketPage(); // Продолжаем показывать страницу билета
+            tg.sendData(JSON.stringify({ status: 'success' }));
+            tg.close(); // ЗАКРЫВАЕТ МИНИ-ПРИЛОЖЕНИЕ
         }
-       
-        // ... (остальные функции: updateTicketInfo, updateRemainingTime и т.д. — вставь из предыдущего)
-       
+
         function scanCode() {
-            alert("Функция сканирования QR-кода (пока заглушка)");
+            alert("Сканирование QR (заглушка)");
         }
-       
-        document.addEventListener('DOMContentLoaded', function() {
-            checkExistingTicket();
-        });
+
+        document.addEventListener('DOMContentLoaded', updateCodeDisplay);
     </script>
 </body>
 </html>
