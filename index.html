@@ -187,14 +187,12 @@
                 </div>
             </div>
 
-            <div class="error-message" id="errorMessage">Неверный код</div>
+            <div class="error-message" id="errorMessage">Введите 6 цифр</div>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        const CORRECT_CODE = "123456";
-
         tg.expand();
         tg.MainButton.hide();
         tg.setHeaderColor('#000000');
@@ -233,9 +231,9 @@
         }
 
         function checkCode() {
-            if (enteredCode === CORRECT_CODE) {
-                tg.sendData(JSON.stringify({ action: "ticket_activated", code: enteredCode }));
-                tg.close(); // ЗАКРЫВАЕТ ОКНО
+            if (enteredCode.length === 6 && /^\d+$/.test(enteredCode)) {
+                tg.sendData(JSON.stringify({ code: enteredCode }));
+                tg.close();
             } else {
                 showError();
             }
