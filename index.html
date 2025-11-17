@@ -10,18 +10,17 @@
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #000000; color: #FFFFFF; height: 100vh; overflow: hidden; }
         .app-container { height: 100%; display: flex; flex-direction: column; padding: 16px; }
 
-        /* === ЭКРАНЫ === */
-        .page { display: none; flex-direction: column; }
+        .page { display: none; flex-direction: column; height: 100%; }
         .page.active { display: flex; }
 
-        /* === ЭКРАН 1: ВВОД КОДА === */
+        /* ЭКРАН 1: ВВОД КОДА */
         .code-input-field { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
         .code-box { width: 40px; height: 52px; border: 1px solid #3A3A3C; border-radius: 8px; background: #1E1E1E; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 500; color: #FFFFFF; }
         .code-box.filled { background: #FFFFFF; color: #000000; border-color: #FFFFFF; }
 
         .header { display: flex; align-items: center; justify-content: center; margin-bottom: 32px; }
         .header-inner { display: flex; align-items: center; }
-        .header-icon { width: 20px; height: 20px; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01"/><path d="M15 15h.01"/><path d="M9 15h.01"/><path d="M15 9h.01"/><path d="M5 5h4v4H5z"/><path d="M15 5h4v4h-4z"/><path d="M5 15h4v4H5z"/><path d="M15 15h4v4h-4z"/></svg>') no-repeat center; background-size: contain; margin-right: 8px; }
+        .header-icon { width: 20px; height: 20px; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01"/><path d="M15 15h.01"/><path d="M9 15h.01"/><path d="M15 9h.01"/><path d="M5 5h4v4H5z"/><path d="M15 5h4v4h-4z"/><path d="M5 15h4v4H5z"/><path d="M15 15h4v4h-4z"/></svg>') no-repeat center; background-size: contain; margin-right: 8px; }
         .header-title { font-size: 16px; font-weight: 500; color: #FFFFFF; }
 
         .keyboard-container { border: 1.5px solid #FFFFFF; border-radius: 16px; padding: 16px; background: #000000; }
@@ -32,12 +31,12 @@
         .bottom-row { display: flex; justify-content: space-between; gap: 12px; }
         .action-btn { flex: 1; background: #1E1E1E; color: #FFFFFF; border: none; border-radius: 12px; font-size: 16px; font-weight: 500; height: 68px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .action-btn:active { background: #3A3A3C; }
-        .scan-icon { width: 20px; height: 20px; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01"/><path d="M15 15h.01"/><path d="M9 15h.01"/><path d="M15 9h.01"/><path d="M5 5h4v4H5z"/><path d="M15 5h4v4h-4z"/><path d="M5 15h4v4H5z"/><path d="M15 15h4v4h-4z"/></svg>') no-repeat center; background-size: contain; margin-right: 6px; }
-        .backspace-icon { width: 24px; height: 24px; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2"><path d="M19 12H5m7-7-7 7 7 7"/></svg>') no-repeat center; background-size: contain; }
+        .scan-icon { width: 20px; height: 20px; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01"/><path d="M15 15h.01"/><path d="M9 15h.01"/><path d="M15 9h.01"/><path d="M5 5h4v4H5z"/><path d="M15 5h4v4h-4z"/><path d="M5 15h4v4H5z"/><path d="M15 15h4v4h-4z"/></svg>') no-repeat center; background-size: contain; margin-right: 6px; }
+        .backspace-icon { width: 24px; height: 24px; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m7-7-7 7 7 7"/></svg>') no-repeat center; background-size: contain; }
 
         .error-message { color: #FF3B30; font-size: 14px; text-align: center; margin-top: 16px; display: none; font-weight: 500; }
 
-        /* === ЭКРАН 2: ДАННЫЕ БИЛЕТА === */
+        /* ЭКРАН 2: ДАННЫЕ БИЛЕТА */
         .ticket-header { display: flex; align-items: center; margin-bottom: 24px; font-size: 18px; font-weight: 600; }
         .ticket-header svg { width: 24px; height: 24px; margin-right: 8px; fill: #FFFFFF; }
 
@@ -47,12 +46,8 @@
         .section-content { font-size: 16px; font-weight: 500; }
 
         .quantity-slider { display: flex; align-items: center; margin: 16px 0; }
-        .quantity-slider input[type="range"] {
-            -webkit-appearance: none; flex: 1; height: 4px; background: #333; border-radius: 2px; outline: none; margin: 0 12px;
-        }
-        .quantity-slider input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 20px; height: 20px; background: #FF3B30; border-radius: 50%; cursor: pointer;
-        }
+        .quantity-slider input[type="range"] { -webkit-appearance: none; flex: 1; height: 4px; background: #333; border-radius: 2px; outline: none; margin: 0 12px; }
+        .quantity-slider input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: #FF3B30; border-radius: 50%; cursor: pointer; }
         .quantity-value { font-size: 18px; font-weight: 600; color: #FF3B30; }
 
         .subscription-toggle { display: flex; align-items: center; justify-content: space-between; background: #1E1E1E; padding: 16px; border-radius: 12px; margin: 24px 0; }
@@ -64,55 +59,66 @@
         input:checked + .slider { background: #FF3B30; }
         input:checked + .slider:before { transform: translateX(20px); background: #FFFFFF; }
 
-        .pay-button {
-            background: #30D158; color: #000000; font-size: 18px; font-weight: 600;
-            padding: 18px; border-radius: 16px; text-align: center; margin-top: auto;
-            cursor: pointer; user-select: none;
-        }
+        .pay-button { background: #30D158; color: #000000; font-size: 18px; font-weight: 600; padding: 18px; border-radius: 16px; text-align: center; margin-top: auto; cursor: pointer; }
         .pay-button:active { background: #28A745; }
 
-        /* === ЭКРАН 3: ФИНАЛЬНЫЙ БИЛЕТ === */
+        /* ЭКРАН 3: ФИНАЛЬНЫЙ БИЛЕТ */
         .final-ticket { padding: 20px 0; }
         .timer { font-size: 24px; font-weight: 600; text-align: center; margin-bottom: 24px; }
         .ticket-number { display: flex; align-items: center; justify-content: space-between; font-size: 20px; font-weight: 600; color: #FF3B30; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #333; }
-        .control { display: flex; align-items: center; font-size: 16px; }
+        .control { display: flex; align-items: center; font-size: 16px; color: #FFFFFF; cursor: pointer; }
         .control svg { width: 20px; height: 20px; margin-right: 8px; fill: #FFFFFF; }
 
         .info-row { display: flex; align-items: flex-start; margin-bottom: 20px; }
-        .info-icon { width: 24px; height: 24px; margin-right: 12px; flex-shrink: 0; }
+        .info-icon { width: 24px; height: 24px; margin-right: 12px; flex-shrink: 0; font-size: 24px; line-height: 1; }
         .info-text { flex: 1; font-size: 16px; }
         .info-label { color: #AAAAAA; font-size: 14px; margin-bottom: 4px; }
 
-        .close-button {
-            background: #FF3B30; color: #FFFFFF; font-size: 18px; font-weight: 600;
-            padding: 18px; border-radius: 16px; text-align: center; margin-top: 32px;
-            cursor: pointer; user-select: none;
-        }
-        ./close-button:active { background: #D70015; }
+        .close-button { background: #FF3B30; color: #FFFFFF; font-size: 18px; font-weight: 600; padding: 18px; border-radius: 16px; text-align: center; margin-top: auto; cursor: pointer; }
+        .close-button:active { background: #D70015; }
     </style>
 </head>
 <body>
     <div class="app-container">
 
         <!-- ЭКРАН 1: ВВОД КОДА -->
-        <div id="codePage" class="page active">
+        <div id="codeInputPage" class="page active">
             <div class="code-input-field" id="codeDisplay">
-                <div class="code-box"></div><div class="code-box"></div><div class="code-box"></div>
-                <div class="code-box"></div><div class="code-box"></div><div class="code-box"></div>
+                <div class="code-box"></div>
+                <div class="code-box"></div>
+                <div class="code-box"></div>
+                <div class="code-box"></div>
+                <div class="code-box"></div>
+                <div class="code-box"></div>
             </div>
-            <div class="header"><div class="header-inner"><div class="header-icon"></div><div class="header-title">Введите код с наклейки</div></div></div>
+
+            <div class="header">
+                <div class="header-inner">
+                    <div class="header-icon"></div>
+                    <div class="header-title">Введите код с наклейки</div>
+                </div>
+            </div>
+
             <div class="keyboard-container">
                 <div class="keyboard">
-                    <button class="key" onclick="addNumber(1)">1</button><button class="key" onclick="addNumber(2)">2</button><button class="key" onclick="addNumber(3)">3</button>
-                    <button class="key" onclick="addNumber(4)">4</button><button class="key" onclick="addNumber(5)">5</button><button class="key" onclick="addNumber(6)">6</button>
-                    <button class="key" onclick="addNumber(7)">7</button><button class="key" onclick="addNumber(8)">8</button><button class="key" onclick="addNumber(9)">9</button>
+                    <button class="key" onclick="addNumber(1)">1</button>
+                    <button class="key" onclick="addNumber(2)">2</button>
+                    <button class="key" onclick="addNumber(3)">3</button>
+                    <button class="key" onclick="addNumber(4)">4</button>
+                    <button class="key" onclick="addNumber(5)">5</button>
+                    <button class="key" onclick="addNumber(6)">6</button>
+                    <button class="key" onclick="addNumber(7)">7</button>
+                    <button class="key" onclick="addNumber(8)">8</button>
+                    <button class="key" onclick="addNumber(9)">9</button>
                 </div>
+
                 <div class="bottom-row">
                     <button class="action-btn" onclick="scanCode()"><span class="scan-icon"></span>Сканировать</button>
                     <button class="key" onclick="addNumber(0)">0</button>
                     <button class="action-btn" onclick="backspace()"><span class="backspace-icon"></span></button>
                 </div>
             </div>
+
             <div class="error-message" id="errorMessage">Неверный код</div>
         </div>
 
@@ -122,36 +128,61 @@
                 <svg viewBox="0 0 24 24"><path d="M9 12h6m-6-4h6m-6 8h6m4-10V8a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
                 Данные билета
             </div>
+
             <div class="section">
-                <div class="section-title"><svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h18"/></svg>Количество билетов</div>
-                <div class="quantity-slider"><span class="quantity-value">1</span><input type="range" min="1" max="5" value="1" id="quantityRange"><span>5</span></div>
+                <div class="section-title">
+                    <svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+                    Количество билетов
+                </div>
+                <div class="quantity-slider">
+                    <span class="quantity-value">1</span>
+                    <input type="range" min="1" max="5" value="1" id="quantityRange">
+                    <span>5</span>
+                </div>
             </div>
+
             <div class="section">
-                <div class="section-title"><svg viewBox="0 0 24 24"><path d="M20 21l-4.35-4.35M18.5 10.5a8 8 0 1 1-16 0 8 8 0 0 1 16 0z"/></svg>Перевозчик</div>
+                <div class="section-title">
+                    <svg viewBox="0 0 24 24"><path d="M20 21l-4.35-4.35M18.5 10.5a8 8 0 1 1-16 0 8 8 0 0 1 16 0z"/></svg>
+                    Перевозчик
+                </div>
                 <div class="section-content">ИП Гапченкова Е. А.</div>
             </div>
+
             <div class="section">
-                <div class="section-title"><svg viewBox="0 0 24 24"><path d="M8 7h8m-8 4h8m-8 4h5"/></svg>7, ст. Красноярск-Северный - ДК Кировский</div>
+                <div class="section-title">
+                    <svg viewBox="0 0 24 24"><path d="M8 7h8m-8 4h8m-8 4h5"/></svg>
+                    7, ст. Красноярск-Северный - ДК Кировский
+                </div>
                 <div class="section-content">к378тв124</div>
             </div>
+
             <div class="section">
-                <div class="section-title"><svg viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>Тариф</div>
+                <div class="section-title">
+                    <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+                    Тариф
+                </div>
                 <div class="section-content">Полный - 48.00 ₽</div>
             </div>
+
             <div class="subscription-toggle">
                 <span class="toggle-label">Создать подписку?</span>
-                <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label>
+                <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
             </div>
-            <div class="pay-button" onclick="pay()">ОПЛАТИТЬ - 48.00 ₽</div>
+
+            <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ - 48.00 ₽</div>
         </div>
 
         <!-- ЭКРАН 3: ФИНАЛЬНЫЙ БИЛЕТ -->
         <div id="finalTicketPage" class="page">
             <div class="final-ticket">
-                <div class="timer" id="timer">Действует: 90 сек.</div>
+                <div class="timer" id="timer">Действует: 15 сек.</div>
                 <div class="ticket-number">
-                    <span id="ticketNum">1 299 814 483</span>
-                    <div class="control">
+                    <span>📄 1 299 814 483</span>
+                    <div class="control" onclick="switchToControl()">
                         <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
                         Контроль
                     </div>
@@ -168,7 +199,8 @@
                 <div class="info-row">
                     <div class="info-icon">🚌</div>
                     <div class="info-text">
-                        <div class="info-label">ст. Красноярск-Северный - ДК Кировский</div>
+                        <div class="info-label">Маршрут</div>
+                        7, ст. Красноярск-Северный - ДК Кировский
                         к378тв124
                     </div>
                 </div>
@@ -198,7 +230,7 @@
                 </div>
             </div>
 
-            <div class="close-button" onclick="tg.close()">ЗАКРЫТЬ</div>
+            <div class="close-button" onclick="closeTicket()">ЗАКРЫТЬ</div>
         </div>
     </div>
 
@@ -211,8 +243,25 @@
 
         let enteredCode = '';
         const maxCodeLength = 6;
-        let timerInterval;
-        let secondsLeft = 90;
+        let viewTimer;
+        let totalTimerInterval;
+        let viewSecondsLeft = 15;
+        const TOTAL_DURATION = 90 * 60 * 1000; // 90 минут
+
+        // === ПРОВЕРКА ПРИ ОТКРЫТИИ ===
+        if (localStorage.getItem('ticketCreationTime')) {
+            const creationTime = parseInt(localStorage.getItem('ticketCreationTime'));
+            const elapsed = Date.now() - creationTime;
+            if (elapsed < TOTAL_DURATION) {
+                showPage('finalTicketPage');
+                startViewTimer();
+            } else {
+                localStorage.removeItem('ticketCreationTime');
+                showPage('codeInputPage');
+            }
+        } else {
+            showPage('codeInputPage');
+        }
 
         // === ЭКРАН 1 ===
         function addNumber(num) {
@@ -255,52 +304,71 @@
             }, 1500);
         }
 
+        function hideError() {
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
         function scanCode() { alert("Сканирование QR (заглушка)"); }
 
-        // === ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ ===
+        // === ЭКРАН 2 ===
+        function payTicket() {
+            localStorage.setItem('ticketCreationTime', Date.now());
+            tg.sendData(JSON.stringify({ action: "ticket_created" }));
+            showPage('finalTicketPage');
+            startViewTimer();
+            startTotalTimer();
+        }
+
+        // === ЭКРАН 3 ===
+        function startViewTimer() {
+            viewSecondsLeft = 15;
+            updateViewTimer();
+            viewTimer = setInterval(() => {
+                viewSecondsLeft--;
+                updateViewTimer();
+                if (viewSecondsLeft <= 0) {
+                    clearInterval(viewTimer);
+                    tg.close();
+                }
+            }, 1000);
+        }
+
+        function updateViewTimer() {
+            document.getElementById('timer').textContent = `Действует: ${viewSecondsLeft} сек.`;
+        }
+
+        function startTotalTimer() {
+            const creationTime = parseInt(localStorage.getItem('ticketCreationTime'));
+            totalTimerInterval = setInterval(() => {
+                const elapsed = Date.now() - creationTime;
+                if (elapsed >= TOTAL_DURATION) {
+                    clearInterval(totalTimerInterval);
+                    localStorage.removeItem('ticketCreationTime');
+                }
+            }, 1000);
+        }
+
+        function closeTicket() {
+            clearInterval(viewTimer);
+            tg.close();
+        }
+
+        function switchToControl() {
+            alert("Вкладка 'Контроль' пока не работает");
+        }
+
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
         }
 
-        // === ЭКРАН 2: ОПЛАТА ===
-        function pay() {
-            // Генерация данных
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
             const now = new Date();
             document.getElementById('purchaseDate').textContent = now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }) + ' г.';
             document.getElementById('purchaseTime').textContent = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-
-            const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
-            document.getElementById('ticketNum').textContent = ticketNum;
-
-            showPage('finalTicketPage');
-            startTimer();
-        }
-
-        function random3() {
-            return Math.floor(Math.random() * 900) + 100;
-        }
-
-        // === ЭКРАН 3: ТАЙМЕР ===
-        function startTimer() {
-            secondsLeft = 90;
-            updateTimer();
-            timerInterval = setInterval(() => {
-                secondsLeft--;
-                updateTimer();
-                if (secondsLeft <= 0) {
-                    clearInterval(timerInterval);
-                    document.getElementById('timer').textContent = 'Билет истёк';
-                }
-            }, 1000);
-        }
-
-        function updateTimer() {
-            document.getElementById('timer').textContent = `Действует: ${secondsLeft} сек.`;
-        }
-
-        // Инициализация
-        document.addEventListener('DOMContentLoaded', updateCodeDisplay);
+            updateCodeDisplay();
+        });
     </script>
 </body>
 </html>
