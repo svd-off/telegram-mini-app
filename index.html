@@ -14,7 +14,7 @@
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #1C1C1E;
+            background: #000000;
             color: #FFFFFF;
             height: 100vh;
             overflow: hidden;
@@ -23,44 +23,22 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            padding: 20px;
-        }
-
-        /* Header */
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 32px;
-            position: relative;
-        }
-        .header-icon {
-            position: absolute;
-            left: 0;
-            width: 24px;
-            height: 24px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01"/><path d="M15 15h.01"/><path d="M9 15h.01"/><path d="M15 9h.01"/><path d="M5 5h4v4H5z"/><path d="M15 5h4v4h-4z"/><path d="M5 15h4v4H5z"/><path d="M15 15h4v4h-4z"/></svg>') no-repeat center;
-            background-size: contain;
-        }
-        .header-title {
-            font-size: 17px;
-            font-weight: 600;
-            color: #FFFFFF;
+            padding: 16px 16px 32px 16px;
         }
 
         /* Code Input Field */
         .code-input-field {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 40px;
+            gap: 8px;
+            margin-bottom: 16px;
         }
         .code-box {
-            width: 48px;
-            height: 60px;
-            border: 1.5px solid #3C3C43;
-            border-radius: 12px;
-            background: #2C2C2E;
+            width: 40px;
+            height: 52px;
+            border: 1px solid #3A3A3C;
+            border-radius: 8px;
+            background: #1E1E1E;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -74,21 +52,53 @@
             border-color: #FFFFFF;
         }
 
+        /* Header (теперь под полем ввода) */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+        .header-inner {
+            display: flex;
+            align-items: center;
+        }
+        .header-icon {
+            width: 20px;
+            height: 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01"/><path d="M15 15h.01"/><path d="M9 15h.01"/><path d="M15 9h.01"/><path d="M5 5h4v4H5z"/><path d="M15 5h4v4h-4z"/><path d="M5 15h4v4H5z"/><path d="M15 15h4v4h-4z"/></svg>') no-repeat center;
+            background-size: contain;
+            margin-right: 8px;
+        }
+        .header-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #FFFFFF;
+        }
+
+        /* Keyboard Container (обведён белым квадратом) */
+        .keyboard-container {
+            border: 1.5px solid #FFFFFF;
+            border-radius: 16px;
+            padding: 16px;
+            background: #000000;
+        }
+
         /* Keyboard */
         .keyboard {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 12px;
         }
         .key {
+            flex: 1;
             background: #FFFFFF;
             color: #000000;
             border: none;
-            border-radius: 16px;
+            border-radius: 12px;
             font-size: 28px;
             font-weight: 500;
-            width: 100%;
             height: 68px;
             display: flex;
             align-items: center;
@@ -105,38 +115,36 @@
         .bottom-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
         .action-btn {
             flex: 1;
-            background: #2C2C2E;
+            background: #1E1E1E;
             color: #FFFFFF;
             border: none;
-            border-radius: 16px;
-            font-size: 17px;
-            font-weight: 600;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
             height: 68px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.1s ease;
-            position: relative;
         }
         .action-btn:active {
-            background: #3C3C43;
+            background: #3A3A3C;
         }
         .scan-icon {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01"/><path d="M15 15h.01"/><path d="M9 15h.01"/><path d="M15 9h.01"/><path d="M5 5h4v4H5z"/><path d="M15 5h4v4h-4z"/><path d="M5 15h4v4H5z"/><path d="M15 15h4v4h-4z"/></svg>') no-repeat center;
             background-size: contain;
-            margin-right: 8px;
+            margin-right: 6px;
         }
         .backspace-icon {
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m7-7-7 7 7 7"/></svg>') no-repeat center;
             background-size: contain;
         }
@@ -144,11 +152,11 @@
         /* Error */
         .error-message {
             color: #FF3B30;
-            font-size: 15px;
+            font-size: 14px;
             text-align: center;
             margin-top: 16px;
             display: none;
-            font-weight: 600;
+            font-weight: 500;
         }
     </style>
 </head>
@@ -156,11 +164,6 @@
     <div class="app-container">
         <!-- Code Input Page -->
         <div id="codeInputPage">
-            <div class="header">
-                <div class="header-icon"></div>
-                <div class="header-title">Введите код с наклейки</div>
-            </div>
-
             <div class="code-input-field" id="codeDisplay">
                 <div class="code-box"></div>
                 <div class="code-box"></div>
@@ -170,26 +173,35 @@
                 <div class="code-box"></div>
             </div>
 
-            <div class="keyboard">
-                <button class="key" onclick="addNumber(1)">1</button>
-                <button class="key" onclick="addNumber(2)">2</button>
-                <button class="key" onclick="addNumber(3)">3</button>
-                <button class="key" onclick="addNumber(4)">4</button>
-                <button class="key" onclick="addNumber(5)">5</button>
-                <button class="key" onclick="addNumber(6)">6</button>
-                <button class="key" onclick="addNumber(7)">7</button>
-                <button class="key" onclick="addNumber(8)">8</button>
-                <button class="key" onclick="addNumber(9)">9</button>
+            <div class="header">
+                <div class="header-inner">
+                    <div class="header-icon"></div>
+                    <div class="header-title">Введите код с наклейки</div>
+                </div>
             </div>
 
-            <div class="bottom-row">
-                <button class="action-btn" onclick="scanCode()">
-                    <span class="scan-icon"></span> Сканировать
-                </button>
-                <button class="key" onclick="addNumber(0)">0</button>
-                <button class="action-btn" onclick="backspace()">
-                    <span class="backspace-icon"></span>
-                </button>
+            <div class="keyboard-container">
+                <div class="keyboard">
+                    <button class="key" onclick="addNumber(1)">1</button>
+                    <button class="key" onclick="addNumber(2)">2</button>
+                    <button class="key" onclick="addNumber(3)">3</button>
+                    <button class="key" onclick="addNumber(4)">4</button>
+                    <button class="key" onclick="addNumber(5)">5</button>
+                    <button class="key" onclick="addNumber(6)">6</button>
+                    <button class="key" onclick="addNumber(7)">7</button>
+                    <button class="key" onclick="addNumber(8)">8</button>
+                    <button class="key" onclick="addNumber(9)">9</button>
+                </div>
+
+                <div class="bottom-row">
+                    <button class="action-btn" onclick="scanCode()">
+                        <span class="scan-icon"></span>Сканировать
+                    </button>
+                    <button class="key" onclick="addNumber(0)">0</button>
+                    <button class="action-btn" onclick="backspace()">
+                        <span class="backspace-icon"></span>
+                    </button>
+                </div>
             </div>
 
             <div class="error-message" id="errorMessage">Неверный код</div>
@@ -202,8 +214,8 @@
 
         tg.expand();
         tg.MainButton.hide();
-        tg.setHeaderColor('#1C1C1E');
-        tg.setBackgroundColor('#1C1C1E');
+        tg.setHeaderColor('#000000');
+        tg.setBackgroundColor('#000000');
 
         let enteredCode = '';
         const maxCodeLength = 6;
@@ -239,7 +251,6 @@
 
         function checkCode() {
             if (enteredCode === CORRECT_CODE) {
-                // Переход к билету (можно добавить)
                 alert("Код верный! Билет активирован.");
             } else {
                 showError();
@@ -264,7 +275,6 @@
             alert("Функция сканирования QR-кода (пока заглушка)");
         }
 
-        // Инициализация
         document.addEventListener('DOMContentLoaded', () => {
             updateCodeDisplay();
         });
