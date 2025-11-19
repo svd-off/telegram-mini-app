@@ -12,6 +12,7 @@
         .page { display:none; flex-direction:column; height:100%; }
         .page.active { display:flex; }
 
+        /* ЭКРАН 1 — ВВОД КОДА */
         .code-input-field { display:flex; justify-content:center; gap:8px; margin-bottom:16px; }
         .code-box { width:40px; height:52px; border:1px solid #3A3A3C; border-radius:8px; background:#1E1E1E; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:500; color:#FFFFFF; }
         .code-box.filled { background:#FFFFFF; color:#000000; border-color:#FFFFFF; }
@@ -30,28 +31,29 @@
         .backspace-icon { width:24px; height:24px; background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2"><path d="M19 12H5m7-7-7 7 7 7"/></svg>') no-repeat center; background-size:contain; }
         .error-message { color:#FF3B30; font-size:14px; text-align:center; margin-top:16px; display:none; font-weight:500; }
 
-        /* ТРЕТИЙ ЭКРАН — КАК НА СКРИНЕ */
+        /* ФИНАЛЬНЫЙ БИЛЕТ — ПИКСЕЛЬ В ПИКСЕЛЬ КАК НА СКРИНЕ */
         .final-ticket-container { flex:1; display:flex; flex-direction:column; padding-top:20px; }
-        .final-timer { font-size:28px; font-weight:600; text-align:center; margin-bottom:24px; color:#FFFFFF; }
-        .final-header-row { display:flex; justify-content:space-between; align-items:center; padding-bottom:16px; border-bottom:1px solid #333333; margin-bottom:32px; }
-        .final-ticket-number { display:flex; align-items:center; gap:12px; font-size:24px; font-weight:600; color:#FF3B30; position:relative; }
-        .final-ticket-number svg { width:36px; height:36px; fill:#FF3B30; }
-        .final-ticket-number::after { content:''; position:absolute; left:48px; right:0; bottom:-8px; height:3px; background:#FF3B30; border-radius:2px; }
-        .final-control { display:flex; align-items:center; gap:8px; font-size:17px; color:#FFFFFF; opacity:0.8; }
-        .final-control svg { width:24px; height:24px; fill:#FFFFFF; opacity:0.8; }
+        .final-timer { font-size:28px; font-weight:700; text-align:center; margin-bottom:28px; color:#FFFFFF; letter-spacing:-0.3px; }
+        .final-header-row { display:flex; justify-content:space-between; align-items:center; padding-bottom:16px; border-bottom:1px solid #333333; margin-bottom:36px; }
+        .final-ticket-number { display:flex; align-items:center; gap:12px; font-size:26px; font-weight:700; color:#FF3B30; position:relative; }
+        .final-ticket-number svg { width:38px; height:38px; fill:#FF3B30; }
+        .final-ticket-number::after { content:''; position:absolute; left:50px; right:0; bottom:-10px; height:3px; background:#FF3B30; border-radius:2px; }
+        .final-control { display:flex; align-items:center; gap:8px; font-size:17px; font-weight:500; color:#FFFFFF; opacity:0.85; }
+        .final-control svg { width:26px; height:26px; fill:#FFFFFF; opacity:0.85; }
 
-        .final-info-block { margin-bottom:32px; padding-bottom:24px; border-bottom:1px solid #333333; }
-        .final-info-row { display:flex; align-items:flex-start; gap:18px; margin-bottom:20px; }
+        .final-info-block { margin-bottom:40px; }
+        .final-info-row { display:flex; align-items:flex-start; gap:20px; margin-bottom:24px; }
         .final-info-row:last-child { margin-bottom:0; }
-        .final-icon { width:32px; height:32px; opacity:0.7; flex-shrink:0; }
-        .final-label { font-size:15px; color:#AAAAAA; margin-bottom:6px; }
-        .final-value { font-size:19px; font-weight:500; color:#FFFFFF; line-height:1.4; }
-        .final-value small { font-size:16px; color:#AAAAAA; }
-        .final-close-btn { background:#FF3B30; color:#FFFFFF; font-size:20px; font-weight:600; padding:20px; border-radius:16px; text-align:center; margin-top:auto; cursor:pointer; box-shadow:0 4px 12px rgba(255,59,48,0.4); }
-        .final-close-btn:active { background:#D70015; transform:translateY(1px); }
+        .final-icon { width:34px; height:34px; opacity:0.75; flex-shrink:0; }
+        .final-label { font-size:15px; color:#AAAAAA; margin-bottom:6px; font-weight:500; }
+        .final-value { font-size:19px; font-weight:600; color:#FFFFFF; line-height:1.45; }
+        .final-value small { font-size:17px; color:#AAAAAA; font-weight:500; }
 
-        .close-button { background:#FF3B30; color:#FFFFFF; font-size:18px; font-weight:600; padding:20px; border-radius:16px; text-align:center; margin-top:16px; cursor:pointer; }
-        .close-button:active { background:#D70015; }
+        .final-close-btn { background:#FF3B30; color:#FFFFFF; font-size:20px; font-weight:700; padding:22px; border-radius:16px; text-align:center; margin-top:auto; cursor:pointer; box-shadow:0 6px 16px rgba(255,59,48,0.35); }
+        .final-close-btn:active { background:#E01E1E; transform:translateY(2px); }
+
+        .close-button { background:#FF3B30; color:#FFFFFF; font-size:18px; font-weight:700; padding:22px; border-radius:16px; text-align:center; margin-top:16px; cursor:pointer; }
+        .close-button:active { background:#E01E1E; }
 
         .ticket-header { display:flex; align-items:center; margin-bottom:24px; font-size:18px; font-weight:600; }
         .ticket-header svg { width:24px; height:24px; margin-right:8px; fill:#FFFFFF; }
@@ -59,17 +61,18 @@
         .quantity-slider { display:flex; align-items:center; margin:16px 0; }
         .quantity-slider input[type="range"] { -webkit-appearance:none; flex:1; height:4px; background:#333; border-radius:2px; outline:none; margin:0 12px; }
         .quantity-slider input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px; height:20px; background:#FF3B30; border-radius:50%; cursor:pointer; }
-        .quantity-value { font-size:18px; font-weight:600; color:#FF3B30; }
-        .pay-button { background:#30D158; color:#000000; font-size:18px; font-weight:600; padding:18px; border-radius:16px; text-align:center; margin-top:auto; cursor:pointer; }
+        .quantity-value { font-size:18px; font-weight:700; color:#FF3B30; }
+        .pay-button { background:#30D158; color:#000000; font-size:18px; font-weight:700; padding:20px; border-radius:16px; text-align:center; margin-top:auto; cursor:pointer; }
         .pay-button:active { background:#28A745; }
-        .active-tickets-list { flex:1; overflow-y:auto; }
-        .active-ticket-item { background:#1E1E1E; border-radius:12px; padding:16px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
+        .active-tickets-list { flex:1; overflow-y:auto; margin-bottom:12px; }
+        .active-ticket-item { background:#1E1E1E; border-radius:12px; padding:18px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
         .active-ticket-item:active { background:#2A2A2C; }
         .delete-btn { width:32px; height:32px; background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FF3B30" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>') center/20px no-repeat; cursor:pointer; }
     </style>
 </head>
 <body>
     <div class="app-container">
+        <!-- ЭКРАН 1 -->
         <div id="codeInputPage" class="page active">
             <div class="code-input-field" id="codeDisplay">
                 <div class="code-box"></div>
@@ -106,22 +109,24 @@
             <div class="error-message" id="errorMessage">Неверный код</div>
         </div>
 
+        <!-- ЭКРАН 2 — ОПЛАТА -->
         <div id="paymentPage" class="page">
             <div class="ticket-header">
                 <svg viewBox="0 0 24 24"><path d="M9 12h6m-6-4h6m-6 8h6m4-10V8a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
                 Данные билета
             </div>
-            <input type="text" class="input-field" id="carrierInput" placeholder="Перевозчик" value="ИП Галченкова Е. А.">
-            <input type="text" class="input-field" id="routeInput" placeholder="Маршрут" value="7, ст. Красноярск-Северный - ДК Кировский">
-            <input type="text" class="input-field" id="busNumberInput" placeholder="Номер автобуса" value="к378тв124">
+            <input type="text" class="input-field" id="carrierInput" value="ИП Галченкова Е. А.">
+            <input type="text" class="input-field" id="routeInput" value="7, ст. Красноярск-Северный - ДК Кировский">
+            <input type="text" class="input-field" id="busNumberInput" value="к378тв124">
             <div class="quantity-slider">
                 <span class="quantity-value" id="quantityValue">1</span>
                 <input type="range" min="1" max="10" value="1" id="quantityRange" oninput="updatePrice()">
-                <span>10</span>
+                <span style="color:#666;">10</span>
             </div>
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
+        <!-- ЭКРАН 3 — ФИНАЛЬНЫЙ БИЛЕТ — ИДЕАЛЬНЫЙ КЛОН -->
         <div id="finalTicketPage" class="page">
             <div class="final-ticket-container">
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
@@ -144,11 +149,9 @@
                 </div>
 
                 <div class="final-info-block">
-                    <!-- ТОЧНЫЕ ИКОНКИ С ТВОЕГО СКРИНА -->
                     <div class="final-info-row">
                         <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
                         </svg>
                         <div>
                             <div class="final-label">Перевозчик</div>
@@ -158,10 +161,7 @@
 
                     <div class="final-info-row">
                         <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="4" width="18" height="13" rx="2"></rect>
-                            <path d="M8 17h8"></path>
-                            <circle cx="7" cy="17" r="2"></circle>
-                            <circle cx="17" cy="17" r="2"></circle>
+                            <rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 17h8"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>
                         </svg>
                         <div>
                             <div class="final-label">Маршрут</div>
@@ -171,8 +171,7 @@
 
                     <div class="final-info-row">
                         <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 1v22"></path>
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            <path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                         </svg>
                         <div>
                             <div class="final-label">Стоимость</div>
@@ -182,10 +181,7 @@
 
                     <div class="final-info-row">
                         <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
                         </svg>
                         <div>
                             <div class="final-label">Дата покупки</div>
@@ -195,8 +191,7 @@
 
                     <div class="final-info-row">
                         <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12 6 12 12 16 14"></polyline>
+                            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
                         </svg>
                         <div>
                             <div class="final-label">Время покупки</div>
@@ -209,6 +204,7 @@
             </div>
         </div>
 
+        <!-- СПИСОК БИЛЕТОВ -->
         <div id="activeTicketsPage" class="page">
             <div style="flex:1; display:flex; flex-direction:column;">
                 <div class="ticket-header" style="margin-bottom:16px;">
@@ -229,6 +225,7 @@
         tg.MainButton.hide();
         tg.setHeaderColor('#000000');
         tg.setBackgroundColor('#000000');
+
         let enteredCode = '';
         let viewTimer;
         let viewSecondsLeft = 15;
@@ -237,12 +234,14 @@
         const now = Date.now();
         tickets = tickets.filter(t => now - t.created_at < TOTAL_DURATION);
         localStorage.setItem('user_tickets', JSON.stringify(tickets));
+
         if (tickets.length > 0) {
             showPage('activeTicketsPage');
             renderActiveTickets();
         } else {
             showPage('codeInputPage');
         }
+
         function addNumber(n) {
             if (enteredCode.length < 6) {
                 enteredCode += n;
@@ -252,33 +251,39 @@
                 }
             }
         }
+
         function backspace() {
             enteredCode = enteredCode.slice(0, -1);
             updateCodeDisplay();
         }
+
         function updateCodeDisplay() {
             document.querySelectorAll('.code-box').forEach((box, i) => {
                 box.textContent = enteredCode[i] || '';
                 box.classList.toggle('filled', i < enteredCode.length);
             });
         }
+
         function scanCode() {
             tg.showScanQrPopup({ text: 'Наведите камеру на QR-код' }, function() {
                 showPage('paymentPage');
                 return true;
             });
         }
+
         function updatePrice() {
             const qty = document.getElementById('quantityRange').value;
             document.getElementById('quantityValue').textContent = qty;
             document.getElementById('totalPrice').textContent = (qty * 48) + '.00 ₽';
         }
+
         function payTicket() {
             const qty = document.getElementById('quantityRange').value;
             const carrier = document.getElementById('carrierInput').value.trim() || "ИП Галченкова Е. А.";
             const route = document.getElementById('routeInput').value.trim() || "7, ст. Красноярск-Северный - ДК Кировский";
             const busNumber = document.getElementById('busNumberInput').value.trim() || "к378тв124";
             const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
+
             tickets.push({
                 number: ticketNum,
                 carrier: carrier,
@@ -287,21 +292,27 @@
                 quantity: qty,
                 created_at: Date.now()
             });
+
             localStorage.setItem('user_tickets', JSON.stringify(tickets));
             tg.sendData(JSON.stringify({ action: "ticket_created", ticket_num: ticketNum }));
+
             document.getElementById('currentTicketNumber').textContent = ticketNum;
             document.getElementById('finalCarrier').textContent = carrier;
             document.getElementById('finalBusNumber').textContent = busNumber;
             document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + (qty * 48) + '.00 ₽';
+
             const d = new Date();
             document.getElementById('purchaseDate').textContent = d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }) + ' г.';
             document.getElementById('purchaseTime').textContent = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
             showPage('finalTicketPage');
             startViewTimer();
         }
+
         function random3() {
             return Math.floor(Math.random() * 900) + 100;
         }
+
         function startViewTimer() {
             viewSecondsLeft = 15;
             document.getElementById('timer').textContent = 'Действует: ' + viewSecondsLeft + ' сек.';
@@ -316,19 +327,23 @@
                 }
             }, 1000);
         }
+
         function closeTicket() {
             clearInterval(viewTimer);
             showPage('activeTicketsPage');
             renderActiveTickets();
         }
+
         function switchToControl() {
             alert('Контроль пока недоступен');
         }
+
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             if (id === 'activeTicketsPage') renderActiveTickets();
         }
+
         function renderActiveTickets() {
             const list = document.getElementById('activeTicketsList');
             list.innerHTML = '';
@@ -358,6 +373,7 @@
                 list.appendChild(el);
             });
         }
+
         function deleteTicket(i) {
             tg.showPopup({
                 title: "Удалить билет?",
@@ -374,6 +390,7 @@
                 }
             });
         }
+
         document.addEventListener('DOMContentLoaded', () => {
             updateCodeDisplay();
             updatePrice();
