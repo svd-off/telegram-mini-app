@@ -12,7 +12,7 @@
         .page { display:none; flex-direction:column; height:100%; }
         .page.active { display:flex; }
 
-        /* ЭКРАН 1 */
+        /* ЭКРАН 1 — ВВОД КОДА */
         .code-input-field { display:flex; justify-content:center; gap:8px; margin-bottom:16px; }
         .code-box { width:40px; height:52px; border:1px solid #3A3A3C; border-radius:8px; background:#1E1E1E; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:500; color:#FFFFFF; }
         .code-box.filled { background:#FFFFFF; color:#000000; border-color:#FFFFFF; }
@@ -31,7 +31,7 @@
         .backspace-icon { width:24px; height:24px; background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2"><path d="M19 12H5m7-7-7 7 7 7"/></svg>') no-repeat center; background-size:contain; }
         .error-message { color:#FF3B30; font-size:14px; text-align:center; margin-top:16px; display:none; font-weight:500; }
 
-        /* ФИНАЛЬНЫЙ БИЛЕТ — 100% КАК НА ТВОЁМ СКРИНЕ */
+        /* ФИНАЛЬНЫЙ БИЛЕТ — 100% КАК НА СКРИНЕ */
         .final-ticket-container { flex:1; display:flex; flex-direction:column; padding-top:20px; }
         .final-timer { font-size:26px; font-weight:600; text-align:center; margin-bottom:28px; color:#FFFFFF; }
         .final-header-row { display:flex; justify-content:space-between; align-items:center; padding-bottom:14px; border-bottom:1px solid #2C2C2E; margin-bottom:32px; }
@@ -72,17 +72,27 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- ЭКРАН 1 -->
         <div id="codeInputPage" class="page active">
             <div class="code-input-field" id="codeDisplay">
                 <div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div>
             </div>
-            <div class="header"><div class="header-inner"><div class="header-icon"></div><div class="header-title">Введите код с наклейки</div></div></div>
+            <div class="header">
+                <div class="header-inner">
+                    <div class="header-icon"></div>
+                    <div class="header-title">Введите код с наклейки</div>
+                </div>
+            </div>
             <div class="keyboard-container">
                 <div class="keyboard">
-                    <button class="key" onclick="addNumber(1)">1</button><button class="key" onclick="addNumber(2)">2</button><button class="key" onclick="addNumber(3)">3</button>
-                    <button class="key" onclick="addNumber(4)">4</button><button class="key" onclick="addNumber(5)">5</button><button class="key" onclick="addNumber(6)">6</button>
-                    <button class="key" onclick="addNumber(7)">7</button><button class="key" onclick="addNumber(8)">8</button><button class="key" onclick="addNumber(9)">9</button>
+                    <button class="key" onclick="addNumber(1)">1</button>
+                    <button class="key" onclick="addNumber(2)">2</button>
+                    <button class="key" onclick="addNumber(3)">3</button>
+                    <button class="key" onclick="addNumber(4)">4</button>
+                    <button class="key" onclick="addNumber(5)">5</button>
+                    <button class="key" onclick="addNumber(6)">6</button>
+                    <button class="key" onclick="addNumber(7)">7</button>
+                    <button class="key" onclick="addNumber(8)">8</button>
+                    <button class="key" onclick="addNumber(9)">9</button>
                 </div>
                 <div class="bottom-row">
                     <button class="action-btn" onclick="scanCode()"><span class="scan-icon"></span>Сканировать</button>
@@ -93,64 +103,101 @@
             <div class="error-message" id="errorMessage">Неверный код</div>
         </div>
 
-        <!-- ЭКРАН 2 -->
         <div id="paymentPage" class="page">
-            <div class="ticket-header"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6-4h6m-6 8h6m4-10V8a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg> Данные билета</div>
+            <div class="ticket-header">
+                <svg viewBox="0 0 24 24"><path d="M9 12h6m-6-4h6m-6 8h6m4-10V8a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
+                Данные билета
+            </div>
             <input type="text" class="input-field" id="carrierInput" value="ИП Галченкова Е. А.">
             <input type="text" class="input-field" id="routeInput" value="7, ст. Красноярск-Северный - ДК Кировский">
             <input type="text" class="input-field" id="busNumberInput" value="к378тв124">
-            <div class="quantity-slider"><span class="quantity-value" id="quantityValue">1</span><input type="range" min="1" max="10" value="1" id="quantityRange" oninput="updatePrice()"><span style="color:#666;">10</span></div>
+            <div class="quantity-slider">
+                <span class="quantity-value" id="quantityValue">1</span>
+                <input type="range" min="1" max="10" value="1" id="quantityRange" oninput="updatePrice()">
+                <span style="color:#666;">10</span>
+            </div>
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ЭКРАН 3 — ФИНАЛЬНЫЙ БИЛЕТ -->
         <div id="finalTicketPage" class="page">
             <div class="final-ticket-container">
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
+
                 <div class="final-header-row">
                     <div class="final-ticket-number">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#FF3B30" stroke-width="2.5">
-                            <rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h8"/>
+                            <rect x="3" y="3" width="18" height="18" rx="3"/>
+                            <path d="M8 8h8M8 12h8M8 16h8"/>
                         </svg>
                         <span id="currentTicketNumber">1 299 814 483</span>
                     </div>
                     <div class="final-control" onclick="switchToControl()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/><path d="M12 8v8m-4-4h8"/>
-                        </svg> Контроль
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 8v8m-4-4h8"/>
+                        </svg>
+                        Контроль
                     </div>
                 </div>
 
                 <div class="final-info-block">
                     <div class="final-info-row">
                         <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
                         </svg>
-                        <div><div class="final-label">Перевозчик</div><div class="final-value" id="finalCarrier">ИП Галченкова Е. А.</div></div>
+                        <div>
+                            <div class="final-label">Перевозчик</div>
+                            <div class="final-value" id="finalCarrier">ИП Галченкова Е. А.</div>
+                        </div>
                     </div>
+
                     <div class="final-info-row">
                         <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 17h8"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>
+                            <rect x="3" y="4" width="18" height="13" rx="2"/>
+                            <path d="M8 17h8"/>
+                            <circle cx="7" cy="17" r="2"/>
+                            <circle cx="17" cy="17" r="2"/>
                         </svg>
-                        <div><div class="final-label">Маршрут</div><div class="final-value">ст. Красноярск-Северный - ДК Кировский<br><small id="finalBusNumber">к378тв124</small></div></div>
+                        <div>
+                            <div class="final-label">Маршрут</div>
+                            <div class="final-value">ст. Красноярск-Северный - ДК Кировский<br><small id="finalBusNumber">к378тв124</small></div>
+                        </div>
                     </div>
+
                     <div class="final-info-row">
                         <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            <path d="M12 1v22"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                         </svg>
-                        <div><div class="final-label">Стоимость</div><div class="final-value" id="finalCost">1 шт., Полный, 48.00 ₽</div></div>
+                        <div>
+                            <div class="final-label">Стоимость</div>
+                            <div class="final-value" id="finalCost">1 шт., Полный, 48.00 ₽</div>
+                        </div>
                     </div>
+
                     <div class="final-info-row">
                         <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/>
+                            <line x1="8" y1="2" x2="8" y2="6"/>
+                            <line x1="3" y1="10" x2="21" y2="10"/>
                         </svg>
-                        <div><div class="final-label">Дата покупки</div><div class="final-value"><span id="purchaseDate">15 ноября 2025 г.</span></div></div>
+                        <div>
+                            <div class="final-label">Дата покупки</div>
+                            <div class="final-value"><span id="purchaseDate">15 ноября 2025 г.</span></div>
+                        </div>
                     </div>
+
                     <div class="final-info-row">
                         <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
                         </svg>
-                        <div><div class="final-label">Время покупки</div><div class="final-value"><span id="purchaseTime">12:08</span></div></div>
+                        <div>
+                            <div class="final-label">Время покупки</div>
+                            <div class="final-value"><span id="purchaseTime">12:08</span></div>
+                        </div>
                     </div>
                 </div>
 
@@ -158,13 +205,13 @@
             </div>
         </div>
 
-        <!-- СПИСОК БИЛЕТОВ -->
         <div id="activeTicketsPage" class="page">
-            <div style="flex:1;display:flex;flex-direction:column;">
+            <div style="flex:1; display:flex; flex-direction:column;">
                 <div class="ticket-header" style="margin-bottom:16px;">
                     <svg viewBox="0 0 24 24" style="width:24px;height:24px;margin-right:8px;fill:#FFFFFF;">
                         <path d="M9 12h6m-6-4h6m-6 8h6m4-10V8a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/>
-                    </svg> Действующие билеты
+                    </svg>
+                    Действующие билеты
                 </div>
                 <div class="active-tickets-list" id="activeTicketsList"></div>
                 <div class="close-button" onclick="showPage('codeInputPage')">Назад</div>
@@ -174,40 +221,98 @@
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); tg.MainButton.hide(); tg.setHeaderColor('#000000'); tg.setBackgroundColor('#000000');
+        tg.expand();
+        tg.MainButton.hide();
+        tg.setHeaderColor('#000000');
+        tg.setBackgroundColor('#000000');
 
-        let enteredCode = '', viewTimer, viewSecondsLeft = 15;
+        let enteredCode = '';
+        let viewTimer;
+        let viewSecondsLeft = 15;
         const TOTAL_DURATION = 90 * 60 * 1000;
         let tickets = JSON.parse(localStorage.getItem('user_tickets') || '[]');
         const now = Date.now();
         tickets = tickets.filter(t => now - t.created_at < TOTAL_DURATION);
         localStorage.setItem('user_tickets', JSON.stringify(tickets));
-        tickets.length > 0 ? (showPage('activeTicketsPage'), renderActiveTickets()) : showPage('codeInputPage');
 
-        function addNumber(n) { if (enteredCode.length < 6) { enteredCode += n; updateCodeDisplay(); if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); } }
-        function backspace() { enteredCode = enteredCode.slice(0, -1); updateCodeDisplay(); }
-        function updateCodeDisplay() { document.querySelectorAll('.code-box').forEach((box, i) => { box.textContent = enteredCode[i] || ''; box.classList.toggle('filled', i < enteredCode.length); }); }
-        function scanCode() { tg.showScanQrPopup({ text: 'Наведите камеру на QR-код' }, () => { showPage('paymentPage'); return true; }); }
-        function updatePrice() { const qty = document.getElementById('quantityRange').value; document.getElementById('quantityValue').textContent = qty; document.getElementById('totalPrice').textContent = (qty * 48) + '.00 ₽'; }
+        if (tickets.length > 0) {
+            showPage('activeTicketsPage');
+            renderActiveTickets();
+        } else {
+            showPage('codeInputPage');
+        }
+
+        function addNumber(n) {
+            if (enteredCode.length < 6) {
+                enteredCode += n;
+                updateCodeDisplay();
+                if (enteredCode.length === 6) {
+                    setTimeout(() => showPage('paymentPage'), 300);
+                }
+            }
+        }
+
+        function backspace() {
+            enteredCode = enteredCode.slice(0, -1);
+            updateCodeDisplay();
+        }
+
+        function updateCodeDisplay() {
+            document.querySelectorAll('.code-box').forEach((box, i) => {
+                box.textContent = enteredCode[i] || '';
+                box.classList.toggle('filled', i < enteredCode.length);
+            });
+        }
+
+        function scanCode() {
+            tg.showScanQrPopup({ text: 'Наведите камеру на QR-код' }, function() {
+                showPage('paymentPage');
+                return true;
+            });
+        }
+
+        function updatePrice() {
+            const qty = document.getElementById('quantityRange').value;
+            document.getElementById('quantityValue').textContent = qty;
+            document.getElementById('totalPrice').textContent = (qty * 48) + '.00 ₽';
+        }
+
         function payTicket() {
             const qty = document.getElementById('quantityRange').value;
             const carrier = document.getElementById('carrierInput').value.trim() || "ИП Галченкова Е. А.";
             const route = document.getElementById('routeInput').value.trim() || "7, ст. Красноярск-Северный - ДК Кировский";
             const busNumber = document.getElementById('busNumberInput').value.trim() || "к378тв124";
             const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
-            tickets.push({ number: ticketNum, carrier, route, busNumber, quantity: qty, created_at: Date.now() });
+
+            tickets.push({
+                number: ticketNum,
+                carrier: carrier,
+                route: route,
+                busNumber: busNumber,
+                quantity: qty,
+                created_at: Date.now()
+            });
+
             localStorage.setItem('user_tickets', JSON.stringify(tickets));
             tg.sendData(JSON.stringify({ action: "ticket_created", ticket_num: ticketNum }));
+
             document.getElementById('currentTicketNumber').textContent = ticketNum;
             document.getElementById('finalCarrier').textContent = carrier;
             document.getElementById('finalBusNumber').textContent = busNumber;
             document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + (qty * 48) + '.00 ₽';
+
             const d = new Date();
             document.getElementById('purchaseDate').textContent = d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }) + ' г.';
             document.getElementById('purchaseTime').textContent = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-            showPage('finalTicketPage'); startViewTimer();
+
+            showPage('finalTicketPage');
+            startViewTimer();
         }
-        function random3() { return Math.floor(Math.random() * 900) + 100; }
+
+        function random3() {
+            return Math.floor(Math.random() * 900) + 100;
+        }
+
         function startViewTimer() {
             viewSecondsLeft = 15;
             document.getElementById('timer').textContent = 'Действует: ' + viewSecondsLeft + ' сек.';
@@ -215,29 +320,81 @@
             viewTimer = setInterval(() => {
                 viewSecondsLeft--;
                 document.getElementById('timer').textContent = 'Действует: ' + viewSecondsLeft + ' сек.';
-                if (viewSecondsLeft <= 0) { clearInterval(viewTimer); showPage('activeTicketsPage'); renderActiveTickets(); }
+                if (viewSecondsLeft <= 0) {
+                    clearInterval(viewTimer);
+                    showPage('activeTicketsPage');
+                    renderActiveTickets();
+                }
             }, 1000);
         }
-        function closeTicket() { clearInterval(viewTimer); showPage('activeTicketsPage'); renderActiveTickets(); }
-        function switchToControl() { alert('Контроль пока недоступен'); }
-        function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); if (id === 'activeTicketsPage') renderActiveTickets(); }
+
+        function closeTicket() {
+            clearInterval(viewTimer);
+            showPage('activeTicketsPage');
+            renderActiveTickets();
+        }
+
+        function switchToControl() {
+            alert('Контроль пока недоступен');
+        }
+
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if (id === 'activeTicketsPage') renderActiveTickets();
+        }
+
         function renderActiveTickets() {
-            const list = document.getElementById('activeTicketsList'); list.innerHTML = '';
-            if (tickets.length === 0) { list.innerHTML = '<div style="text-align:center;color:#AAA;margin-top:20px;">Нет билетов</div>'; return; }
+            const list = document.getElementById('activeTicketsList');
+            list.innerHTML = '';
+            if (tickets.length === 0) {
+                list.innerHTML = '<div style="text-align:center;color:#AAA;margin-top:20px;">Нет билетов</div>';
+                return;
+            }
             tickets.forEach((t, i) => {
                 const minsLeft = Math.floor((TOTAL_DURATION - (Date.now() - t.created_at)) / 60000);
-                const el = document.createElement('div'); el.className = 'active-ticket-item';
-                el.onclick = () => { document.getElementById('currentTicketNumber').textContent = t.number; document.getElementById('finalCarrier').textContent = t.carrier; document.getElementById('finalBusNumber').textContent = t.busNumber; document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + (t.quantity * 48) + '.00 ₽'; showPage('finalTicketPage'); startViewTimer(); };
-                el.innerHTML = `<div><div style="font-weight:600;">Билет № ${t.number}</div><div style="font-size:14px;color:#AAA">Осталось: ${minsLeft} мин</div></div><div class="delete-btn" onclick="event.stopPropagation(); deleteTicket(${i})"></div>`;
+                const el = document.createElement('div');
+                el.className = 'active-ticket-item';
+                el.onclick = () => {
+                    document.getElementById('currentTicketNumber').textContent = t.number;
+                    document.getElementById('finalCarrier').textContent = t.carrier;
+                    document.getElementById('finalBusNumber').textContent = t.busNumber;
+                    document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + (t.quantity * 48) + '.00 ₽';
+                    showPage('finalTicketPage');
+                    startViewTimer();
+                };
+                el.innerHTML = `
+                    <div>
+                        <div style="font-weight:600;">Билет № ${t.number}</div>
+                        <div style="font-size:14px;color:#AAA">Осталось: ${minsLeft} мин</div>
+                    </div>
+                    <div class="delete-btn" onclick="event.stopPropagation(); deleteTicket(${i})"></div>
+                `;
                 list.appendChild(el);
             });
         }
+
         function deleteTicket(i) {
-            tg.showPopup({ title: "Удалить билет?", message: "Без возврата", buttons: [{ type: 'destructive', text: 'Удалить', id: 'del' }, { type: 'cancel' }] }, btn => {
-                if (btn === 'del') { tickets.splice(i, 1); localStorage.setItem('user_tickets', JSON.stringify(tickets)); renderActiveTickets(); }
+            tg.showPopup({
+                title: "Удалить билет?",
+                message: "Без возврата",
+                buttons: [
+                    { type: 'destructive', text: 'Удалить', id: 'del' },
+                    { type: 'cancel' }
+                ]
+            }, btn => {
+                if (btn === 'del') {
+                    tickets.splice(i, 1);
+                    localStorage.setItem('user_tickets', JSON.stringify(tickets));
+                    renderActiveTickets();
+                }
             });
         }
-        document.addEventListener('DOMContentLoaded', () => { updateCodeDisplay(); updatePrice(); });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCodeDisplay();
+            updatePrice();
+        });
     </script>
 </body>
 </html>
