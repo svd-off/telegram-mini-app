@@ -12,7 +12,6 @@
         .page { display:none; flex-direction:column; height:100%; }
         .page.active { display:flex; }
 
-        /* ===================== ЭКРАН 1 — ВВОД КОДА ===================== */
         .code-input-field { display:flex; justify-content:center; gap:8px; margin-bottom:16px; }
         .code-box { width:40px; height:52px; border:1px solid #3A3A3C; border-radius:8px; background:#1E1E1E; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:500; color:#FFFFFF; }
         .code-box.filled { background:#FFFFFF; color:#000000; border-color:#FFFFFF; }
@@ -31,7 +30,7 @@
         .backspace-icon { width:24px; height:24px; background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2"><path d="M19 12H5m7-7-7 7 7 7"/></svg>') no-repeat center; background-size:contain; }
         .error-message { color:#FF3B30; font-size:14px; text-align:center; margin-top:16px; display:none; font-weight:500; }
 
-        /* ===================== ЭКРАН 3 — ФИНАЛЬНЫЙ БИЛЕТ — ИКОНКИ 100% КАК НА СКРИНЕ ===================== */
+        /* ТРЕТИЙ ЭКРАН — КАК НА СКРИНЕ */
         .final-ticket-container { flex:1; display:flex; flex-direction:column; padding-top:20px; }
         .final-timer { font-size:28px; font-weight:600; text-align:center; margin-bottom:24px; color:#FFFFFF; }
         .final-header-row { display:flex; justify-content:space-between; align-items:center; padding-bottom:16px; border-bottom:1px solid #333333; margin-bottom:32px; }
@@ -48,7 +47,6 @@
         .final-label { font-size:15px; color:#AAAAAA; margin-bottom:6px; }
         .final-value { font-size:19px; font-weight:500; color:#FFFFFF; line-height:1.4; }
         .final-value small { font-size:16px; color:#AAAAAA; }
-
         .final-close-btn { background:#FF3B30; color:#FFFFFF; font-size:20px; font-weight:600; padding:20px; border-radius:16px; text-align:center; margin-top:auto; cursor:pointer; box-shadow:0 4px 12px rgba(255,59,48,0.4); }
         .final-close-btn:active { background:#D70015; transform:translateY(1px); }
 
@@ -72,7 +70,6 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- ЭКРАН 1 — ВВОД КОДА -->
         <div id="codeInputPage" class="page active">
             <div class="code-input-field" id="codeDisplay">
                 <div class="code-box"></div>
@@ -109,7 +106,6 @@
             <div class="error-message" id="errorMessage">Неверный код</div>
         </div>
 
-        <!-- ЭКРАН 2 — ОПЛАТА -->
         <div id="paymentPage" class="page">
             <div class="ticket-header">
                 <svg viewBox="0 0 24 24"><path d="M9 12h6m-6-4h6m-6 8h6m4-10V8a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
@@ -126,7 +122,6 @@
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ЭКРАН 3 — ФИНАЛЬНЫЙ БИЛЕТ — ИКОНКИ ТОЧНО КАК НА СКРИНЕ -->
         <div id="finalTicketPage" class="page">
             <div class="final-ticket-container">
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
@@ -149,7 +144,7 @@
                 </div>
 
                 <div class="final-info-block">
-                    <!-- Перевозчик — точная иконка с твоего скрина -->
+                    <!-- ТОЧНЫЕ ИКОНКИ С ТВОЕГО СКРИНА -->
                     <div class="final-info-row">
                         <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -161,7 +156,6 @@
                         </div>
                     </div>
 
-                    <!-- Маршрут — автобус как на скрине -->
                     <div class="final-info-row">
                         <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="4" width="18" height="13" rx="2"></rect>
@@ -175,7 +169,6 @@
                         </div>
                     </div>
 
-                    <!-- Стоимость — рубль как на скрине -->
                     <div class="final-info-row">
                         <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 1v22"></path>
@@ -187,7 +180,6 @@
                         </div>
                     </div>
 
-                    <!-- Дата — календарь как на скрине -->
                     <div class="final-info-row">
                         <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -199,9 +191,8 @@
                             <div class="final-label">Дата покупки</div>
                             <div class="final-value"><span id="purchaseDate">15 ноября 2025 г.</span></div>
                         </div>
-                   .radius
+                    </div>
 
-                    <!-- Время — часы как на скрине -->
                     <div class="final-info-row">
                         <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10"></circle>
@@ -218,7 +209,6 @@
             </div>
         </div>
 
-        <!-- ЭКРАН СПИСКА БИЛЕТОВ -->
         <div id="activeTicketsPage" class="page">
             <div style="flex:1; display:flex; flex-direction:column;">
                 <div class="ticket-header" style="margin-bottom:16px;">
@@ -365,7 +355,7 @@
                     </div>
                     <div class="delete-btn" onclick="event.stopPropagation(); deleteTicket(${i})"></div>
                 `;
-                list aylendChild(el);
+                list.appendChild(el);
             });
         }
         function deleteTicket(i) {
