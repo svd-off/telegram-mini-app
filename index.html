@@ -12,7 +12,7 @@
         .page { display: none; flex-direction: column; height: 100%; }
         .page.active { display: flex; }
 
-        /* ЭКРАН 1: ВВОД КОДА */
+        /* ЭКРАН 1 */
         .code-input-field { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
         .code-box { width: 40px; height: 52px; border: 1px solid #3A3A3C; border-radius: 8px; background: #1E1E1E; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 500; color: #FFFFFF; }
         .code-box.filled { background: #FFFFFF; color: #000000; border-color: #FFFFFF; }
@@ -31,69 +31,34 @@
         .backspace-icon { width: 24px; height: 24px; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2"><path d="M19 12H5m7-7-7 7 7 7"/></svg>') no-repeat center; background-size: contain; }
         .error-message { color: #FF3B30; font-size: 14px; text-align: center; margin-top: 16px; display: none; font-weight: 500; }
 
-        /* ЭКРАН 2: ДАННЫЕ БИЛЕТА — ВРУЧНУЮ ВВОД */
+        /* ЭКРАН 2 — ВВОД ДАННЫХ */
         .ticket-header { display: flex; align-items: center; margin-bottom: 24px; font-size: 18px; font-weight: 600; }
         .ticket-header svg { width: 24px; height: 24px; margin-right: 8px; fill: #FFFFFF; }
+        .input-field { background: #1E1E1E; border: 1px solid #3A3A3C; border-radius: 12px; padding: 14px; color: #FFFFFF; font-size: 16px; width: 100%; margin-bottom: 16px; }
         .section { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #333; }
         .section-title { display: flex; align-items: center; font-size: 14px; color: #AAAAAA; margin-bottom: 8px; }
         .section-title svg { width: 18px; height: 18px; margin-right: 8px; fill: #AAAAAA; }
-        .section-content { font-size: 16px; font-weight: 500; }
-
-        .input-field { 
-            background: #1E1E1E; 
-            border: 1px solid #3A3A3C; 
-            border-radius: 12px; 
-            padding: 14px; 
-            color: #FFFFFF; 
-            font-size: 16px; 
-            width: 100%; 
-            margin-bottom: 16px;
-        }
         .quantity-slider { display: flex; align-items: center; margin: 16px 0; }
         .quantity-slider input[type="range"] { -webkit-appearance: none; flex: 1; height: 4px; background: #333; border-radius: 2px; outline: none; margin: 0 12px; }
         .quantity-slider input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: #FF3B30; border-radius: 50%; cursor: pointer; }
         .quantity-value { font-size: 18px; font-weight: 600; color: #FF3B30; }
-
-        .subscription-toggle { display: flex; align-items: center; justify-content: space-between; background: #1E1E1E; padding: 16px; border-radius: 12px; margin: 24px 0; }
-        .toggle-label { font-size: 16px; }
-        .toggle-switch { position: relative; width: 52px; height: 32px; background: #333; border-radius: 16px; cursor: pointer; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #333; border-radius: 16px; transition: 0.3s; }
-        .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 3px; bottom: 3px; background: #666; border-radius: 50%; transition: 0.3s; }
-        input:checked + .slider { background: #FF3B30; }
-        input:checked + .slider:before { transform: translateX(20px); background: #FFFFFF; }
         .pay-button { background: #30D158; color: #000000; font-size: 18px; font-weight: 600; padding: 18px; border-radius: 16px; text-align: center; margin-top: auto; cursor: pointer; }
         .pay-button:active { background: #28A745; }
 
-        /* ЭКРАН 3: ФИНАЛЬНЫЙ БИЛЕТ — 1 В 1 КАК НА СКРИНЕ */
+        /* ЭКРАН 3 — ФИНАЛЬНЫЙ БИЛЕТ (ПИКСЕЛЬ В ПИКСЕЛЬ) */
         .final-ticket { flex: 1; display: flex; flex-direction: column; }
         .timer { font-size: 24px; font-weight: 600; text-align: center; margin: 20px 0 36px; color: #FFFFFF; }
-
-        .ticket-header-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding-bottom: 16px; border-bottom: 1px solid #333333; margin-bottom: 36px;
-        }
-        .ticket-number {
-            font-size: 21px; font-weight: 600; color: #FF3B30;
-            display: flex; align-items: center; gap: 12px;
-        }
+        .ticket-header-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid #333333; margin-bottom: 36px; }
+        .ticket-number { font-size: 21px; font-weight: 600; color: #FF3B30; display: flex; align-items: center; gap: 12px; }
         .ticket-number svg { width: 32px; height: 32px; fill: #FF3B30; }
         .control { display: flex; align-items: center; font-size: 16px; color: #AAAAAA; cursor: pointer; gap: 8px; }
         .control svg { width: 24px; height: 24px; fill: #AAAAAA; }
-
-        .info-row {
-            display: flex; align-items: flex-start; margin-bottom: 32px; gap: 18px;
-        }
+        .info-row { display: flex; align-items: flex-start; margin-bottom: 32px; gap: 18px; }
         .info-icon svg { width: 28px; height: 28px; fill: #AAAAAA; flex-shrink: 0; }
         .info-label { font-size: 13px; color: #AAAAAA; margin-bottom: 6px; line-height: 1.2; }
         .info-value { font-size: 18px; font-weight: 500; color: #FFFFFF; line-height: 1.3; }
         .route-code { margin-top: 6px; font-size: 15px; color: #AAAAAA; }
-
-        .close-button {
-            background: #FF3B30; color: #FFFFFF; font-size: 18px; font-weight: 600;
-            padding: 20px; border-radius: 16px; text-align: center; margin-top: 24px;
-            cursor: pointer;
-        }
+        .close-button { background: #FF3B30; color: #FFFFFF; font-size: 18px; font-weight: 600; padding: 20px; border-radius: 16px; text-align: center; margin-top: 24px; cursor: pointer; }
         .close-button:active { background: #D70015; }
 
         .active-tickets-list { flex: 1; overflow-y: auto; }
@@ -104,33 +69,17 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- ЭКРАН 1: ВВОД КОДА -->
+        <!-- ЭКРАН 1 -->
         <div id="codeInputPage" class="page active">
             <div class="code-input-field" id="codeDisplay">
-                <div class="code-box"></div>
-                <div class="code-box"></div>
-                <div class="code-box"></div>
-                <div class="code-box"></div>
-                <div class="code-box"></div>
-                <div class="code-box"></div>
+                <div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div>
             </div>
-            <div class="header">
-                <div class="header-inner">
-                    <div class="header-icon"></div>
-                    <div class="header-title">Введите код с наклейки</div>
-                </div>
-            </div>
+            <div class="header"><div class="header-inner"><div class="header-icon"></div><div class="header-title">Введите код с наклейки</div></div></div>
             <div class="keyboard-container">
                 <div class="keyboard">
-                    <button class="key" onclick="addNumber(1)">1</button>
-                    <button class="key" onclick="addNumber(2)">2</button>
-                    <button class="key" onclick="addNumber(3)">3</button>
-                    <button class="key" onclick="addNumber(4)">4</button>
-                    <button class="key" onclick="addNumber(5)">5</button>
-                    <button class="key" onclick="addNumber(6)">6</button>
-                    <button class="key" onclick="addNumber(7)">7</button>
-                    <button class="key" onclick="addNumber(8)">8</button>
-                    <button class="key" onclick="addNumber(9)">9</button>
+                    <button class="key" onclick="addNumber(1)">1</button><button class="key" onclick="addNumber(2)">2</button><button class="key" onclick="addNumber(3)">3</button>
+                    <button class="key" onclick="addNumber(4)">4</button><button class="key" onclick="addNumber(5)">5</button><button class="key" onclick="addNumber(6)">6</button>
+                    <button class="key" onclick="addNumber(7)">7</button><button class="key" onclick="addNumber(8)">8</button><button class="key" onclick="addNumber(9)">9</button>
                 </div>
                 <div class="bottom-row">
                     <button class="action-btn" onclick="scanCode()"><span class="scan-icon"></span>Сканировать</button>
@@ -141,66 +90,56 @@
             <div class="error-message" id="errorMessage">Неверный код</div>
         </div>
 
-        <!-- ЭКРАН 2: ВВОД ДАННЫХ БИЛЕТА -->
+        <!-- ЭКРАН 2 — ВВОД ДАННЫХ -->
         <div id="paymentPage" class="page">
-            <div class="ticket-header">
-                <svg viewBox="0 0 24 24"><path d="M9 12h6m-6-4h6m-6 8h6m4-10V8a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
-                Данные билета
-            </div>
+            <div class="ticket-header"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6-4h6m-6 8h6m4-10V8a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg> Данные билета</div>
 
             <input type="text" class="input-field" id="carrierInput" placeholder="Перевозчик" value="ИП Галченкова Е. А.">
-            <input type="text" class="input-field" id="routeInput" placeholder="Маршрут" value="7, ст. Красноярск-Северный - ДК Кировский">
-            <input type="text" class="input-field" id="busNumberInput" placeholder="Номер автобуса" value="к378тв124">
+            <input type="text" class="input-field" id="routeInput" placeholder="Маршрут (например: 7, ст. Красноярск-Северный - ДК Кировский)" value="7, ст. Красноярск-Северный - ДК Кировский">
+            <input type="text" class="input-field" id="busNumberInput" placeholder="Номер автобуса (например: к378тв124)" value="к378тв124">
 
             <div class="section">
-                <div class="section-title">
-                    <svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
-                    Количество билетов
-                </div>
+                <div class="section-title"><svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h18"/></svg> Количество билетов</div>
                 <div class="quantity-slider">
                     <span class="quantity-value" id="quantityValue">1</span>
-                    <input type="range" min="1" max="10" value="1" id="quantityRange" onchange="updatePrice()">
+                    <input type="range" min="1" max="10" value="1" id="quantityRange" oninput="updatePrice()">
                     <span>10</span>
                 </div>
             </div>
 
-            <div class="section">
-                <div class="section-title">
-                    <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
-                    Тариф
-                </div>
-                <div class="section-content">Полный - <span id="priceDisplay">48.00 ₽</span></div>
-            </div>
-
-            <div class="subscription-toggle">
-                <span class="toggle-label">Создать подписку?</span>
-                <label class="toggle-switch">
-                    <input type="checkbox">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ - <span id="totalPrice">48.00 ₽</span></div>
+            <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ЭКРАН 3: ФИНАЛЬНЫЙ БИЛЕТ -->
+        <!-- ЭКРАН 3 — ФИНАЛЬНЫЙ БИЛЕТ -->
         <div id="finalTicketPage" class="page">
             <div class="final-ticket">
                 <div class="timer" id="timer">Действует: 15 сек.</div>
 
                 <div class="ticket-header-row">
                     <div class="ticket-number">
-                        <svg viewBox="0 0 24 24"><path d="M9 17h6m-6-4h6m-6-4h6M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <path d="M9 8h6M9 12h6M9 16h6"/>
+                        </svg>
                         <span id="currentTicketNumber">1 299 814 483</span>
                     </div>
                     <div class="control" onclick="switchToControl()">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16h.01M12 12h.01M12 8h.01"/></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 8h.01M12 12h.01M12 16h.01"/>
+                        </svg>
                         Контроль
                     </div>
                 </div>
 
                 <div class="info-row">
                     <div class="info-icon">
-                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
                     </div>
                     <div>
                         <div class="info-label">Перевозчик</div>
@@ -210,17 +149,25 @@
 
                 <div class="info-row">
                     <div class="info-icon">
-                        <svg viewBox="0 0 24 24"><path d="M17 18a2 2 0 0 0 2-2v-4"/><path d="M7 18a2 2 0 0 1-2-2v-4"/><rect x="3" y="4" width="18" height="12" rx="2"/></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <polyline points="22,6 12,13 2,6"/>
+                        </svg>
                     </div>
                     <div>
-                        <div class="info-label">Маршрут</div>
+                        <div class="info-label" id="finalRouteLabel">Маршрут</div>
                         <div class="info-value" id="finalRoute">7, ст. Красноярск-Северный - ДК Кировский<br><span class="route-code" id="finalBusNumber">к378тв124</span></div>
                     </div>
                 </div>
 
                 <div class="info-row">
                     <div class="info-icon">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9 12h6"/></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                            <line x1="9" y1="9" x2="9.01" y2="9"/>
+                            <line x1="15" y1="9" x2="15.01" y2="9"/>
+                        </svg>
                     </div>
                     <div>
                         <div class="info-label">Стоимость</div>
@@ -230,7 +177,12 @@
 
                 <div class="info-row">
                     <div class="info-icon">
-                        <svg viewBox="0 0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/>
+                            <line x1="8" y1="2" x2="8" y2="6"/>
+                            <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
                     </div>
                     <div>
                         <div class="info-label">Дата покупки</div>
@@ -240,7 +192,10 @@
 
                 <div class="info-row">
                     <div class="info-icon">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
                     </div>
                     <div>
                         <div class="info-label">Время покупки</div>
@@ -248,11 +203,10 @@
                     </div>
                 </div>
             </div>
-
             <div class="close-button" onclick="closeTicket()">ЗАКРЫТЬ</div>
         </div>
 
-        <!-- ЭКРАН СПИСКА БИЛЕТОВ -->
+        <!-- СПИСОК БИЛЕТОВ -->
         <div id="activeTicketsPage" class="page">
             <div style="flex: 1; display: flex; flex-direction: column;">
                 <div class="ticket-header" style="margin-bottom: 16px;">
@@ -267,203 +221,108 @@
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.MainButton.hide();
-        tg.setHeaderColor('#000000');
-        tg.setBackgroundColor('#000000');
+        tg.expand(); tg.MainButton.hide(); tg.setHeaderColor('#000000'); tg.setBackgroundColor('#000000');
 
-        let enteredCode = '';
-        const maxCodeLength = 6;
-        let viewTimer;
-        let viewSecondsLeft = 15;
+        let enteredCode = ''; const maxCodeLength = 6;
+        let viewTimer; let viewSecondsLeft = 15;
         const TOTAL_DURATION = 90 * 60 * 1000;
-
         let tickets = JSON.parse(localStorage.getItem('user_tickets') || '[]');
         const now = Date.now();
         tickets = tickets.filter(t => now - t.created_at < TOTAL_DURATION);
         localStorage.setItem('user_tickets', JSON.stringify(tickets));
 
-        if (tickets.length > 0) {
-            showPage('activeTicketsPage');
-            renderActiveTickets();
-        } else {
-            showPage('codeInputPage');
-        }
+        if (tickets.length > 0) { showPage('activeTicketsPage'); renderActiveTickets(); }
+        else { showPage('codeInputPage'); }
 
-        // === ЭКРАН 1 ===
-        function addNumber(num) {
-            if (enteredCode.length < maxCodeLength) {
-                enteredCode += num;
-                updateCodeDisplay();
-                if (enteredCode.length === maxCodeLength) setTimeout(checkCode, 300);
-            }
-        }
-        function backspace() {
-            enteredCode = enteredCode.slice(0, -1);
-            updateCodeDisplay();
-            hideError();
-        }
-        function updateCodeDisplay() {
-            const boxes = document.querySelectorAll('.code-box');
-            boxes.forEach((box, i) => {
-                box.textContent = i < enteredCode.length ? enteredCode[i] : '';
-                box.classList.toggle('filled', i < enteredCode.length);
-            });
-        }
-        function checkCode() {
-            if (enteredCode.length === 6 && /^\d+$/.test(enteredCode)) {
-                showPage('paymentPage');
-            } else {
-                showError();
-            }
-        }
-        function showError() {
-            const error = document.getElementById('errorMessage');
-            error.style.display = 'block';
-            setTimeout(() => {
-                enteredCode = '';
-                updateCodeDisplay();
-                error.style.display = 'none';
-            }, 1500);
-        }
-        function scanCode() { alert("Сканирование QR (заглушка)"); }
+        // Экран 1
+        function addNumber(n) { if (enteredCode.length < maxCodeLength) { enteredCode += n; updateCodeDisplay(); if (enteredCode.length === maxCodeLength) setTimeout(() => showPage('paymentPage'), 300); } }
+        function backspace() { enteredCode = enteredCode.slice(0, -1); updateCodeDisplay(); }
+        function updateCodeDisplay() { document.querySelectorAll('.code-box').forEach((b,i) => { b.textContent = enteredCode[i] || ''; b.classList.toggle('filled', i < enteredCode.length); }); }
+        function scanCode() { alert("Сканирование (заглушка)"); }
 
-        // === ЭКРАН 2: ОПЛАТА ===
+        // Цена
         function updatePrice() {
-            const quantity = document.getElementById('quantityRange').value;
-            document.getElementById('quantityValue').textContent = quantity;
-            document.getElementById('priceDisplay').textContent = `${quantity * 48}.00 ₽`;
-            document.getElementById('totalPrice').textContent = `${quantity * 48}.00 ₽`;
+            const qty = document.getElementById('quantityRange').value;
+            document.getElementById('quantityValue').textContent = qty;
+            document.getElementById('totalPrice').textContent = `${qty * 48}.00 ₽`;
         }
 
+        // ОПЛАТА — ГЛАВНОЕ
         function payTicket() {
-            const quantity = document.getElementById('quantityRange').value;
-            const carrier = document.getElementById('carrierInput').value || "ИП Галченкова Е. А.";
-            const route = document.getElementById('routeInput').value || "7, ст. Красноярск-Северный - ДК Кировский";
-            const busNumber = document.getElementById('busNumberInput').value || "к378тв124";
-
+            const qty = document.getElementById('quantityRange').value;
+            const carrier = document.getElementById('carrierInput').value.trim() || "Не указан";
+            const route = document.getElementById('routeInput').value.trim() || "Не указан";
+            const busNumber = document.getElementById('busNumberInput').value.trim() || "Не указан";
             const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
 
-            // Сохраняем билет
-            tickets.push({
-                number: ticketNum,
-                carrier: carrier,
-                route: route,
-                busNumber: busNumber,
-                quantity: quantity,
-                created_at: Date.now()
-            });
+            // Сохраняем
+            tickets.push({ number: ticketNum, carrier, route, busNumber, quantity: qty, created_at: Date.now() });
             localStorage.setItem('user_tickets', JSON.stringify(tickets));
 
-            // Отправляем в бота
-            tg.sendData(JSON.stringify({ 
-                action: "ticket_created",
-                ticket_num: ticketNum,
-                carrier: carrier,
-                route: route,
-                busNumber: busNumber,
-                quantity: quantity
-            }));
+            // Отправляем боту
+            tg.sendData(JSON.stringify({ action: "ticket_created", ticket_num: ticketNum, carrier, route, busNumber, quantity: qty }));
 
-            // Заполняем финальный экран
+            // Заполняем финальный билет
+            document.getElementById('currentTicketNumber').textContent = ticketNum;
             document.getElementById('finalCarrier').textContent = carrier;
+            document.getElementById('finalRouteLabel').textContent = route.split(',')[0]?.trim() || "Маршрут";
             document.getElementById('finalRoute').innerHTML = route + '<br><span class="route-code">' + busNumber + '</span>';
             document.getElementById('finalBusNumber').textContent = busNumber;
-            document.getElementById('finalCost').textContent = `${quantity} шт., Полный, ${quantity * 48}.00 ₽`;
-            document.getElementById('currentTicketNumber').textContent = ticketNum;
+            document.getElementById('finalCost').textContent = `${qty} шт., Полный, ${qty * 48}.00 ₽`;
 
+            // Открываем билет
             showPage('finalTicketPage');
             startViewTimer();
         }
 
         function random3() { return Math.floor(Math.random() * 900) + 100; }
 
-        // === ЭКРАН 3 ===
         function startViewTimer() {
-            viewSecondsLeft = 15;
-            updateViewTimer();
+            viewSecondsLeft = 15; updateViewTimer();
             clearInterval(viewTimer);
             viewTimer = setInterval(() => {
                 viewSecondsLeft--;
                 updateViewTimer();
-                if (viewSecondsLeft <= 0) {
-                    clearInterval(viewTimer);
-                    showPage('activeTicketsPage');
-                    renderActiveTickets();
-                }
+                if (viewSecondsLeft <= 0) { clearInterval(viewTimer); showPage('activeTicketsPage'); renderActiveTickets(); }
             }, 1000);
         }
-        function updateViewTimer() {
-            document.getElementById('timer').textContent = `Действует: ${viewSecondsLeft} сек.`;
-        }
-        function closeTicket() {
-            clearInterval(viewTimer);
-            showPage('activeTicketsPage');
-            renderActiveTickets();
-        }
-        function switchToControl() { alert("Вкладка 'Контроль' пока не работает"); }
+        function updateViewTimer() { document.getElementById('timer').textContent = `Действует: ${viewSecondsLeft} сек.`; }
+        function closeTicket() { clearInterval(viewTimer); showPage('activeTicketsPage'); renderActiveTickets(); }
+        function switchToControl() { alert("Контроль пока недоступен"); }
 
-        // === СПИСОК БИЛЕТОВ + УДАЛЕНИЕ ===
-        function deleteTicket(index) {
-            tg.showPopup({
-                title: "Удалить билет?",
-                message: `Вы уверены, что хотите удалить билет № ${tickets[index].number}?`,
-                buttons: [{ type: 'destructive', text: 'Удалить', id: 'delete' }, { type: 'cancel', text: 'Отмена', id: 'cancel' }]
-            }, (btnId) => {
-                if (btnId === 'delete') {
-                    tickets.splice(index, 1);
-                    localStorage.setItem('user_tickets', JSON.stringify(tickets));
-                    renderActiveTickets();
-                }
+        function deleteTicket(i) {
+            tg.showPopup({ title: "Удалить?", message: "Билет будет удалён безвозвратно", buttons: [{ type: 'destructive', text: 'Удалить', id: 'del' }, { type: 'cancel', text: 'Отмена' }] }, btn => {
+                if (btn === 'del') { tickets.splice(i, 1); localStorage.setItem('user_tickets', JSON.stringify(tickets)); renderActiveTickets(); }
             });
         }
 
         function renderActiveTickets() {
-            const list = document.getElementById('activeTicketsList');
-            list.innerHTML = '';
-            if (tickets.length === 0) {
-                list.innerHTML = '<div style="text-align: center; color: #AAAAAA; margin-top: 20px;">Нет действующих билетов</div>';
-                return;
-            }
-            const now = Date.now();
-            tickets.forEach((ticket, index) => {
-                const minsLeft = Math.floor((TOTAL_DURATION - (now - ticket.created_at)) / 60000);
-                const item = document.createElement('div');
-                item.className = 'active-ticket-item';
-                item.onclick = (e) => {
-                    if (e.target.closest('.delete-btn')) return;
-                    // Заполняем финальный билет данными
-                    document.getElementById('finalCarrier').textContent = ticket.carrier;
-                    document.getElementById('finalRoute').innerHTML = ticket.route + '<br><span class="route-code">' + ticket.busNumber + '</span>';
-                    document.getElementById('finalBusNumber').textContent = ticket.busNumber;
-                    document.getElementById('finalCost').textContent = `${ticket.quantity} шт., Полный, ${ticket.quantity * 48}.00 ₽`;
-                    document.getElementById('currentTicketNumber').textContent = ticket.number;
-                    showPage('finalTicketPage');
-                    startViewTimer();
+            const list = document.getElementById('activeTicketsList'); list.innerHTML = '';
+            if (!tickets.length) { list.innerHTML = '<div style="text-align:center;color:#AAA;margin-top:20px;">Нет билетов</div>'; return; }
+            tickets.forEach((t, i) => {
+                const mins = Math.floor((TOTAL_DURATION - (Date.now() - t.created_at)) / 60000);
+                const el = document.createElement('div'); el.className = 'active-ticket-item';
+                el.onclick = e => { if (e.target.closest('.delete-btn')) return;
+                    document.getElementById('currentTicketNumber').textContent = t.number;
+                    document.getElementById('finalCarrier').textContent = t.carrier;
+                    document.getElementById('finalRouteLabel').textContent = t.route.split(',')[0]?.trim() || "Маршрут";
+                    document.getElementById('finalRoute').innerHTML = t.route + '<br><span class="route-code">' + t.busNumber + '</span>';
+                    document.getElementById('finalCost').textContent = `${t.quantity} шт., Полный, ${t.quantity * 48}.00 ₽`;
+                    showPage('finalTicketPage'); startViewTimer();
                 };
-                item.innerHTML = `
-                    <div class="active-ticket-info">
-                        <div class="active-ticket-number">Билет № ${ticket.number}</div>
-                        <div class="active-ticket-time">Осталось: ${minsLeft} мин</div>
-                    </div>
-                    <div class="delete-btn" onclick="deleteTicket(${index}); event.stopPropagation();"></div>
-                `;
-                list.appendChild(item);
+                el.innerHTML = `<div><div class="active-ticket-number">Билет № ${t.number}</div><div style="font-size:14px;color:#AAA">Осталось: ${mins} мин</div></div><div class="delete-btn" onclick="deleteTicket(${i});event.stopPropagation();"></div>`;
+                list.appendChild(el);
             });
         }
 
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            if (pageId === 'activeTicketsPage') renderActiveTickets();
-        }
+        function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); if (id === 'activeTicketsPage') renderActiveTickets(); }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const now = new Date();
-            document.getElementById('purchaseDate').textContent = now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }) + ' г.';
-            document.getElementById('purchaseTime').textContent = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            const d = new Date();
+            document.getElementById('purchaseDate').textContent = d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }) + ' г.';
+            document.getElementById('purchaseTime').textContent = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
             updateCodeDisplay();
-            updatePrice(); // инициализация цены
+            updatePrice();
         });
     </script>
 </body>
