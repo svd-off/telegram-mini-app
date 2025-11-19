@@ -11,7 +11,6 @@
         .app-container { height:100%; display:flex; flex-direction:column; padding:16px; }
         .page { display:none; flex-direction:column; height:100%; }
         .page.active { display:flex; }
-
         /* ===================== ЭКРАН 1 — ВВОД КОДА ===================== */
         .code-input-field { display:flex; justify-content:center; gap:8px; margin-bottom:16px; }
         .code-box { width:40px; height:52px; border:1px solid #3A3A3C; border-radius:8px; background:#1E1E1E; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:500; color:#FFFFFF; }
@@ -31,7 +30,28 @@
         .backspace-icon { width:24px; height:24px; background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2"><path d="M19 12H5m7-7-7 7 7 7"/></svg>') no-repeat center; background-size:contain; }
         .error-message { color:#FF3B30; font-size:14px; text-align:center; margin-top:16px; display:none; font-weight:500; }
 
-        /* ===================== ЭКРАН 2 — ОПЛАТА ===================== */
+        /* ===================== ЭКРАН 3 — ФИНАЛЬНЫЙ БИЛЕТ (ТОЧНО КАК НА СКРИНЕ) ===================== */
+        .final-ticket-container { flex:1; display:flex; flex-direction:column; padding-top:20px; }
+        .final-timer { font-size:28px; font-weight:600; text-align:center; margin-bottom:24px; color:#FFFFFF; }
+        .final-header-row { display:flex; justify-content:space-between; align-items:center; padding-bottom:16px; border-bottom:1px solid #333333; margin-bottom:32px; }
+        .final-ticket-number { display:flex; align-items:center; gap:12px; font-size:24px; font-weight:600; color:#FF3B30; position:relative; }
+        .final-ticket-number svg { width:36px; height:36px; fill:#FF3B30; }
+        .final-ticket-number::after { content:''; position:absolute; left:48px; right:0; bottom:-8px; height:3px; background:#FF3B30; border-radius:2px; }
+        .final-control { display:flex; align-items:center; gap:8px; font-size:17px; color:#FFFFFF; opacity:0.8; }
+        .final-control svg { width:24px; height:24px; fill:#FFFFFF; opacity:0.8; }
+
+        .final-info-block { margin-bottom:32px; padding-bottom:24px; border-bottom:1px solid #333333; }
+        .final-info-row { display:flex; align-items:flex-start; gap:18px; margin-bottom:20px; }
+        .final-info-row:last-child { margin-bottom:0; }
+        .final-icon { width:32px; height:32px; opacity:0.7; flex-shrink:0; }
+        .final-label { font-size:15px; color:#AAAAAA; margin-bottom:6px; }
+        .final-value { font-size:19px; font-weight:500; color:#FFFFFF; line-height:1.4; }
+        .final-value small { font-size:16px; color:#AAAAAA; }
+
+        .final-close-btn { background:#FF3B30; color:#FFFFFF; font-size:20px; font-weight:600; padding:20px; border-radius:16px; text-align:center; margin-top:auto; cursor:pointer; box-shadow:0 4px 12px rgba(255,59,48,0.4); }
+        .final-close-btn:active { background:#D70015; transform:translateY(1px); }
+
+        /* ===================== ЭКРАН 2 и СПИСОК — без изменений ===================== */
         .ticket-header { display:flex; align-items:center; margin-bottom:24px; font-size:18px; font-weight:600; }
         .ticket-header svg { width:24px; height:24px; margin-right:8px; fill:#FFFFFF; }
         .input-field { background:#1E1E1E; border:1px solid #3A3A3C; border-radius:12px; padding:14px; color:#FFFFFF; font-size:16px; width:100%; margin-bottom:16px; }
@@ -41,24 +61,6 @@
         .quantity-value { font-size:18px; font-weight:600; color:#FF3B30; }
         .pay-button { background:#30D158; color:#000000; font-size:18px; font-weight:600; padding:18px; border-radius:16px; text-align:center; margin-top:auto; cursor:pointer; }
         .pay-button:active { background:#28A745; }
-
-        /* ===================== ЭКРАН 3 — ФИНАЛЬНЫЙ БИЛЕТ ===================== */
-        .final-ticket { flex:1; display:flex; flex-direction:column; }
-        .timer { font-size:24px; font-weight:600; text-align:center; margin:20px 0 36px; color:#FFFFFF; }
-        .ticket-header-row { display:flex; justify-content:space-between; align-items:center; padding-bottom:16px; border-bottom:1px solid #333333; margin-bottom:36px; }
-        .ticket-number { font-size:21px; font-weight:600; color:#FF3B30; display:flex; align-items:center; gap:12px; }
-        .ticket-number svg { width:32px; height:32px; fill:#FF3B30; }
-        .control { display:flex; align-items:center; font-size:16px; color:#AAAAAA; cursor:pointer; gap:8px; }
-        .control svg { width:24px; height:24px; fill:#AAAAAA; }
-        .info-row { display:flex; align-items:flex-start; margin-bottom:32px; gap:18px; }
-        .info-icon svg { width:28px; height:28px; fill:#AAAAAA; flex-shrink:0; }
-        .info-label { font-size:13px; color:#AAAAAA; margin-bottom:6px; line-height:1.2; }
-        .info-value { font-size:18px; font-weight:500; color:#FFFFFF; line-height:1.3; }
-        .route-code { margin-top:6px; font-size:15px; color:#AAAAAA; }
-        .close-button { background:#FF3B30; color:#FFFFFF; font-size:18px; font-weight:600; padding:20px; border-radius:16px; text-align:center; margin-top:24px; cursor:pointer; }
-        .close-button:active { background:#D70015; }
-
-        /* ===================== СПИСОК БИЛЕТОВ ===================== */
         .active-tickets-list { flex:1; overflow-y:auto; }
         .active-ticket-item { background:#1E1E1E; border-radius:12px; padding:16px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
         .active-ticket-item:active { background:#2A2A2C; }
@@ -67,8 +69,7 @@
 </head>
 <body>
     <div class="app-container">
-
-        <!-- ЭКРАН 1 — ВВОД КОДА -->
+        <!-- ЭКРАН 1 — ВВОДА КОДА (без изменений) -->
         <div id="codeInputPage" class="page active">
             <div class="code-input-field" id="codeDisplay">
                 <div class="code-box"></div>
@@ -105,128 +106,97 @@
             <div class="error-message" id="errorMessage">Неверный код</div>
         </div>
 
-        <!-- ЭКРАН 2 — ОПЛАТА -->
+        <!-- ЭКРАН 2 — ОПЛАТА (без изменений) -->
         <div id="paymentPage" class="page">
             <div class="ticket-header">
                 <svg viewBox="0 0 24 24"><path d="M9 12h6m-6-4h6m-6 8h6m4-10V8a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
                 Данные билета
             </div>
-
             <input type="text" class="input-field" id="carrierInput" placeholder="Перевозчик" value="ИП Галченкова Е. А.">
             <input type="text" class="input-field" id="routeInput" placeholder="Маршрут" value="7, ст. Красноярск-Северный - ДК Кировский">
             <input type="text" class="input-field" id="busNumberInput" placeholder="Номер автобуса" value="к378тв124">
-
             <div class="quantity-slider">
                 <span class="quantity-value" id="quantityValue">1</span>
                 <input type="range" min="1" max="10" value="1" id="quantityRange" oninput="updatePrice()">
                 <span>10</span>
             </div>
-
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ЭКРАН 3 — ФИНАЛЬНЫЙ БИЛЕТ -->
+        <!-- ЭКРАН 3 — ФИНАЛЬНЫЙ БИЛЕТ (ПОЛНОСТЬЮ КАК НА СКРИНЕ) -->
         <div id="finalTicketPage" class="page">
-            <div class="final-ticket">
-                <div class="timer" id="timer">Действует: 15 сек.</div>
+            <div class="final-ticket-container">
+                <div class="final-timer" id="timer">Действует: 15 сек.</div>
 
-                <div class="ticket-header-row">
-                    <div class="ticket-number">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="18" height="18" rx="2"/>
-                            <path d="M9 8h6M9 12h6M9 16h6"/>
+                <div class="final-header-row">
+                    <div class="final-ticket-number">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#FF3B30" stroke-width="2.5">
+                            <rect x="3" y="3" width="18" height="18" rx="3"/>
+                            <path d="M8 8h8M8 12h8M8 16h8"/>
                         </svg>
                         <span id="currentTicketNumber">1 299 814 483</span>
                     </div>
-                    <div class="control" onclick="switchToControl()">
+                    <div class="final-control" onclick="switchToControl()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 8h.01M12 12h.01M12 16h.01"/>
+                            <path d="M12 8v8m-4-4h8"/>
                         </svg>
                         Контроль
                     </div>
                 </div>
 
-                <div class="info-row">
-                    <div class="info-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                        </svg>
+                <div class="final-info-block">
+                    <div class="final-info-row">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23AAAAAA' stroke-width='2'><path d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2'/><circle cx='9' cy='7' r='4'/><path d='M23 21v-2a4 4 0 0 0-3-3.87'/><path d='M16 3.13a4 4 0 0 1 0 7.75'/></svg>" class="final-icon">
+                        <div>
+                            <div class="final-label">Перевозчик</div>
+                            <div class="final-value" id="finalCarrier">ИП Галченкова Е. А.</div>
+                        </div>
                     </div>
-                    <div>
-                        <div class="info-label">Перевозчик</div>
-                        <div class="info-value" id="finalCarrier">ИП Галченкова Е. А.</div>
+
+                    <div class="final-info-row">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23AAAAAA' stroke-width='2'><path d='M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z'/><polyline points='22,6 12,13 2,6'/></svg>" class="final-icon">
+                        <div>
+                            <div class="final-label">Маршрут</div>
+                            <div class="final-value">ст. Красноярск-Северный - ДК Кировский<br><small id="finalBusNumber">к378тв124</small></div>
+                        </div>
+                    </div>
+
+                    <div class="final-info-row">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23AAAAAA' stroke-width='2'><circle cx='12' cy='12' r='10'/><path d='M8 14s1.5 2 4 2 4-2 4-2'/><line x1='9' y1='9' x2='9.01' y2='9'/><line x1='15' y1='9' x2='15.01' y2='9'/></svg>" class="final-icon">
+                        <div>
+                            <div class="final-label">Стоимость</div>
+                            <div class="final-value" id="finalCost">1 шт., Полный, 48.00 ₽</div>
+                        </div>
+                    </div>
+
+                    <div class="final-info-row">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23AAAAAA' stroke-width='2'><rect x='3' y='4' width='18' height='18' rx='2' ry='2'/><line x1='16' y1='2' x2='16' y2='6'/><line x1='8' y1='2' x2='8' y2='6'/><line x1='3' y1='10' x2='21' y2='10'/></svg>" class="final-icon">
+                        <div>
+                            <div class="final-label">Дата покупки</div>
+                            <div class="final-value"><span id="purchaseDate">15 ноября 2025 г.</span></div>
+                        </div>
+                    </div>
+
+                    <div class="final-info-row">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23AAAAAA' stroke-width='2'><circle cx='12' cy='12' r='10'/><polyline points='12 6 12 12 16 14'/></svg>" class="final-icon">
+                        <div>
+                            <div class="final-label">Время покупки</div>
+                            <div class="final-value"><span id="purchaseTime">12:08</span></div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="info-row">
-                    <div class="info-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                            <polyline points="22,6 12,13 2,6"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="info-label">Маршрут</div>
-                        <div class="info-value" id="finalRouteValue">7, ст. Красноярск-Северный - ДК Кировский<br><span class="route-code" id="finalBusNumber">к378тв124</span></div>
-                    </div>
-                </div>
-
-                <div class="info-row">
-                    <div class="info-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-                            <line x1="9" y1="9" x2="9.01" y2="9"/>
-                            <line x1="15" y1="9" x2="15.01" y2="9"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="info-label">Стоимость</div>
-                        <div class="info-value" id="finalCost">1 шт., Полный, 48.00 ₽</div>
-                    </div>
-                </div>
-
-                <div class="info-row">
-                    <div class="info-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                            <line x1="16" y1="2" x2="16" y2="6"/>
-                            <line x1="8" y1="2" x2="8" y2="6"/>
-                            <line x1="3" y1="10" x2="21" y2="10"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="info-label">Дата покупки</div>
-                        <div class="info-value"><span id="purchaseDate">15 ноября 2025 г.</span></div>
-                    </div>
-                </div>
-
-                <div class="info-row">
-                    <div class="info-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <polyline points="12 6 12 12 16 14"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="info-label">Время покупки</div>
-                        <div class="info-value"><span id="purchaseTime">12:08</span></div>
-                    </div>
-                </div>
+                <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
             </div>
-            <div class="close-button" onclick="closeTicket()">ЗАКРЫТЬ</div>
         </div>
 
-        <!-- ЭКРАН СПИСКА БИЛЕТОВ -->
+        <!-- ЭКРАН СПИСКА БИЛЕТОВ (без изменений) -->
         <div id="activeTicketsPage" class="page">
             <div style="flex:1; display:flex; flex-direction:column;">
                 <div class="ticket-header" style="margin-bottom:16px;">
                     <svg viewBox="0 0 24 24" style="width:24px;height:24px;margin-right:8px;fill:#FFFFFF;">
-                        <path d="M9 12h6m-6-4h6m-6 8h6m4-10V8a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/>
+                        <path d="M9 12h6m-6-4h6m-6 8h6m4-10V8a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 0 2-2v-2"/>
                     </svg>
                     Действующие билеты
                 </div>
@@ -242,24 +212,20 @@
         tg.MainButton.hide();
         tg.setHeaderColor('#000000');
         tg.setBackgroundColor('#000000');
-
         let enteredCode = '';
         let viewTimer;
         let viewSecondsLeft = 15;
         const TOTAL_DURATION = 90 * 60 * 1000;
         let tickets = JSON.parse(localStorage.getItem('user_tickets') || '[]');
-
         const now = Date.now();
         tickets = tickets.filter(t => now - t.created_at < TOTAL_DURATION);
         localStorage.setItem('user_tickets', JSON.stringify(tickets));
-
         if (tickets.length > 0) {
             showPage('activeTicketsPage');
             renderActiveTickets();
         } else {
             showPage('codeInputPage');
         }
-
         function addNumber(n) {
             if (enteredCode.length < 6) {
                 enteredCode += n;
@@ -269,39 +235,33 @@
                 }
             }
         }
-
         function backspace() {
             enteredCode = enteredCode.slice(0, -1);
             updateCodeDisplay();
         }
-
         function updateCodeDisplay() {
             document.querySelectorAll('.code-box').forEach((box, i) => {
                 box.textContent = enteredCode[i] || '';
                 box.classList.toggle('filled', i < enteredCode.length);
             });
         }
-
         function scanCode() {
             tg.showScanQrPopup({ text: 'Наведите камеру на QR-код' }, function() {
                 showPage('paymentPage');
                 return true;
             });
         }
-
         function updatePrice() {
             const qty = document.getElementById('quantityRange').value;
             document.getElementById('quantityValue').textContent = qty;
             document.getElementById('totalPrice').textContent = (qty * 48) + '.00 ₽';
         }
-
         function payTicket() {
             const qty = document.getElementById('quantityRange').value;
             const carrier = document.getElementById('carrierInput').value.trim() || "ИП Галченкова Е. А.";
             const route = document.getElementById('routeInput').value.trim() || "7, ст. Красноярск-Северный - ДК Кировский";
             const busNumber = document.getElementById('busNumberInput').value.trim() || "к378тв124";
             const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
-
             tickets.push({
                 number: ticketNum,
                 carrier: carrier,
@@ -311,26 +271,20 @@
                 created_at: Date.now()
             });
             localStorage.setItem('user_tickets', JSON.stringify(tickets));
-
             tg.sendData(JSON.stringify({ action: "ticket_created", ticket_num: ticketNum }));
-
             document.getElementById('currentTicketNumber').textContent = ticketNum;
             document.getElementById('finalCarrier').textContent = carrier;
-            document.getElementById('finalRouteValue').innerHTML = route + '<br><span class="route-code">' + busNumber + '</span>';
+            document.getElementById('finalBusNumber').textContent = busNumber;
             document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + (qty * 48) + '.00 ₽';
-
             const d = new Date();
             document.getElementById('purchaseDate').textContent = d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }) + ' г.';
             document.getElementById('purchaseTime').textContent = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-
             showPage('finalTicketPage');
             startViewTimer();
         }
-
         function random3() {
             return Math.floor(Math.random() * 900) + 100;
         }
-
         function startViewTimer() {
             viewSecondsLeft = 15;
             document.getElementById('timer').textContent = 'Действует: ' + viewSecondsLeft + ' сек.';
@@ -345,23 +299,19 @@
                 }
             }, 1000);
         }
-
         function closeTicket() {
             clearInterval(viewTimer);
             showPage('activeTicketsPage');
             renderActiveTickets();
         }
-
         function switchToControl() {
             alert('Контроль пока недоступен');
         }
-
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             if (id === 'activeTicketsPage') renderActiveTickets();
         }
-
         function renderActiveTickets() {
             const list = document.getElementById('activeTicketsList');
             list.innerHTML = '';
@@ -376,7 +326,7 @@
                 el.onclick = () => {
                     document.getElementById('currentTicketNumber').textContent = t.number;
                     document.getElementById('finalCarrier').textContent = t.carrier;
-                    document.getElementById('finalRouteValue').innerHTML = t.route + '<br><span class="route-code">' + t.busNumber + '</span>';
+                    document.getElementById('finalBusNumber').textContent = t.busNumber;
                     document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + (t.quantity * 48) + '.00 ₽';
                     showPage('finalTicketPage');
                     startViewTimer();
@@ -391,7 +341,6 @@
                 list.appendChild(el);
             });
         }
-
         function deleteTicket(i) {
             tg.showPopup({
                 title: "Удалить билет?",
@@ -408,7 +357,6 @@
                 }
             });
         }
-
         document.addEventListener('DOMContentLoaded', () => {
             updateCodeDisplay();
             updatePrice();
