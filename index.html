@@ -11,8 +11,6 @@
         .app-container { height:100%; display:flex; flex-direction:column; padding:16px; }
         .page { display:none; flex-direction:column; height:100%; }
         .page.active { display:flex; }
-
-        /* ЭКРАН 1 — ВВОД КОДА */
         .code-input-field { display:flex; justify-content:center; gap:8px; margin-bottom:16px; }
         .code-box { width:40px; height:52px; border:1px solid #3A3A3C; border-radius:8px; background:#1E1E1E; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:500; color:#FFFFFF; }
         .code-box.filled { background:#FFFFFF; color:#000000; border-color:#FFFFFF; }
@@ -30,17 +28,14 @@
         .scan-icon { width:20px; height:20px; background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01"/><path d="M15 15h.01"/><path d="M9 15h.01"/><path d="M15 9h.01"/><path d="M5 5h4v4H5z"/><path d="M15 5h4v4h-4z"/><path d="M5 15h4v4H5z"/><path d="M15 15h4v4h-4z"/></svg>') no-repeat center; background-size:contain; margin-right:6px; }
         .backspace-icon { width:24px; height:24px; background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFFFFF" stroke-width="2"><path d="M19 12H5m7-7-7 7 7 7"/></svg>') no-repeat center; background-size:contain; }
         .error-message { color:#FF3B30; font-size:14px; text-align:center; margin-top:16px; display:none; font-weight:500; }
-
-        /* ФИНАЛЬНЫЙ БИЛЕТ — 100% КАК НА СКРИНЕ */
         .final-ticket-container { flex:1; display:flex; flex-direction:column; padding-top:20px; }
         .final-timer { font-size:26px; font-weight:600; text-align:center; margin-bottom:28px; color:#FFFFFF; }
         .final-header-row { display:flex; justify-content:space-between; align-items:center; padding-bottom:14px; border-bottom:1px solid #2C2C2E; margin-bottom:32px; }
         .final-ticket-number { display:flex; align-items:center; gap:12px; font-size:24px; font-weight:600; color:#FF3B30; position:relative; }
         .final-ticket-number svg { width:36px; height:36px; fill:#FF3B30; }
         .final-ticket-number::after { content:''; position:absolute; left:48px; right:0; bottom:-9px; height:2.5px; background:#FF3B30; border-radius:2px; }
-        .final-control { display:flex; align-items:center; gap:8px; font-size:16px; color:#FFFFFF; opacity:0.8; }
+        .final-control { display:flex; align-items:center; gap:8px; font-size:16px; color:#FFFFFF; opacity:0.8; cursor:pointer; }
         .final-control svg { width:24px; height:24px; fill:#FFFFFF; opacity:0.8; }
-
         .final-info-block { margin-bottom:32px; }
         .final-info-row { display:flex; align-items:flex-start; gap:18px; padding:16px 0; border-bottom:1px solid #2C2C2E; }
         .final-info-row:last-child { border-bottom:none; padding-bottom:0; }
@@ -48,13 +43,8 @@
         .final-label { font-size:14px; color:#AAAAAA; margin-bottom:4px; font-weight:500; }
         .final-value { font-size:17px; font-weight:600; color:#FFFFFF; line-height:1.4; }
         .final-value small { font-size:15px; color:#AAAAAA; font-weight:500; }
-
         .final-close-btn { background:#FF3B30; color:#FFFFFF; font-size:19px; font-weight:600; padding:20px; border-radius:16px; text-align:center; margin-top:auto; cursor:pointer; box-shadow:0 4px 12px rgba(255,59,48,0.3); }
         .final-close-btn:active { background:#E01E1E; transform:translateY(1px); }
-
-        .close-button { background:#FF3B30; color:#FFFFFF; font-size:18px; font-weight:600; padding:20px; border-radius:16px; text-align:center; margin-top:16px; cursor:pointer; }
-        .close-button:active { background:#E01E1E; }
-
         .ticket-header { display:flex; align-items:center; margin-bottom:24px; font-size:18px; font-weight:600; }
         .ticket-header svg { width:24px; height:24px; margin-right:8px; fill:#FFFFFF; }
         .input-field { background:#1E1E1E; border:1px solid #3A3A3C; border-radius:12px; padding:14px; color:#FFFFFF; font-size:16px; width:100%; margin-bottom:16px; }
@@ -122,7 +112,6 @@
         <div id="finalTicketPage" class="page">
             <div class="final-ticket-container">
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
-
                 <div class="final-header-row">
                     <div class="final-ticket-number">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#FF3B30" stroke-width="2.5">
@@ -139,10 +128,9 @@
                         Контроль
                     </div>
                 </div>
-
                 <div class="final-info-block">
                     <div class="final-info-row">
-                        <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                             <circle cx="12" cy="7" r="4"/>
                         </svg>
@@ -151,9 +139,8 @@
                             <div class="final-value" id="finalCarrier">ИП Галченкова Е. А.</div>
                         </div>
                     </div>
-
                     <div class="final-info-row">
-                        <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2">
                             <rect x="3" y="4" width="18" height="13" rx="2"/>
                             <path d="M8 17h8"/>
                             <circle cx="7" cy="17" r="2"/>
@@ -161,12 +148,11 @@
                         </svg>
                         <div>
                             <div class="final-label">Маршрут</div>
-                            <div class="final-value">ст. Красноярск-Северный - ДК Кировский<br><small id="finalBusNumber">к378тв124</small></div>
+                            <div class="final-value" id="finalRouteDisplay">ст. Красноярск-Северный - ДК Кировский<br><small id="finalBusNumber">к378тв124</small></div>
                         </div>
                     </div>
-
                     <div class="final-info-row">
-                        <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2">
                             <path d="M12 1v22"/>
                             <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                         </svg>
@@ -175,9 +161,8 @@
                             <div class="final-value" id="finalCost">1 шт., Полный, 48.00 ₽</div>
                         </div>
                     </div>
-
                     <div class="final-info-row">
-                        <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                             <line x1="16" y1="2" x2="16" y2="6"/>
                             <line x1="8" y1="2" x2="8" y2="6"/>
@@ -188,9 +173,8 @@
                             <div class="final-value"><span id="purchaseDate">15 ноября 2025 г.</span></div>
                         </div>
                     </div>
-
                     <div class="final-info-row">
-                        <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg class="final-icon" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" stroke-width="2">
                             <circle cx="12" cy="12" r="10"/>
                             <polyline points="12 6 12 12 16 14"/>
                         </svg>
@@ -200,7 +184,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
             </div>
         </div>
@@ -292,13 +275,13 @@
                 quantity: qty,
                 created_at: Date.now()
             });
-
             localStorage.setItem('user_tickets', JSON.stringify(tickets));
             tg.sendData(JSON.stringify({ action: "ticket_created", ticket_num: ticketNum }));
 
+            // ПОЛНОЕ ОБНОВЛЕНИЕ БИЛЕТА
             document.getElementById('currentTicketNumber').textContent = ticketNum;
             document.getElementById('finalCarrier').textContent = carrier;
-            document.getElementById('finalBusNumber').textContent = busNumber;
+            document.getElementById('finalRouteDisplay').innerHTML = route.replace(', ', '<br>') + '<br><small id="finalBusNumber">' + busNumber + '</small>';
             document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + (qty * 48) + '.00 ₽';
 
             const d = new Date();
@@ -358,7 +341,7 @@
                 el.onclick = () => {
                     document.getElementById('currentTicketNumber').textContent = t.number;
                     document.getElementById('finalCarrier').textContent = t.carrier;
-                    document.getElementById('finalBusNumber').textContent = t.busNumber;
+                    document.getElementById('finalRouteDisplay').innerHTML = t.route.replace(', ', '<br>') + '<br><small id="finalBusNumber">' + t.busNumber + '</small>';
                     document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + (t.quantity * 48) + '.00 ₽';
                     showPage('finalTicketPage');
                     startViewTimer();
@@ -378,10 +361,7 @@
             tg.showPopup({
                 title: "Удалить билет?",
                 message: "Без возврата",
-                buttons: [
-                    { type: 'destructive', text: 'Удалить', id: 'del' },
-                    { type: 'cancel' }
-                ]
+                buttons: [{ type: 'destructive', text: 'Удалить', id: 'del' }, { type: 'cancel' }]
             }, btn => {
                 if (btn === 'del') {
                     tickets.splice(i, 1);
