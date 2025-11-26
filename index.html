@@ -6,68 +6,66 @@
     <title>Городской Транспорт</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; background:#000; color:#FFF; height:100vh; overflow:hidden; }
-        .app-container { height:100%; display:flex; flex-direction:column; padding:16px; }
-        .page { display:none; flex-direction:column; height:100%; }
-        .page.active { display:flex; }
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#000;color:#FFF;height:100vh;overflow:hidden;}
+        .app-container{height:100%;display:flex;flex-direction:column;padding:16px;}
+        .page{display:none;flex-direction:column;height:100%;}
+        .page.active{display:flex;}
 
-        /* Ввод кода — без изменений */
-        .code-input-field { display:flex; justify-content:center; gap:8px; margin-bottom:16px; }
-        .code-box { width:40px; height:52px; border:1px solid #3A3A3C; border-radius:8px; background:#1E1E1E; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:500; }
-        .code-box.filled { background:#FFF; color:#000; border-color:#FFF; }
-        .header-inner { display:flex; align-items:center; justify-content:center; margin-bottom:32px; }
-        .header-icon { width:20px; height:20px; background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFF" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01"/><path d="M15 15h.01"/><path d="M9 15h.01"/><path d="M15 9h.01"/><path d="M5 5h4v4H5z"/><path d="M15 5h4v4h-4z"/><path d="M5 15h4v4H5z"/><path d="M15 15h4v4h-4z"/></svg>') center/contain no-repeat; margin-right:8px; }
-        .keyboard-container { border:1.5px solid #FFF; border-radius:16px; padding:16px; background:#000; }
-        .keyboard { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:12px; }
-        .key { background:#FFF; color:#000; border:none; border-radius:12px; font-size:28px; font-weight:500; height:68px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
-        .key:active { background:#D1D1D6; transform:scale(0.98); }
-        .bottom-row { display:flex; justify-content:space-between; gap:12px; }
-        .action-btn { flex:1; background:#1E1E1E; color:#FFF; border:none; border-radius:12px; font-size:16px; font-weight:500; height:68px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
-        .action-btn:active { background:#3A3A3C; }
+        /* Ввод кода */
+        .code-input-field{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
+        .code-box{width:40px;height:52px;border:1px solid #3A3A3C;border-radius:8px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;}
+        .code-box.filled{background:#FFF;color:#000;border-color:#FFF;}
+        .header-inner{display:flex;align-items:center;justify-content:center;margin-bottom:32px;}
+        .header-icon{width:20px;height:20px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFF" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01"/><path d="M15 15h.01"/><path d="M9 15h.01"/><path d="M15 9h.01"/><path d="M5 5h4v4H5z"/><path d="M15 5h4v4h-4z"/><path d="M5 15h4v4H5z"/><path d="M15 15h4v4h-4z"/></svg>') center/contain no-repeat;margin-right:8px;}
+        .keyboard-container{border:1.5px solid #FFF;border-radius:16px;padding:16px;background:#000;}
+        .keyboard{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
+        .key{background:#FFF;color:#000;border:none;border-radius:12px;font-size:28px;font-weight:500;height:68px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+        .key:active{background:#D1D1D6;transform:scale(0.98);}
+        .bottom-row{display:flex;justify-content:space-between;gap:12px;}
+        .action-btn{flex:1;background:#1E1E1E;color:#FFF;border:none;border-radius:12px;font-size:16px;font-weight:500;height:68px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+        .action-btn:active{background:#3A3A3C;}
 
-        /* ФИНАЛЬНЫЙ БИЛЕТ — ИКОНКИ БОЛЬШИЕ И ЧИСТО БЕЛЫЕ */
-        .final-timer { font-size:26px; font-weight:600; text-align:center; margin-bottom:28px; }
-        .final-header-row { display:flex; justify-content:space-between; align-items:center; padding-bottom:14px; border-bottom:1px solid #2C2C2E; margin-bottom:32px; }
-        .final-ticket-number { display:flex; align-items:center; gap:12px; font-size:24px; font-weight:600; color:#FF3B30; position:relative; }
-        .final-ticket-number svg { width:36px; height:36px; }
-        .final-ticket-number::after { content:''; position:absolute; left:48px; right:0; bottom:-9px; height:2.5px; background:#FF3B30; border-radius:2px; }
-        .final-control { font-size:16px; opacity:0.8; cursor:pointer; }
+        /* Финальный билет */
+        .final-timer{font-size:26px;font-weight:600;text-align:center;margin-bottom:28px;}
+        .final-header-row{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid #2C2C2E;margin-bottom:32px;}
+        .final-ticket-number{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:600;color:#FF3B30;position:relative;}
+        .final-ticket-number svg{width:36px;height:36px;}
+        .final-ticket-number::after{content:'';position:absolute;left:48px;right:0;bottom:-9px;height:2.5px;background:#FF3B30;border-radius:2px;}
+        .final-control{font-size:16px;opacity:0.8;cursor:pointer;}
+        .final-info-block{margin-bottom:32px;}
+        .final-info-row{display:flex;align-items:flex-start;gap:18px;padding:16px 0;border-bottom:1px solid #2C2C2E;}
+        .final-info-row:last-child{border-bottom:none;padding-bottom:0;}
 
-        .final-info-block { margin-bottom:32px; }
-        .final-info-row { display:flex; align-items:flex-start; gap:18px; padding:16px 0; border-bottom:1px solid #2C2C2E; }
-        .final-info-row:last-child { border-bottom:none; padding-bottom:0; }
-
-        /* САМОЕ ВАЖНОЕ — РАЗМЕР И ЦВЕТ ИКОНОК */
-        .final-icon {
-            width: 42px !important;     /* чуть больше оригинала — как ты видишь на скрине */
-            height: 42px !important;
-            opacity: 1 !important;      /* полностью белые, никакой прозрачности */
+        /* ИКОНКИ — БОЛЬШИЕ, БЕЛЫЕ, КАК ТЫ ХОТЕЛ */
+        .final-icon{
+            width: 48px !important;
+            height: 48px !important;
+            opacity: 1 !important;
             flex-shrink: 0;
         }
 
-        .final-label { font-size:14px; color:#AAA; margin-bottom:4px; font-weight:500; }
-        .final-value { font-size:17px; font-weight:600; line-height:1.4; }
-        .final-value small { font-size:15px; color:#AAA; font-weight:500; }
+        .final-label{font-size:14px;color:#AAA;margin-bottom:4px;font-weight:500;}
+        .final-value{font-size:17px;font-weight:600;line-height:1.4;}
+        .final-value small{font-size:15px;color:#AAA;font-weight:500;}
+        .final-close-btn{background:#FF3B30;color:#FFF;font-size:19px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;box-shadow:0 4px 12px rgba(255,59,48,0.3);}
+        .final-close-btn:active{background:#E01E1E;}
 
-        .final-close-btn { background:#FF3B30; color:#FFF; font-size:19px; font-weight:600; padding:20px; border-radius:16px; text-align:center; margin-top:auto; cursor:pointer; }
-        .final-close-btn:active { background:#E01E1E; }
+        .pay-button{background:#30D158;color:#000;font-size:18px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;}
+        .pay-button:active{background:#28A745;}
 
-        .pay-button { background:#30D158; color:#000; font-size:18px; font-weight:600; padding:20px; border-radius:16px; text-align:center; margin-top:auto; cursor:pointer; }
-        .pay-button:active { background:#28A745; }
-
-        .active-tickets-list { flex:1; overflow-y:auto; margin-bottom:12px; }
-        .active-ticket-item { background:#1E1E1E; border-radius:12px; padding:16px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
-        .active-ticket-item:active { background:#2A2A2C; }
-        .delete-btn { width:32px; height:32px; background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FF3B30" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>') center/20px no-repeat; cursor:pointer; }
-        .close-button { background:#333; color:#FFF; padding:16px; border-radius:12px; text-align:center; font-size:17px; margin-top:16px; cursor:pointer; }
-        .close-button:active { background:#444; }
+        .active-tickets-list{flex:1;overflow-y:auto;margin-bottom:12px;}
+        .active-ticket-item{background:#1E1E1E;border-radius:12px;padding:16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+        .active-ticket-item:active{background:#2A2A2C;}
+        .delete-btn{width:32px;height:32px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FF3B30" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>') center/20px no-repeat;cursor:pointer;}
+        .close-button{background:#333;color:#FFF;padding:16px;border-radius:12px;text-align:center;font-size:17px;margin-top:16px;cursor:pointer;}
+        .close-button:active{background:#444;}
     </style>
 </head>
 <body>
     <div class="app-container">
 
-        <!-- Ввод кода -->
+        <!-- ВВОД КОДА -->
         <div id="codeInputPage" class="page active">
             <div class="code-input-field" id="codeDisplay">
                 <div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div>
@@ -96,12 +94,12 @@
             </div>
         </div>
 
-        <!-- Оплата -->
+        <!-- ОПЛАТА -->
         <div id="paymentPage" class="page">
             <div style="font-size:18px;font-weight:600;margin-bottom:24px;">Данные билета</div>
-            <input type="text" class="input-field" id="carrierInput" value="ИП Галченкова Е. А." style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
-            <input type="text" class="input-field" id="routeInput" value="7, ст. Красноярск-Северный - ДК Кировский" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
-            <input type="text" class="input-field" id="busNumberInput" value="к378тв124" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
+            <input type="text" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;" id="carrierInput" value="ИП Галченкова Е. А.">
+            <input type="text" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;" id="routeInput" value="7, ст. Красноярск-Северный - ДК Кировский">
+            <input type="text" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;" id="busNumberInput" value="к378тв124">
             <div style="display:flex;align-items:center;margin:16px 0;">
                 <span style="font-size:18px;font-weight:600;color:#FF3B30;" id="quantityValue">1</span>
                 <input type="range" min="1" max="10" value="1" id="quantityRange" oninput="updatePrice()" style="-webkit-appearance:none;flex:1;height:4px;background:#333;border-radius:2px;margin:0 12px;">
@@ -110,9 +108,9 @@
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ФИНАЛЬНЫЙ БИЛЕТ — БОЛЬШИЕ БЕЛЫЕ ИКОНКИ -->
+        <!-- ФИНАЛЬНЫЙ БИЛЕТ -->
         <div id="finalTicketPage" class="page">
-            <div class="final-ticket-container">
+            <div style="flex:1;display:flex;flex-direction:column;padding-top:20px;">
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
                 <div class="final-header-row">
                     <div class="final-ticket-number">
@@ -126,33 +124,18 @@
                 </div>
 
                 <div class="final-info-block">
-                    <div class="final-info-row">
-                        <img src="carrier.png" class="final-icon" alt="">
-                        <div><div class="final-label">Перевозчик</div><div class="final-value" id="finalCarrier">ИП Галченкова Е. А.</div></div>
-                    </div>
-                    <div class="final-info-row">
-                        <img src="bus.png" class="final-icon" alt="">
-                        <div><div class="final-label">Маршрут</div><div class="final-value" id="finalRouteDisplay">ст. Красноярск-Северный - ДК Кировский<br><small id="finalBusNumber">к378тв124</small></div></div>
-                    </div>
-                    <div class="final-info-row">
-                        <img src="rub.png" class="final-icon" alt="">
-                        <div><div class="final-label">Стоимость</div><div class="final-value" id="finalCost">1 шт., Полный, 48.00 ₽</div></div>
-                    </div>
-                    <div class="final-info-row">
-                        <img src="calendar.png" class="final-icon" alt="">
-                        <div><div class="final-label">Дата покупки</div><div class="final-value" id="purchaseDate">15 ноября 2025 г.</div></div>
-                    </div>
-                    <div class="final-info-row">
-                        <img src="clock.png" class="final-icon" alt="">
-                        <div><div class="final-label">Время покупки</div><div class="final-value" id="purchaseTime">12:08</div></div>
-                    </div>
+                    <div class="final-info-row"><img src="carrier.png" class="final-icon"><div><div class="final-label">Перевозчик</div><div class="final-value" id="finalCarrier">ИП Галченкова Е. А.</div></div></div>
+                    <div class="final-info-row"><img src="bus.png" class="final-icon"><div><div class="final-label">Маршрут</div><div class="final-value" id="finalRouteDisplay">ст. Красноярск-Северный - ДК Кировский<br><small id="finalBusNumber">к378тв124</small></div></div></div>
+                    <div class="final-info-row"><img src="rub.png" class="final-icon"><div><div class="final-label">Стоимость</div><div class="final-value" id="finalCost">1 шт., Полный, 48.00 ₽</div></div></div>
+                    <div class="final-info-row"><img src="calendar.png" class="final-icon"><div><div class="final-label">Дата покупки</div><div class="final-value" id="purchaseDate">15 ноября 2025 г.</div></div></div>
+                    <div class="final-info-row"><img src="clock.png" class="final-icon"><div><div class="final-label">Время покупки</div><div class="final-value" id="purchaseTime">12:08</div></div></div>
                 </div>
 
                 <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
             </div>
         </div>
 
-        <!-- Активные билеты -->
+        <!-- АКТИВНЫЕ БИЛЕТЫ -->
         <div id="activeTicketsPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;">
                 <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Действующие билеты</div>
