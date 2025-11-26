@@ -29,23 +29,30 @@
         /* Финальный билет */
         .final-timer{font-size:26px;font-weight:600;text-align:center;margin-bottom:28px;}
         .final-header-row{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid #2C2C2E;margin-bottom:32px;}
-        .final-ticket-number{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:600;color:#FF3B30;position:relative;}
-        /* ←←← ТЕПЕРЬ ТУТ ТВОЯ КАРТИНКА ←←← */
-        .final-ticket-number img{width:36px;height:36px;object-fit:contain;}
-        .final-ticket-number::after{content:'';position:absolute;left:48px;right:0;bottom:-9px;height:2.5px;background:#FF3B30;border-radius:2px;}
+        .final-ticket-number{display:flex;align-items:center;gap:16px;font-size:24px;font-weight:600;color:#FF3B30;position:relative;}
+        
+        /* ←←← ВОТ ТУТ ТЕПЕРЬ ТВОЯ БОЛЬШАЯ КРАСНАЯ ИКОНКА ←←← */
+        .final-ticket-number .big-ticket-icon{
+            width:56px;
+            height:56px;
+            flex-shrink:0;
+        }
+        
+        .final-ticket-number::after{
+            content:'';
+            position:absolute;
+            left:72px;
+            right:0;
+            bottom:-9px;
+            height:2.5px;
+            background:#FF3B30;
+            border-radius:2px;
+        }
         .final-control{font-size:16px;opacity:0.8;cursor:pointer;}
         .final-info-block{margin-bottom:32px;}
         .final-info-row{display:flex;align-items:flex-start;gap:18px;padding:16px 0;border-bottom:1px solid #2C2C2E;}
         .final-info-row:last-child{border-bottom:none;padding-bottom:0;}
-
-        /* ИКОНКИ — БОЛЬШИЕ, БЕЛЫЕ */
-        .final-icon{
-            width: 48px !important;
-            height: 48px !important;
-            opacity: 1 !important;
-            flex-shrink: 0;
-        }
-
+        .final-icon{width:48px!important;height:48px!important;opacity:1;flex-shrink:0;}
         .final-label{font-size:14px;color:#AAA;margin-bottom:4px;font-weight:500;}
         .final-value{font-size:17px;font-weight:600;line-height:1.4;}
         .final-value small{font-size:15px;color:#AAA;font-weight:500;}
@@ -109,14 +116,13 @@
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ФИНАЛЬНЫЙ БИЛЕТ — ТЕПЕРЬ С ТВОЕЙ ИКОНКОЙ -->
+        <!-- ФИНАЛЬНЫЙ БИЛЕТ — С БОЛЬШОЙ КРАСНОЙ ИКОНКОЙ ИЗ ТВОЕГО PNG -->
         <div id="finalTicketPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;padding-top:20px;">
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
                 <div class="final-header-row">
                     <div class="final-ticket-number">
-                        <!-- ←←← ТВОЯ КАРТИНКА ЗДЕСЬ ←←← -->
-                        <img src="ticket-icon.png" alt="Билет">
+                        <img src="big-ticket-icon.png" class="big-ticket-icon" alt="Билет">
                         <span id="currentTicketNumber">1 299 814 483</span>
                     </div>
                     <div class="final-control" onclick="switchToControl()">Контроль</div>
