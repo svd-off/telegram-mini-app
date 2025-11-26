@@ -36,11 +36,11 @@
         .final-info-block{margin-bottom:32px;}
         .final-info-row{display:flex;align-items:flex-start;gap:18px;padding:16px 0;border-bottom:1px solid #2C2C2E;}
         .final-info-row:last-child{border-bottom:none;padding-bottom:0;}
-        .final-icon{width:48px;height:48px;opacity:1;flex-shrink:0;}
+        .final-icon{width:48px!important;height:48px!important;opacity:1;flex-shrink:0;}
         .final-label{font-size:14px;color:#AAA;margin-bottom:4px;font-weight:500;}
         .final-value{font-size:17px;font-weight:600;line-height:1.4;}
         .final-value small{font-size:15px;color:#AAA;font-weight:500;}
-        .final-close-btn{background:#FF3B30;color:#FFF;font-size:19px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;box-shadow:0 4px 12px rgba(255,59,48,0.3);}
+        .final-close-btn{background:#FF3B30;color:#FFF;font-size:19px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;}
         .final-close-btn:active{background:#E01E1E;}
 
         .pay-button{background:#30D158;color:#000;font-size:18px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;}
@@ -53,23 +53,14 @@
         .close-button{background:#333;color:#FFF;padding:16px;border-radius:12px;text-align:center;font-size:17px;margin-top:16px;cursor:pointer;}
         .close-button:active{background:#444;}
 
-        /* СТРАНИЦА КОНТРОЛЯ — 100% КАК В ОРИГИНАЛЕ */
-        #controlPage{
-            display:flex;flex-direction:column;align-items:center;justify-content:space-between;
-            height:100%;padding:40px 20px 60px;background:#000;
-        }
-        .control-timer{font-size:32px;font-weight:600;margin-bottom:20px;}
-        .control-qr-container{
-            width:300px;height:300px;background:#FFF;padding:20px;border-radius:24px;
-            box-shadow:0 10px 30px rgba(0,0,0,0.6);
-        }
-        .control-qr-container img{width:100%;height:100%;object-fit:contain;}
-        .control-number{font-size:36px;font-weight:700;letter-spacing:3px;margin:40px 0 20px;}
-        .control-close-btn{
-            background:#FF3B30;color:#FFF;font-size:20px;font-weight:600;
-            padding:20px 80px;border-radius:16px;box-shadow:0 8px 20px rgba(255,59,48,0.4);
-        }
-        .control-close-btn:active{background:#E01E1E;transform:translateY(2px);}
+        /* КОНТРОЛЬ — ТОЧНО КАК НА СКРИНЕ */
+        #controlPage{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;height:100%;padding-top:60px;background:#000;}
+        .control-timer{font-size:32px;font-weight:600;margin-bottom:50px;}
+        .control-qr-box{width:280px;height:280px;background:#FFF;padding:12px;border-radius:20px;margin-bottom:40px;}
+        .control-qr-box img{width:100%;height:100%;object-fit:contain;}
+        .control-number{font-size:36px;font-weight:700;letter-spacing:2px;margin-bottom:auto;}
+        .control-close-btn{background:#FF3B30;color:#FFF;font-size:20px;font-weight:600;padding:20px 80px;border-radius:16px;margin-top:40px;}
+        .control-close-btn:active{background:#D70015;}
     </style>
 </head>
 <body>
@@ -143,11 +134,11 @@
             </div>
         </div>
 
-        <!-- КОНТРОЛЬ (твой QR из файла control-qr.png) -->
+        <!-- КОНТРОЛЬ — ТОЧНО КАК НА СКРИНЕ -->
         <div id="controlPage" class="page">
             <div class="control-timer" id="controlTimer">Действует: 15 сек.</div>
-            <div class="control-qr-container">
-                <img src="control-qr.png" alt="QR для контроля">
+            <div class="control-qr-box">
+                <img src="control-qr.png" alt="QR">
             </div>
             <div class="control-number" id="controlNumber">№ 1 301 833 477</div>
             <div class="control-close-btn" onclick="closeControl()">ЗАКРЫТЬ</div>
@@ -161,7 +152,6 @@
                 <div class="close-button" onclick="showPage('codeInputPage')">Назад</div>
             </div>
         </div>
-
     </div>
 
     <script>
@@ -218,24 +208,20 @@
             const num = document.getElementById('currentTicketNumber').textContent.trim();
             document.getElementById('controlNumber').textContent = '№ ' + num;
             showPage('controlPage');
-            startControlTimer();
-        }
-
-        function startControlTimer(){
-            controlSecondsLeft=15;
-            document.getElementById('controlTimer').textContent='Действует: '+controlSecondsLeft+' сек.';
+            controlSecondsLeft = 15;
+            document.getElementById('controlTimer').textContent = 'Действует: '+controlSecondsLeft+' сек.';
             clearInterval(controlTimer);
-            controlTimer=setInterval(()=>{
+            controlTimer = setInterval(()=>{
                 controlSecondsLeft--;
-                document.getElementById('controlTimer').textContent='Действует: '+controlSecondsLeft+' сек.';
-                if(controlSecondsLeft<=0){clearInterval(controlTimer); closeControl();}
+                document.getElementById('controlTimer').textContent = 'Действует: '+controlSecondsLeft+' сек.';
+                if(controlSecondsLeft <= 0){ clearInterval(controlTimer); closeControl(); }
             },1000);
         }
 
         function closeControl(){
             clearInterval(controlTimer);
             showPage('finalTicketPage');
-            startViewTimer(); // возобновляем таймер обычного билета
+            startViewTimer();
         }
 
         function closeTicket(){clearInterval(viewTimer);showPage('activeTicketsPage');renderActiveTickets();}
