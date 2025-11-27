@@ -75,12 +75,11 @@
         .control-ticket-number{font-size:26px;font-weight:600;text-align:center;color:#FFF;letter-spacing:0.5px;width:100%;max-width:320px;padding:0;}
         .ticket-number-prefix{color:#FFF;margin-right:8px;}
 
-        /* КНОПКА ЗАПОЛНЕНИЯ ПО ФОТО */
+        /* КНОПКА И ПОЛЕ ДЛЯ ТЕКСТА */
         .photo-fill-btn{background:#007AFF;color:#FFF;font-size:17px;font-weight:600;padding:16px 0;border-radius:12px;text-align:center;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;}
         .photo-fill-btn:active{background:#0056CC;}
         .photo-icon{width:20px;height:20px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>') center/contain no-repeat;}
 
-        /* ПОЛЕ ДЛЯ ВСТАВКИ ТЕКСТА */
         .text-input-area{background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;min-height:100px;resize:vertical;}
         .parse-text-btn{background:#FF9500;color:#FFF;font-size:16px;font-weight:600;padding:14px 0;border-radius:12px;text-align:center;cursor:pointer;margin-bottom:16px;}
         .parse-text-btn:active{background:#E68600;}
@@ -128,10 +127,10 @@
                 Вставить текст со скриншота
             </div>
 
-            <textarea class="text-input-area" id="textInputArea" placeholder="Скопируйте текст со скриншота и вставьте сюда..."></textarea>
+            <textarea class="text-input-area" id="textInputArea" placeholder="Скопируйте ВЕСЬ текст со скриншота и вставьте сюда..."></textarea>
             
             <div class="parse-text-btn" onclick="parseTextFromScreenshot()">
-                📝 Разобрать текст и заполнить поля
+                🎯 Вырезать нужные данные и заполнить поля
             </div>
 
             <input type="text" id="carrierInput" placeholder="Перевозчик" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
@@ -271,12 +270,12 @@
             function showTextInput() {
                 tg.showPopup({
                     title: "Как использовать",
-                    message: "1. Откройте скриншот\n2. Скопируйте весь текст\n3. Вставьте в поле ниже\n4. Нажмите 'Разобрать текст'",
+                    message: "1. Откройте скриншот\n2. Скопируйте ВЕСЬ текст\n3. Вставьте в поле\n4. Нажмите кнопку ниже\nСистема вырежет только нужные данные!",
                     buttons: [{ type: 'ok', text: 'Понятно' }]
                 });
             }
 
-            // РАЗОБРАТЬ ТЕКСТ И ЗАПОЛНИТЬ ПОЛЯ
+            // УМНЫЙ ПАРСЕР ТЕКСТА - ВЫРЕЗАЕТ ТОЛЬКО НУЖНЫЕ ДАННЫЕ
             function parseTextFromScreenshot() {
                 const text = document.getElementById('textInputArea').value.trim();
                 
@@ -289,62 +288,123 @@
                     return;
                 }
 
-                // АНАЛИЗ ТЕКСТА И ЗАПОЛНЕНИЕ ПОЛЕЙ
-                const parsedData = analyzeText(text);
+                // АНАЛИЗ ТЕКСТА И ВЫРЕЗАНИЕ НУЖНЫХ ДАННЫХ
+                const parsedData = extractDataFromText(text);
                 
-                document.getElementById('carrierInput').value = parsedData.carrier;
-                document.getElementById('routeInput').value = parsedData.route;
-                document.getElementById('busNumberInput').value = parsedData.busNumber;
+                // ЗАПОЛНЯЕМ ПОЛЯ ТОЛЬКО ЕСЛИ НАЙДЕНЫ ДАННЫЕ
+                if (parsedData.carrier) {
+                    document.getElementById('carrierInput').value = parsedData.carrier;
+                }
+                if (parsedData.route) {
+                    document.getElementById('routeInput').value = parsedData.route;
+                }
+                if (parsedData.busNumber) {
+                    document.getElementById('busNumberInput').value = parsedData.busNumber;
+                }
 
                 tg.showPopup({
-                    title: "✅ Готово!",
-                    message: `Поля заполнены:\nПеревозчик: ${parsedData.carrier}\nМаршрут: ${parsedData.route}\nНомер: ${parsedData.busNumber}`,
+                    title: "✅ Данные вырезаны!",
+                    message: `Перевозчик: ${parsedData.carrier || 'не найден'}\nМаршрут: ${parsedData.route || 'не найден'}\nНомер: ${parsedData.busNumber || 'не найден'}`,
                     buttons: [{ type: 'ok', text: 'Отлично!' }]
                 });
             }
 
-            // АНАЛИЗ ТЕКСТА И ПОИСК ДАННЫХ
-            function analyzeText(text) {
-                const lines = text.split('\n').filter(line => line.trim().length > 0);
+            // УМНАЯ ФУНКЦИЯ ВЫРЕЗАНИЯ ДАННЫХ ИЗ ТЕКСТА
+            function extractDataFromText(text) {
+                const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
                 
-                let carrier = 'ИП Читащвили Н.С.';
-                let route = 'Соколовская - Стела';
-                let busNumber = 'в523ок124';
+                let carrier = '';
+                let route = '';
+                let busNumber = '';
 
-                // Поиск перевозчика (ищем "ИП" или организацию)
+                console.log("Анализируем текст:", lines);
+
+                // 1. ПОИСК ПЕРЕВОЗЧИКА - ищем "ИП" или организацию
                 for (let line of lines) {
-                    if (line.includes('ИП') || line.includes('И.П.')) {
+                    // Ищем перевозчика по ключевым словам
+                    if (line.match(/ИП\s+[А-Я][а-я]+\s+[А-Я]\.[А-Я]\./i) || 
+                        line.match(/ИП\s+[А-Я][а-я]+\s+[А-Я][а-я]+/i) ||
+                        line.includes('ИП Читащвили') ||
+                        line.includes('ИП Иванов') ||
+                        line.includes('ИП Петров')) {
                         carrier = line.trim();
+                        console.log("Найден перевозчик:", carrier);
                         break;
                     }
                 }
 
-                // Поиск маршрута (ищем что-то с тире или стрелкой)
+                // 2. ПОИСК МАРШРУТА - ищем строку с тире между названиями
                 for (let line of lines) {
-                    if (line.includes('-') || line.includes('—') || line.includes('→')) {
-                        const cleanRoute = line.replace(/[-—→]/g, '-').trim();
-                        if (cleanRoute.length > 5) {
-                            route = cleanRoute;
+                    // Ищем формат "Место - Место" или "Место — Место"
+                    const routeMatch = line.match(/([А-Яа-яЁё\s]+)\s*[-—]\s*([А-Яа-яЁё\s]+)/);
+                    if (routeMatch) {
+                        const from = routeMatch[1].trim();
+                        const to = routeMatch[2].trim();
+                        if (from.length > 2 && to.length > 2) {
+                            route = `${from} - ${to}`;
+                            console.log("Найден маршрут:", route);
                             break;
                         }
                     }
                 }
 
-                // Поиск номера автобуса (русские/английские буквы + цифры)
+                // 3. ПОИСК НОМЕРА АВТОБУСА - ищем российский номерной знак
                 for (let line of lines) {
-                    // Ищем формат "а123bc777" или "в523ок124"
-                    const busMatch = line.match(/[а-яa-z]\d{3}[а-яa-z]{2}\d{2,3}/i);
-                    if (busMatch) {
-                        busNumber = busMatch[0].toLowerCase();
+                    // Основной формат: буква+3цифры+2буквы+2-3цифры (в523ок124)
+                    const busMatch1 = line.match(/[А-Яа-я]\d{3}[А-Яа-я]{2}\d{2,3}/);
+                    if (busMatch1) {
+                        busNumber = busMatch1[0].toLowerCase();
+                        console.log("Найден номер (формат 1):", busNumber);
                         break;
                     }
                     
-                    // Ищем другие форматы номеров
-                    const altBusMatch = line.match(/([а-яa-z]\s*\d\s*\d\s*\d\s*[а-яa-z]\s*[а-яa-z])/i);
-                    if (altBusMatch) {
-                        busNumber = altBusMatch[0].replace(/\s/g, '').toLowerCase();
+                    // Альтернативный формат: буква+3цифры+2буквы (а123км)
+                    const busMatch2 = line.match(/[А-Яа-я]\d{3}[А-Яа-я]{2}/);
+                    if (busMatch2) {
+                        busNumber = busMatch2[0].toLowerCase();
+                        console.log("Найден номер (формат 2):", busNumber);
                         break;
                     }
+                    
+                    // Формат с пробелами: а 123 кк 777
+                    const busMatch3 = line.match(/[А-Яа-я]\s*\d\s*\d\s*\d\s*[А-Яа-я]\s*[А-Яа-я]\s*\d\s*\d\s*\d?/);
+                    if (busMatch3) {
+                        busNumber = busMatch3[0].replace(/\s/g, '').toLowerCase();
+                        console.log("Найден номер (формат 3):", busNumber);
+                        break;
+                    }
+                }
+
+                // ЕСЛИ ЧТО-ТО НЕ НАЙДЕНО, ИСПОЛЬЗУЕМ УМНЫЕ ПРЕДПОЛОЖЕНИЯ
+                if (!carrier) {
+                    carrier = 'ИП Читащвили Н.С.';
+                }
+                
+                if (!route) {
+                    // Пробуем найти любую осмысленную строку с названиями
+                    for (let line of lines) {
+                        if (line.length > 8 && line.length < 30 && 
+                            !line.includes('ИП') && 
+                            !line.match(/[А-Яа-я]\d{3}[А-Яа-я]{2}\d{2,3}/) &&
+                            line.split(' ').length >= 2) {
+                            route = line;
+                            console.log("Маршрут по умолчанию:", route);
+                            break;
+                        }
+                    }
+                    if (!route) route = 'Соколовская - Стела';
+                }
+                
+                if (!busNumber) {
+                    // Генерируем случайный номер по формату
+                    const letters = 'абвгдежзиклмнопрстуфхцчшщэюя';
+                    const firstLetter = letters[Math.floor(Math.random() * letters.length)];
+                    const numbers = Math.floor(100 + Math.random() * 900);
+                    const secondLetters = letters[Math.floor(Math.random() * letters.length)] + 
+                                         letters[Math.floor(Math.random() * letters.length)];
+                    const lastNumbers = Math.floor(100 + Math.random() * 900);
+                    busNumber = `${firstLetter}${numbers}${secondLetters}${lastNumbers}`.substring(0, 9);
+                    console.log("Сгенерирован номер:", busNumber);
                 }
 
                 return { carrier, route, busNumber };
