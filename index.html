@@ -9,10 +9,24 @@
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
         body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#000;color:#FFF;height:100vh;overflow:hidden;}
         .app-container{height:100%;display:flex;flex-direction:column;padding:16px;padding-bottom:30px;}
+
+        /* ШАПКА + ПОЛОСКА ПОД НЕЙ */
+        .header-separator{
+            height:1px;
+            background:#2C2C2E;
+            margin:8px 0 12px;
+        }
+
+        /* ТАЙМЕР — ТОЧНО КАК В ОРИГИНАЛЕ */
+        .final-timer{
+            font-size:26px;
+            font-weight:500; /* тоньше, как в оригинале */
+            text-align:center;
+            margin:0 0 20px;
+        }
+
         .page{display:none;flex-direction:column;height:100%;}
         .page.active{display:flex;}
-
-        .final-timer{font-size:26px;font-weight:600;text-align:center;margin:16px 0 20px;}
 
         .final-header-row{
             display:flex;justify-content:space-between;align-items:center;
@@ -36,7 +50,6 @@
 
         .ticket-content{flex:1;display:flex;flex-direction:column;}
         .control-content{flex:1;display:none;flex-direction:column;justify-content:flex-end;}
-
         .final-info-block{flex:1;}
 
         .info-row{
@@ -72,6 +85,7 @@
         }
         .final-close-btn:active{background:#E01E1E;}
 
+        /* Остальные стили без изменений */
         .code-input-field{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
         .code-box{width:40px;height:52px;border:1px solid #3A3A3C;border-radius:8px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;}
         .code-box.filled{background:#FFF;color:#000;border-color:#FFF;}
@@ -137,6 +151,8 @@
         <!-- ФИНАЛЬНЫЙ БИЛЕТ -->
         <div id="finalTicketPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;">
+                <!-- ПОЛОСКА ПОД ШАПКОЙ + ТАЙМЕР -->
+                <div class="header-separator"></div>
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
                 
                 <div class="final-header-row">
@@ -165,7 +181,7 @@
                             <div class="info-content">
                                 <div class="route-fromto" id="finalRouteFromTo">Соколовская — Стела</div>
                                 <div class="route-number" id="finalBusNumber">в523ок124</div>
-                            </div>
+23                        </div>
                         </div>
                         <div class="info-row">
                             <img src="rub.png" class="info-icon big">
@@ -242,26 +258,11 @@
             indicator.style.width = controlEl.offsetWidth + 'px';
         }
 
-        function addNumber(n) { 
-            if (enteredCode.length < 6) { 
-                enteredCode += n; 
-                updateCodeDisplay(); 
-                if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); 
-            } 
-        }
+        function addNumber(n) { if (enteredCode.length < 6) { enteredCode += n; updateCodeDisplay(); if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); } }
         function backspace() { enteredCode = enteredCode.slice(0, -1); updateCodeDisplay(); }
-        function updateCodeDisplay() { 
-            document.querySelectorAll('.code-box').forEach((b, i) => { 
-                b.textContent = enteredCode[i] || ''; 
-                b.classList.toggle('filled', i < enteredCode.length); 
-            }); 
-        }
+        function updateCodeDisplay() { document.querySelectorAll('.code-box').forEach((b, i) => { b.textContent = enteredCode[i] || ''; b.classList.toggle('filled', i < enteredCode.length); }); }
         function scanCode() { tg.showScanQrPopup({ text: 'Наведите камеру на QR-код' }, () => { showPage('paymentPage'); }); }
-        function updatePrice() { 
-            const q = document.getElementById('quantityRange').value; 
-            document.getElementById('quantityValue').textContent = q; 
-            document.getElementById('totalPrice').textContent = (q * 48) + '.00 ₽'; 
-        }
+        function updatePrice() { const q = document.getElementById('quantityRange').value; document.getElementById('quantityValue').textContent = q; document.getElementById('totalPrice').textContent = (q * 48) + '.00 ₽'; }
 
         function payTicket() {
             const qty = document.getElementById('quantityRange').value;
@@ -326,9 +327,7 @@
                     document.getElementById('currentTicketNumber').textContent = t.number;
                     document.getElementById('finalCarrier').textContent = t.carrier;
                     document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g, '—');
-                    document
-
-.getElementById('finalBusNumber').textContent = t.busNumber;
+                    document.getElementById('finalBusNumber').textContent = t.busNumber;
                     document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + (t.quantity * 48) + '.00 ₽';
                     document.getElementById('purchaseDate').textContent = t.purchaseDate;
                     document.getElementById('purchaseTime').textContent = t.purchaseTime;
