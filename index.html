@@ -25,7 +25,48 @@
         .action-btn:active{background:#3A3A3C;}
         .final-timer{font-size:26px;font-weight:600;text-align:center;margin-bottom:26px;}
 
-        /* ВЕРХНЯЯ СТРОКА — КАК В ОРИГИНАЛЕ */
+        /* ТАБЫ — КАК В ОРИГИНАЛЕ */
+        .tabs-container{
+            display:flex;
+            position:relative;
+            margin-bottom:20px;
+            border-bottom:1px solid #333;
+        }
+        .tab{
+            flex:1;
+            text-align:center;
+            padding:12px 0;
+            font-size:17px;
+            font-weight:500;
+            color:#888;
+            cursor:pointer;
+            transition:all 0.3s;
+            position:relative;
+            z-index:2;
+        }
+        .tab.active{
+            color:#FF3B30;
+            font-weight:600;
+        }
+        .tab-indicator{
+            position:absolute;
+            bottom:0;
+            height:3px;
+            background:#FF3B30;
+            border-radius:2px;
+            transition:left 0.3s ease, width 0.3s ease;
+            z-index:3;
+        }
+
+        /* КОНТЕНТ ТАБОВ */
+        .tab-content{display:none;}
+        .tab-content.active{display:flex;}
+
+        /* БИЛЕТ */
+        .ticket-content{
+            flex-direction:column;
+            flex:1;
+        }
         .final-header-row{
             display:flex;
             justify-content:space-between;
@@ -37,43 +78,13 @@
         .final-ticket-number{
             display:flex;
             align-items:center;
-            gap:10px; /* ближе к иконке */
-            font-size:20px;
-            font-weight:400; /* НЕ ЖИРНЫЙ */
-            color:#FF3B30;
-            margin-left:-6px; /* сдвигаем левее к краю */
-        }
-        .ticket-icon{
-            width:56px;
-            height:56px;
-            flex-shrink:0;
-        }
-        .final-ticket-number::after{
-            content:'';
-            position:absolute;
-            left:70px;
-            right:0;
-            bottom:-9px;
-            height:2.5px;
-            background:#FF3B30;
-            border-radius:2px;
-        }
-
-        /* КОНТРОЛЬ — ТОЧНО КАК ПЕРЕВОЗЧИК */
-        .final-control{
-            display:flex;
-            align-items:center;
             gap:10px;
-            font-size:16px;
-            color:#FFFFFF;
-            opacity:0.85;
-            cursor:pointer;
+            font-size:20px;
+            font-weight:400;
+            color:#FF3B30;
+            margin-left:-6px;
         }
-        .control-icon{
-            width:40px;
-            height:40px;
-            flex-shrink:0;
-        }
+        .ticket-icon{width:56px;height:56px;flex-shrink:0;}
 
         .final-info-block{margin-bottom:32px;}
         .info-row{display:flex;align-items:flex-start;gap:16px;padding:15px 0;border-bottom:1px solid #2C2C2E;}
@@ -84,6 +95,18 @@
         .info-value,.route-number{font-size:16.5px;font-weight:600;color:#FFFFFF;line-height:1.35;}
         .final-close-btn{background:#FF3B30;color:#FFF;font-size:19px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;box-shadow:0 4px 12px rgba(255,59,48,0.3);}
         .final-close-btn:active{background:#E01E1E;}
+
+        /* КОНТРОЛЬ — ПУСТОЙ ЭКРАН */
+        .control-content{
+            flex:1;
+            background:#000;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#555;
+            font-size:18px;
+        }
+
         .pay-button{background:#30D158;color:#000;font-size:18px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;}
         .pay-button:active{background:#28A745;}
         .active-tickets-list{flex:1;overflow-y:auto;margin-bottom:12px;}
@@ -96,6 +119,7 @@
 </head>
 <body>
     <div class="app-container">
+
         <!-- ВВОД КОДА -->
         <div id="codeInputPage" class="page active">
             <div class="code-input-field" id="codeDisplay">
@@ -139,60 +163,70 @@
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ФИНАЛЬНЫЙ БИЛЕТ — КАК В ОРИГИНАЛЕ -->
+        <!-- ФИНАЛЬНЫЙ БИЛЕТ С ТАБАМИ -->
         <div id="finalTicketPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;padding-top:20px;">
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
-                
-                <div class="final-header-row">
-                    <div class="final-ticket-number">
-                        <img src="big-ticket.png" class="ticket-icon" alt="Билет">
-                        <span id="currentTicketNumber">1 299 814 483</span>
-                    </div>
-                    <div class="final-control" onclick="switchToControl()">
-                        <img src="control.png" class="control-icon" alt="Контроль">
-                        <span>Контроль</span>
-                    </div>
+
+                <!-- ТАБЫ -->
+                <div class="tabs-container">
+                    <div class="tab active" onclick="switchTab('ticket')">Билет</div>
+                    <div class="tab" onclick="switchTab('control')">Контроль</div>
+                    <div class="tab-indicator" id="indicator" style="left:0; width:50%;"></div>
                 </div>
 
-                <div class="final-info-block">
-                    <div class="info-row">
-                        <img src="carrier.png" class="info-icon">
-                        <div class="info-content">
-                            <div class="info-label">Перевозчик</div>
-                            <div class="info-value" id="finalCarrier">ИП Читащвили Н.С.</div>
+                <!-- КОНТЕНТ ТАБОВ -->
+                <div id="ticketTab" class="tab-content active ticket-content">
+                    <div class="final-header-row">
+                        <div class="final-ticket-number">
+                            <img src="big-ticket.png" class="ticket-icon" alt="Билет">
+                            <span id="currentTicketNumber">1 299 814 483</span>
                         </div>
                     </div>
-                    <div class="info-row">
-                        <img src="bus.png" class="info-icon">
-                        <div class="info-content">
-                            <div class="route-fromto" id="finalRouteFromTo">Соколовская — Стела</div>
-                            <div class="route-number" id="finalBusNumber">в523ок124</div>
+
+                    <div class="final-info-block">
+                        <div class="info-row">
+                            <img src="carrier.png" class="info-icon">
+                            <div class="info-content">
+                                <div class="info-label">Перевозчик</div>
+                                <div class="info-value" id="finalCarrier">ИП Читащвили Н.С.</div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <img src="bus.png" class="info-icon">
+                            <div class="info-content">
+                                <div class="route-fromto" id="finalRouteFromTo">Соколовская — Стела</div>
+                                <div class="route-number" id="finalBusNumber">в523ок124</div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <img src="rub.png" class="info-icon">
+                            <div class="info-content">
+                                <div class="info-label">Стоимость</div>
+                                <div class="info-value" id="finalCost">1 шт., Полный, 48.00 ₽</div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <img src="calendar.png" class="info-icon">
+                            <div class="info-content">
+                                <div class="info-label">Дата покупки</div>
+                                <div class="info-value" id="purchaseDate">27.11.2025</div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <img src="clock.png" class="info-icon">
+                            <div class="info-content">
+                                <div class="info-label">Время покупки</div>
+                                <div class="info-value" id="purchaseTime">14:27</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="info-row">
-                        <img src="rub.png" class="info-icon">
-                        <div class="info-content">
-                            <div class="info-label">Стоимость</div>
-                            <div class="info-value" id="finalCost">1 шт., Полный, 48.00 ₽</div>
-                        </div>
-                    </div>
-                    <div class="info-row">
-                        <img src="calendar.png" class="info-icon">
-                        <div class="info-content">
-                            <div class="info-label">Дата покупки</div>
-                            <div class="info-value" id="purchaseDate">27.11.2025</div>
-                        </div>
-                    </div>
-                    <div class="info-row">
-                        <img src="clock.png" class="info-icon">
-                        <div class="info-content">
-                            <div class="info-label">Время покупки</div>
-                            <div class="info-value" id="purchaseTime">14:27</div>
-                        </div>
-                    </div>
+                    <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
                 </div>
-                <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
+
+                <div id="controlTab" class="tab-content control-content">
+                    <!-- Пустой экран для контроля -->
+                </div>
             </div>
         </div>
 
@@ -218,6 +252,24 @@
         localStorage.setItem('user_tickets', JSON.stringify(tickets));
         if (tickets.length > 0) { showPage('activeTicketsPage'); renderActiveTickets(); }
         else showPage('codeInputPage');
+
+        // Переключение табов
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            if (tab === 'ticket') {
+                document.querySelector('.tab:nth-child(1)').classList.add('active');
+                document.getElementById('ticketTab').classList.add('active');
+                document.getElementById('indicator').style.left = '0%';
+                document.getElementById('indicator').style.width = '50%';
+            } else {
+                document.querySelector('.tab:nth-child(2)').classList.add('active');
+                document.getElementById('controlTab').classList.add('active');
+                document.getElementById('indicator').style.left = '50%';
+                document.getElementById('indicator').style.width = '50%';
+            }
+        }
 
         function addNumber(n) { if (enteredCode.length < 6) { enteredCode += n; updateCodeDisplay(); if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); } }
         function backspace() { enteredCode = enteredCode.slice(0, -1); updateCodeDisplay(); }
@@ -249,6 +301,7 @@
             document.getElementById('purchaseTime').textContent = purchaseTime;
 
             showPage('finalTicketPage');
+            switchTab('ticket'); // всегда открываем на вкладке "Билет"
             startViewTimer();
         }
 
@@ -266,7 +319,6 @@
         }
 
         function closeTicket() { clearInterval(viewTimer); showPage('activeTicketsPage'); renderActiveTickets(); }
-        function switchToControl() { alert('Контроль пока недоступен'); }
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -288,7 +340,9 @@
                     document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + (t.quantity * 48) + '.00 ₽';
                     document.getElementById('purchaseDate').textContent = t.purchaseDate;
                     document.getElementById('purchaseTime').textContent = t.purchaseTime;
-                    showPage('finalTicketPage'); startViewTimer();
+                    showPage('finalTicketPage');
+                    switchTab('ticket');
+                    startViewTimer();
                 };
                 el.innerHTML = `<div><div style="font-weight:600;">Билет № ${t.number}</div><div style="font-size:14px;color:#AAA">Осталось: ${mins} мин</div></div><div class="delete-btn" onclick="event.stopPropagation();deleteTicket(${i})"></div>`;
                 list.appendChild(el);
