@@ -38,28 +38,26 @@
         .control-content{flex:1;display:none;flex-direction:column;justify-content:flex-end;}
 
         .final-info-block{flex:1;}
+
+        /* ГЛАВНОЕ — ПОЛОСКИ ВПЛОТНУЮ К ТЕКСТУ */
         .info-row{
             display:flex;align-items:flex-start;
-            gap:0; /* убираем gap полностью */
-            padding:16px 0;
+            gap:0;
+            padding:9px 0 10px; /* минимальные отступы сверху/снизу — как в оригинале */
             border-bottom:1px solid #2C2C2E;
         }
         .info-row:last-child{border-bottom:none;}
 
-        /* Обычные иконки (если вдруг будут) */
-        .info-icon{width:40px;height:40px;flex-shrink:0;}
-
-        /* ТОЛЬКО 5 КРУПНЫХ ИКОНОК — 60×60, ПРИЖАТЫ ВПЛОТНУЮ */
         .info-icon.big{
-            width:60px !important;
-            height:60px !important;
-            margin-right:16px; /* точное расстояние как в оригинале */
-            margin-top:-2px; /* лёгкая подгонка по вертикали */
+            width:60px;height:60px;
+            margin-right:16px;
+            margin-top:-2px;
+            flex-shrink:0;
         }
 
         .info-content{flex:1;}
         .info-label, .route-fromto{
-            font-size:15px;color:#AAAAAA;font-weight:500;margin-bottom:4px;
+            font-size:15px;color:#AAAAAA;font-weight:500;margin-bottom:3px;
         }
         .info-value, .route-number{
             font-size:19px;font-weight:600;color:#FFFFFF;
@@ -70,7 +68,7 @@
             font-size:19px;font-weight:600;
             padding:18px 0;border-radius:16px;
             text-align:center;cursor:pointer;
-            margin-top:30px;
+            margin-top:32px;
             box-shadow:0 4px 12px rgba(255,59,48,0.3);
         }
         .final-close-btn:active{background:#E01E1E;}
@@ -119,7 +117,7 @@
                 <div class="bottom-row">
                     <button class="action-btn" onclick="scanCode()">Сканировать</button>
                     <button class="key" onclick="addNumber(0)">0</button>
-                    <button class="action-btn" onclick="backspace()">Backspace</button>
+                    <button class="action-btn" onclick="backspace()">←</button>
                 </div>
             </div>
         </div>
@@ -182,7 +180,7 @@
                             <img src="calendar.png" class="info-icon big">
                             <div class="info-content">
                                 <div class="info-label">Дата покупки</div>
-                                <div class="info-value" id="purchaseDate">27.11.2025</div>
+                                <div class="info-value" id="purchaseDate">27 ноября 2025 г.</div>
                             </div>
                         </div>
                         <div class="info-row">
@@ -246,26 +244,11 @@
             indicator.style.width = controlEl.offsetWidth + 'px';
         }
 
-        function addNumber(n) { 
-            if (enteredCode.length < 6) { 
-                enteredCode += n; 
-                updateCodeDisplay(); 
-                if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); 
-            } 
-        }
+        function addNumber(n) { if (enteredCode.length < 6) { enteredCode += n; updateCodeDisplay(); if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); } }
         function backspace() { enteredCode = enteredCode.slice(0, -1); updateCodeDisplay(); }
-        function updateCodeDisplay() { 
-            document.querySelectorAll('.code-box').forEach((b, i) => { 
-                b.textContent = enteredCode[i] || ''; 
-                b.classList.toggle('filled', i < enteredCode.length); 
-            }); 
-        }
+        function updateCodeDisplay() { document.querySelectorAll('.code-box').forEach((b, i) => { b.textContent = enteredCode[i] || ''; b.classList.toggle('filled', i < enteredCode.length); }); }
         function scanCode() { tg.showScanQrPopup({ text: 'Наведите камеру на QR-код' }, () => { showPage('paymentPage'); }); }
-        function updatePrice() { 
-            const q = document.getElementById('quantityRange').value; 
-            document.getElementById('quantityValue').textContent = q; 
-            document.getElementById('totalPrice').textContent = (q * 48) + '.00 ₽'; 
-        }
+        function updatePrice() { const q = document.getElementById('quantityRange').value; document.getElementById('quantityValue').textContent = q; document.getElementById('totalPrice').textContent = (q * 48) + '.00 ₽'; }
 
         function payTicket() {
             const qty = document.getElementById('quantityRange').value;
@@ -303,21 +286,17 @@
             viewTimer = setInterval(() => {
                 viewSecondsLeft--;
                 document.getElementById('timer').textContent = 'Действует: ' + viewSecondsLeft + ' сек.';
-                if (viewSecondsLeft <= 0) { clearInterval(viewTimer); showPage('activeTicketsPage'); renderActiveTickets(); }
+                if (viewSecondsLeft <= 0) { clearInterval(viewTimer); showPage(tickets.length > 0 ? 'activeTicketsPage' : 'codeInputPage'); renderActiveTickets(); }
             }, 1000);
         }
 
-        function closeTicket() { 
-            clearInterval(viewTimer); 
-            showPage('activeTicketsPage'); 
-            renderActiveTickets(); 
-        }
+        function closeTicket() { clearInterval(viewTimer); showPage(tickets.length > 0 ? 'activeTicketsPage' : 'codeInputPage'); renderActiveTickets(); }
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            if (id === 'activeTicketsPage') renderActiveTickets();
             if (id === 'finalTicketPage') setTimeout(switchToTicket, 50);
+            if (id === 'activeTicketsPage') renderActiveTickets();
         }
 
         function renderActiveTickets() {
