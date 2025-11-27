@@ -25,7 +25,7 @@
         .action-btn:active{background:#3A3A3C;}
         .final-timer{font-size:26px;font-weight:600;text-align:center;margin-bottom:26px;}
 
-        /* ВЕРХНЯЯ СТРОКА — КАК В ОРИГИНАЛЕ */
+        /* ВЕРХНЯЯ СТРОКА */
         .final-header-row{
             display:flex;
             justify-content:space-between;
@@ -48,7 +48,6 @@
             z-index:2;
         }
         .ticket-icon{width:56px;height:56px;flex-shrink:0;}
-        
         .final-control{
             display:flex;
             align-items:center;
@@ -61,8 +60,6 @@
             z-index:2;
         }
         .control-icon{width:40px;height:40px;flex-shrink:0;}
-
-        /* КРАСНАЯ ПОЛОСКА */
         .tab-indicator{
             position:absolute;
             bottom:-1px;
@@ -73,20 +70,55 @@
             z-index:1;
         }
 
-        .final-info-block{margin-bottom:32px;}
-        .info-row{display:flex;align-items:flex-start;gap:16px;padding:15px 0;border-bottom:1px solid #2C2C2E;}
-        .info-row:last-child{border-bottom:none;padding-bottom:0;}
+        /* БИЛЕТ — ПОЛОСКИ ВПЛОТНУЮ, КАК В ОРИГИНАЛЕ */
+        .final-info-block{
+            margin-bottom:32px;
+        }
+        .info-row{
+            display:flex;
+            align-items:flex-start;
+            gap:16px;
+            padding:9px 0; /* было 15px — теперь вплотную */
+            border-bottom:1px solid #2C2C2E;
+        }
+        .info-row:last-child{
+            border-bottom:none;
+            padding-bottom:0;
+        }
         .info-icon{
-            width:52px;        /* Увеличено с 40px */
-            height:52px;       /* Увеличено с 40px */
+            width:52px;
+            height:52px;
             flex-shrink:0;
-            margin-top:3px;
+            margin-top:2px; /* чуть подогнал под текст */
         }
         .info-content{flex:1;}
-        .info-label,.route-fromto{font-size:13.5px;color:#AAAAAA;font-weight:500;margin-bottom:3px;}
-        .info-value,.route-number{font-size:16.5px;font-weight:600;color:#FFFFFF;line-height:1.35;}
-        .final-close-btn{background:#FF3B30;color:#FFF;font-size:19px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;box-shadow:0 4px 12px rgba(255,59,48,0.3);}
+        .info-label,.route-fromto{
+            font-size:13.5px;
+            color:#AAAAAA;
+            font-weight:500;
+            margin-bottom:2px; /* было 3px */
+        }
+        .info-value,.route-number{
+            font-size:16.5px;
+            font-weight:600;
+            color:#FFFFFF;
+            line-height:1.35;
+        }
+
+        .final-close-btn{
+            background:#FF3B30;
+            color:#FFF;
+            font-size:19px;
+            font-weight:600;
+            padding:20px;
+            border-radius:16px;
+            text-align:center;
+            margin-top:auto;
+            cursor:pointer;
+            box-shadow:0 4px 12px rgba(255,59,48,0.3);
+        }
         .final-close-btn:active{background:#E01E1E;}
+
         .pay-button{background:#30D158;color:#000;font-size:18px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;}
         .pay-button:active{background:#28A745;}
         .active-tickets-list{flex:1;overflow-y:auto;margin-bottom:12px;}
@@ -142,7 +174,7 @@
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ФИНАЛЬНЫЙ БИЛЕТ -- ТОЛЬКО УВЕЛИЧИЛ ИКОНКИ -->
+        <!-- ФИНАЛЬНЫЙ БИЛЕТ -->
         <div id="finalTicketPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;padding-top:20px;">
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
@@ -200,7 +232,7 @@
                     <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
                 </div>
 
-                <div id="controlContent" style="display:none; flex:1; display:flex; align-items:center; justify-content:center; color:#555; font-size:18px;">
+                <div id="controlContent" style="display:none;flex:1;display:flex;align-items:center;justify-content:center;color:#555;font-size:18px;">
                     <!-- Пустой экран контроля -->
                 </div>
             </div>
@@ -336,7 +368,6 @@
         document.addEventListener('DOMContentLoaded', () => { 
             updateCodeDisplay(); 
             updatePrice();
-            // При открытии билета — ставим полоску под номером
             setTimeout(() => {
                 if (document.getElementById('finalTicketPage').classList.contains('active')) {
                     switchToTicket();
