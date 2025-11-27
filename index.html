@@ -22,15 +22,15 @@
             margin-bottom:28px;position:relative;
         }
         .final-ticket-number{
-            display:flex;align-items:center;gap:12px;
+            display:flex;align-items:center;gap:14px;
             font-size:24px;font-weight:500;color:#FF3B30;cursor:pointer;z-index:2;
         }
-        .ticket-icon{width:48px;height:48px;flex-shrink:0;}
+        .ticket-icon{width:56px;height:56px;flex-shrink:0;} /* ← БОЛЬШЕ */
         .final-control{
-            display:flex;align-items:center;gap:8px;
+            display:flex;align-items:center;gap:10px;
             font-size:18px;color:#888;cursor:pointer;z-index:2;
         }
-        .control-icon{width:36px;height:36px;flex-shrink:0;}
+        .control-icon{width:44px;height:44px;flex-shrink:0;} /* ← ТОЖЕ КРУПНЕЕ */
         .tab-indicator{
             position:absolute;bottom:-1px;height:2.5px;background:#FF3B30;
             border-radius:2px;transition:all 0.3s ease;z-index:1;
@@ -42,12 +42,12 @@
 
         .final-info-block{flex:1;}
         .info-row{
-            display:flex;align-items:center;gap:16px;
-            padding:14px 0;
+            display:flex;align-items:center;gap:20px; /* чуть больше отступ */
+            padding:16px 0; /* чуть больше воздуха */
             border-bottom:1px solid #2C2C2E;
         }
         .info-row:last-child{border-bottom:none;}
-        .info-icon{width:40px;height:40px;flex-shrink:0;}
+        .info-icon{width:56px;height:56px;flex-shrink:0;} /* ← САМЫЕ БОЛЬШИЕ ИКОНКИ */
         .info-content{flex:1;}
         .info-label, .route-fromto{
             font-size:15px;color:#AAAAAA;font-weight:500;margin-bottom:4px;
@@ -66,7 +66,7 @@
         }
         .final-close-btn:active{background:#E01E1E;}
 
-        /* КЛАВИАТУРА И ОСТАЛЬНОЕ */
+        /* Клавиатура и остальное — без изменений */
         .code-input-field{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
         .code-box{width:40px;height:52px;border:1px solid #3A3A3C;border-radius:8px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;}
         .code-box.filled{background:#FFF;color:#000;border-color:#FFF;}
@@ -79,11 +79,6 @@
         .action-btn:active{background:#3A3A3C;}
         .pay-button{background:#30D158;color:#000;font-size:18px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;}
         .pay-button:active{background:#28A745;}
-        .active-tickets-list{flex:1;overflow-y:auto;margin-bottom:12px;}
-        .active-ticket-item{background:#1E1E1E;border-radius:12px;padding:16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
-        .active-ticket-item:active{background:#2A2A2C;}
-        .delete-btn{width:32px;height:32px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FF3B30" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1-2-2h4a2 2 0 0 1-2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>') center/20px no-repeat;cursor:pointer;}
-        .close-button{background:#333;color:#FFF;padding:16px;border-radius:12px;text-align:center;font-size:17px;margin-top:16px;cursor:pointer;}
     </style>
 </head>
 <body>
@@ -137,7 +132,7 @@
                 <div class="final-header-row">
                     <div class="final-ticket-number" onclick="switchToTicket()">
                         <img src="big-ticket.png" class="ticket-icon" alt="Билет">
-                        <span id="currentTicketNumber">1 299 814 483</span>
+                        <span id="currentTicketNumber">1 314 306 766</span>
                     </div>
                     <div class="final-control" onclick="switchToControl()">
                         <img src="control.png" class="control-icon" alt="Контроль">
@@ -167,21 +162,21 @@
                             <img src="rub.png" class="info-icon">
                             <div class="info-content">
                                 <div class="info-label">Стоимость</div>
-                                <div class="info-value" id="finalCost">1 шт., Полный, 48.00 ₽</div>
+                                <div class="info-value" id="finalCost">2 шт., Полный, 96.00 ₽</div>
                             </div>
                         </div>
                         <div class="info-row">
                             <img src="calendar.png" class="info-icon">
                             <div class="info-content">
                                 <div class="info-label">Дата покупки</div>
-                                <div class="info-value" id="purchaseDate">27.11.2025</div>
+                                <div class="info-value" id="purchaseDate">26 ноября 2025 г.</div>
                             </div>
                         </div>
                         <div class="info-row">
                             <img src="clock.png" class="info-icon">
                             <div class="info-content">
                                 <div class="info-label">Время покупки</div>
-                                <div class="info-value" id="purchaseTime">14:27</div>
+                                <div class="info-value" id="purchaseTime">18:36</div>
                             </div>
                         </div>
                     </div>
@@ -192,15 +187,6 @@
                 <div id="controlContent" class="control-content">
                     <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
                 </div>
-            </div>
-        </div>
-
-        <!-- АКТИВНЫЕ БИЛЕТЫ -->
-        <div id="activeTicketsPage" class="page">
-            <div style="flex:1;display:flex;flex-direction:column;">
-                <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Действующие билеты</div>
-                <div class="active-tickets-list" id="activeTicketsList"></div>
-                <div class="close-button" onclick="showPage('codeInputPage')">Назад</div>
             </div>
         </div>
     </div>
@@ -302,44 +288,18 @@
 
         function closeTicket() { 
             clearInterval(viewTimer); 
-            showPage('activeTicketsPage'); 
-            renderActiveTickets(); 
+            if (tickets.length > 0) {
+                showPage('activeTicketsPage');
+                renderActiveTickets();
+            } else {
+                showPage('codeInputPage');
+            }
         }
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            if (id === 'activeTicketsPage') renderActiveTickets();
             if (id === 'finalTicketPage') setTimeout(switchToTicket, 50);
-        }
-
-        function renderActiveTickets() {
-            const list = document.getElementById('activeTicketsList'); list.innerHTML = '';
-            if (tickets.length === 0) { list.innerHTML = '<div style="text-align:center;color:#AAA;margin-top:20px;">Нет билетов</div>'; return; }
-            tickets.forEach((t, i) => {
-                const mins = Math.floor((TOTAL_DURATION - (Date.now() - t.created_at)) / 60000);
-                const el = document.createElement('div'); el.className = 'active-ticket-item';
-                el.onclick = () => {
-                    document.getElementById('currentTicketNumber').textContent = t.number;
-                    document.getElementById('finalCarrier').textContent = t.carrier;
-                    document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g, '—');
-                    document.getElementById('finalBusNumber').textContent = t.busNumber;
-                    document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + (t.quantity * 48) + '.00 ₽';
-                    document.getElementById('purchaseDate').textContent = t.purchaseDate;
-                    document.getElementById('purchaseTime').textContent = t.purchaseTime;
-                    showPage('finalTicketPage');
-                    switchToTicket();
-                    startViewTimer();
-                };
-                el.innerHTML = `<div><div style="font-weight:600;">Билет № ${t.number}</div><div style="font-size:14px;color:#AAA">Осталось: ${mins} мин</div></div><div class="delete-btn" onclick="event.stopPropagation();deleteTicket(${i})"></div>`;
-                list.appendChild(el);
-            });
-        }
-
-        function deleteTicket(i) {
-            tg.showPopup({ title: "Удалить билет?", message: "Без возврата", buttons: [{ type: 'destructive', text: 'Удалить', id: 'del' }, { type: 'cancel' }] }, b => {
-                if (b === 'del') { tickets.splice(i, 1); localStorage.setItem('user_tickets', JSON.stringify(tickets)); renderActiveTickets(); }
-            });
         }
 
         document.addEventListener('DOMContentLoaded', () => { 
