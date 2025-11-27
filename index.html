@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Городской Транспорт</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode.js@1.0.0/lib/qrcode.min.js"></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
         body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#000;color:#FFF;height:100vh;overflow:hidden;}
@@ -23,10 +22,9 @@
         .final-control{display:flex;align-items:center;gap:8px;font-size:18px;color:#888;cursor:pointer;z-index:2;}
         .control-icon{width:36px;height:36px;flex-shrink:0;}
         .tab-indicator{position:absolute;bottom:-1px;height:2.5px;background:#FF3B30;border-radius:2px;transition:all 0.3s ease;z-index:1;}
-
         .ticket-content{flex:1;display:flex;flex-direction:column;}
-        .control-content{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;}
-
+        .control-content{flex:1;display:none;flex-direction:column;justify-content:flex-end;}
+        .final-info-block{flex:1;}
         .info-row{display:flex;align-items:flex-start;gap:0;padding:6px 0 7px;border-bottom:1px solid #2C2C2E;}
         .info-row:last-child{border-bottom:none;}
         .info-icon.big{width:60px;height:60px;margin-right:16px;margin-top:-3px;flex-shrink:0;}
@@ -56,6 +54,7 @@
 
         #accessDenied{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:9999;font-size:24px;color:#FF3B30;}
 
+        /* ВЫБОР ЦЕНЫ */
         .price-selector{background:#1E1E1E;border:1px solid #333;border-radius:12px;padding:14px;margin:16px 0;cursor:pointer;}
         .price-selector:active{background:#2A2A2C;}
         .price-current{font-size:17px;font-weight:600;}
@@ -67,31 +66,6 @@
         .custom-price{width:100%;background:#000;border:1px solid #444;border-radius:10px;padding:12px;color:#FFF;font-size:16px;text-align:center;}
         .apply-btn{background:#30D158;color:#000;padding:12px 16px;border-radius:10px;font-weight:600;cursor:pointer;}
         .apply-btn:active{background:#28A745;}
-
-        /* ТОЛЬКО ЭТО — ДЛЯ КОНТРОЛЯ */
-        #controlContent {
-            align-items: center;
-            justify-content: center;
-            gap: 30px;
-        }
-        #qrContainer {
-            width: 300px;
-            height: 300px;
-            background: #FFF;
-            border-radius: 24px;
-            padding: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-        }
-        #qrCode canvas {
-            width: 100% !important;
-            height: 100% !important;
-        }
-        #controlTicketNumber {
-            font-size: 36px;
-            font-weight: 800;
-            letter-spacing: 4px;
-            color: #FFF;
-        }
     </style>
 </head>
 <body>
@@ -121,7 +95,7 @@
                 <div class="bottom-row">
                     <button class="action-btn" onclick="scanCode()">Сканировать</button>
                     <button class="key" onclick="addNumber(0)">0</button>
-                    <button class="action-btn" onclick="backspace()">Backspace</button>
+                    <button class="action-btn" onclick="backspace()">←</button>
                 </div>
             </div>
         </div>
@@ -139,6 +113,7 @@
                 <span style="color:#666;">10</span>
             </div>
 
+            <!-- ВЫБОР ЦЕНЫ -->
             <div class="price-selector" onclick="document.getElementById('priceOptions').style.display = document.getElementById('priceOptions').style.display==='block'?'none':'block'">
                 <div class="price-current">Цена за 1 билет: <span id="currentPriceText">48.00 ₽</span></div>
             </div>
@@ -212,12 +187,8 @@
                     <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
                 </div>
 
-                <!-- ТОЛЬКО ЭТО ИЗМЕНИЛ — ВКЛАДКА КОНТРОЛЬ -->
                 <div id="controlContent" class="control-content">
-                    <div id="qrContainer">
-                        <div id="qrCode"></div>
-                    </div>
-                    <div id="controlTicketNumber">№ 1 301 833 477</div>
+                    <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
                 </div>
             </div>
         </div>
@@ -238,7 +209,6 @@
         tg.expand(); tg.MainButton.hide();
 
         const userId = tg.initDataUnsafe?.user?.id;
-
         if (!userId || !ALLOWED_USERS.includes(userId)) {
             document.getElementById('accessDenied').style.display = 'flex';
         } else {
@@ -254,6 +224,7 @@
             if (tickets.length > 0) { showPage('activeTicketsPage'); renderActiveTickets(); }
             else showPage('codeInputPage');
 
+            // ЦЕНА ЗА ОДИН БИЛЕТ
             let ticketPrice = 48.00;
 
             function setPrice(price) {
@@ -296,7 +267,7 @@
                 document.getElementById('finalCarrier').textContent = carrier;
                 document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g, '—');
                 document.getElementById('finalBusNumber').textContent = busNumber;
-                document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + totalAmount + ' ₽';
+                document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + totalAmount + ' ₽'; // ВСЕГДА "Полный"
                 document.getElementById('purchaseDate').textContent = purchaseDate;
                 document.getElementById('purchaseTime').textContent = purchaseTime;
 
@@ -305,6 +276,7 @@
                 startViewTimer();
             }
 
+            // ВСЁ ОСТАЛЬНОЕ — БЕЗ ИЗМЕНЕНИЙ
             function switchToTicket() {
                 document.getElementById('ticketContent').style.display = 'flex';
                 document.getElementById('controlContent').style.display = 'none';
@@ -324,20 +296,12 @@
                 const indicator = document.getElementById('indicator');
                 indicator.style.left = (controlEl.getBoundingClientRect().left - controlEl.parentElement.getBoundingClientRect().left) + 'px';
                 indicator.style.width = controlEl.offsetWidth + 'px';
-
-                // ГЕНЕРАЦИЯ QR — ТОЛЬКО НОМЕР БИЛЕТА
-                const ticketNum = document.getElementById('currentTicketNumber').textContent.trim();
-                document.getElementById('controlTicketNumber').textContent = '№ ' + ticketNum;
-                document.getElementById('qrCode').innerHTML = '';
-                new QRCode(document.getElementById('qrCode'), {
-                    text: ticketNum,
-                    width: 260,
-                    height: 260,
-                    colorDark: "#000000",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.H
-                });
             }
+
+            function addNumber(n) { if (enteredCode.length < 6) { enteredCode += n; updateCodeDisplay(); if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); } }
+            function backspace() { enteredCode = enteredCode.slice(0, -1); updateCodeDisplay(); }
+            function updateCodeDisplay() { document.querySelectorAll('.code-box').forEach((b, i) => { b.textContent = enteredCode[i] || ''; b.classList.toggle('filled', i < enteredCode.length); }); }
+            function scanCode() { tg.showScanQrPopup({ text: 'Наведите камеру на QR-код' }, () => { showPage('paymentPage'); }); }
 
             function random3() { return Math.floor(Math.random() * 900) + 100; }
 
@@ -373,7 +337,7 @@
                         document.getElementById('finalCarrier').textContent = t.carrier;
                         document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g, '—');
                         document.getElementById('finalBusNumber').textContent = t.busNumber;
-                        document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + total + ' ₽';
+                        document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + total + ' ₽'; // ВСЕГДА "Полный"
                         document.getElementById('purchaseDate').textContent = t.purchaseDate;
                         document.getElementById('purchaseTime').textContent = t.purchaseTime;
                         showPage('finalTicketPage');
@@ -390,11 +354,6 @@
                     if (b === 'del') { tickets.splice(i, 1); localStorage.setItem('user_tickets', JSON.stringify(tickets)); renderActiveTickets(); }
                 });
             }
-
-            function addNumber(n) { if (enteredCode.length < 6) { enteredCode += n; updateCodeDisplay(); if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); } }
-            function backspace() { enteredCode = enteredCode.slice(0, -1); updateCodeDisplay(); }
-            function updateCodeDisplay() { document.querySelectorAll('.code-box').forEach((b, i) => { b.textContent = enteredCode[i] || ''; b.classList.toggle('filled', i < enteredCode.length); }); }
-            function scanCode() { tg.showScanQrPopup({ text: 'Наведите камеру на QR-код' }, () => { showPage('paymentPage'); }); }
 
             document.addEventListener('DOMContentLoaded', () => { 
                 updateCodeDisplay(); 
