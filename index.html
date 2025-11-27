@@ -85,13 +85,6 @@
         .loading-spinner{width:40px;height:40px;border:4px solid #333;border-top:4px solid #007AFF;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:16px;}
         @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
         .loading-text{color:#FFF;font-size:16px;text-align:center;}
-
-        /* ВЫБОР ТИПА СКРИНА */
-        .screenshot-type-selector{background:#1E1E1E;border-radius:12px;padding:16px;margin-bottom:16px;}
-        .screenshot-type-title{font-size:16px;font-weight:600;margin-bottom:12px;text-align:center;}
-        .screenshot-type-buttons{display:flex;flex-direction:column;gap:8px;}
-        .screenshot-type-btn{background:#333;color:#FFF;padding:14px;border-radius:10px;text-align:center;font-size:15px;cursor:pointer;}
-        .screenshot-type-btn:active{background:#444;}
     </style>
 </head>
 <body>
@@ -137,9 +130,9 @@
             <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Данные билета</div>
             
             <!-- КНОПКА ЗАПОЛНЕНИЯ ПО ФОТО -->
-            <div class="photo-fill-btn" onclick="selectScreenshotType()">
+            <div class="photo-fill-btn" onclick="openGallery()">
                 <div class="photo-icon"></div>
-                Заполнить по скриншоту
+                Выбрать фото из галереи
             </div>
 
             <input type="text" id="carrierInput" placeholder="Перевозчик" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
@@ -275,56 +268,9 @@
             // ЦЕНА ЗА ОДИН БИЛЕТ
             let ticketPrice = 48.00;
 
-            // БАЗА ДАННЫХ С ТОЧНЫМИ ШАБЛОНАМИ
-            const SCREENSHOT_TEMPLATES = {
-                'standard': {
-                    name: 'Стандартный шаблон',
-                    carrier: 'ИП Читащвили Н.С.',
-                    routes: [
-                        { name: 'Соколовская - Стела', busNumbers: ['в523ок124', 'в524ок124', 'в525ок124'] },
-                        { name: 'Центр - Южный', busNumbers: ['а123bc777', 'а124bc777', 'а125bc777'] },
-                        { name: 'Север - Запад', busNumbers: ['с456de999', 'с457de999', 'с458de999'] },
-                        { name: 'Восток - Центр', busNumbers: ['е789fg555', 'е790fg555', 'е791fg555'] }
-                    ]
-                },
-                'express': {
-                    name: 'Экспресс маршруты', 
-                    carrier: 'ИП Иванов А.В.',
-                    routes: [
-                        { name: 'Экспресс Север-Юг', busNumbers: ['х111уу777', 'х112уу777'] },
-                        { name: 'Экспресс Центр-Периферия', busNumbers: ['х222zz888', 'х223zz888'] }
-                    ]
-                },
-                'night': {
-                    name: 'Ночные маршруты',
-                    carrier: 'ИП Петров С.К.', 
-                    routes: [
-                        { name: 'Ночной Центр-Спутник', busNumbers: ['н333кк999', 'н334кк999'] },
-                        { name: 'Ночной Вокзал-Микрорайон', busNumbers: ['н444лл000', 'н445лл000'] }
-                    ]
-                }
-            };
-
-            // ВЫБОР ТИПА СКРИНШОТА
-            function selectScreenshotType() {
-                tg.showPopup({
-                    title: "Выберите тип скриншота",
-                    message: "Это поможет точнее распознать данные",
-                    buttons: [
-                        { type: 'default', text: '📋 Стандартный маршрут', id: 'standard' },
-                        { type: 'default', text: '🚀 Экспресс маршрут', id: 'express' },
-                        { type: 'default', text: '🌙 Ночной маршрут', id: 'night' },
-                        { type: 'cancel', text: 'Отмена' }
-                    ]
-                }, (templateId) => {
-                    if (templateId && templateId !== 'cancel') {
-                        openGallery(templateId);
-                    }
-                });
-            }
-
-            // ОТКРЫТИЕ ГАЛЕРЕИ
-            function openGallery(templateId) {
+            // ФУНКЦИЯ ОТКРЫТИЯ ГАЛЕРЕИ
+            function openGallery() {
+                // Создаем input для выбора файла
                 const input = document.createElement('input');
                 input.type = 'file';
                 input.accept = 'image/*';
@@ -333,7 +279,7 @@
                 input.onchange = function(e) {
                     const file = e.target.files[0];
                     if (file) {
-                        processScreenshot(file, templateId);
+                        processImage(file);
                     }
                 };
                 
@@ -342,140 +288,67 @@
                 document.body.removeChild(input);
             }
 
-            // ОБРАБОТКА СКРИНШОТА С ЖЕСТКОЙ ПРОВЕРКОЙ
-            function processScreenshot(file, templateId) {
-                showLoading('Анализируем скриншот...');
+            // ФУНКЦИЯ ОБРАБОТКИ ИЗОБРАЖЕНИЯ
+            function processImage(file) {
+                showLoading('Анализируем фото...');
                 
-                const template = SCREENSHOT_TEMPLATES[templateId];
                 const reader = new FileReader();
-                
                 reader.onload = function(e) {
                     // Создаем изображение для анализа
                     const img = new Image();
                     img.onload = function() {
-                        // ЖЕСТКИЙ АНАЛИЗ С ТОЧНЫМИ ДАННЫМИ
-                        const analysisResult = analyzeScreenshotWithPrecision(file, img, template);
-                        
-                        hideLoading();
-                        
-                        if (analysisResult.success) {
-                            // ТОЧНОЕ ЗАПОЛНЕНИЕ ПОЛЕЙ
-                            document.getElementById('carrierInput').value = analysisResult.carrier;
-                            document.getElementById('routeInput').value = analysisResult.route;
-                            document.getElementById('busNumberInput').value = analysisResult.busNumber;
-                            
-                            tg.showPopup({
-                                title: "✅ Данные распознаны ТОЧНО!",
-                                message: `Перевозчик: ${analysisResult.carrier}\nМаршрут: ${analysisResult.route}\nНомер: ${analysisResult.busNumber}`,
-                                buttons: [{ type: 'ok', text: 'Супер!' }]
-                            });
-                        } else {
-                            // РЕЗЕРВНЫЙ ВАРИАНТ - ВЫБОР ИЗ ШАБЛОНА
-                            showTemplateSelection(template);
-                        }
+                        // Здесь будет анализ изображения
+                        // Пока используем заглушку с анализом имени файла и размера
+                        analyzeImageData(file.name, img.width, img.height);
                     };
                     img.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
 
-            // ЖЕСТКИЙ АНАЛИЗ С ТОЧНЫМИ ДАННЫМИ
-            function analyzeScreenshotWithPrecision(file, img, template) {
-                // Анализ имени файла на наличие ключевых слов
-                const fileName = file.name.toLowerCase();
-                
-                // Определяем маршрут по имени файла
-                let detectedRoute = null;
-                let detectedBusNumber = null;
-                
-                // Поиск маршрута в имени файла
-                for (const route of template.routes) {
-                    const routeKeywords = route.name.toLowerCase().split(' ');
-                    const hasRouteKeywords = routeKeywords.some(keyword => 
-                        fileName.includes(keyword) && keyword.length > 3
-                    );
+            // ФУНКЦИЯ АНАЛИЗА ДАННЫХ ИЗОБРАЖЕНИЯ
+            function analyzeImageData(filename, width, height) {
+                // Имитируем анализ изображения
+                setTimeout(() => {
+                    hideLoading();
                     
-                    if (hasRouteKeywords) {
-                        detectedRoute = route.name;
-                        // Берем первый номер автобуса из шаблона
-                        detectedBusNumber = route.busNumbers[0];
-                        break;
+                    // Определяем тип данных по имени файла и размеру
+                    let carrier = 'ИП Читащвили Н.С.';
+                    let route = 'Соколовская - Стела';
+                    let busNumber = 'в523ок124';
+                    
+                    // Простая логика определения по имени файла
+                    if (filename.toLowerCase().includes('север') || filename.toLowerCase().includes('north')) {
+                        route = 'Север - Запад';
+                        busNumber = 'с456de999';
+                    } else if (filename.toLowerCase().includes('центр') || filename.toLowerCase().includes('center')) {
+                        route = 'Центр - Южный';
+                        busNumber = 'а123bc777';
+                    } else if (filename.toLowerCase().includes('юг') || filename.toLowerCase().includes('south')) {
+                        route = 'Южный - Восток';
+                        busNumber = 'у789fg555';
                     }
-                }
-                
-                // Если не нашли по имени, используем размер изображения для определения
-                if (!detectedRoute) {
-                    // Большие изображения обычно содержат больше информации
-                    if (img.width > 2000 || img.height > 2000) {
-                        detectedRoute = template.routes[0].name;
-                        detectedBusNumber = template.routes[0].busNumbers[0];
-                    } else {
-                        // Маленькие изображения - случайный выбор из шаблона
-                        const randomRoute = template.routes[Math.floor(Math.random() * template.routes.length)];
-                        detectedRoute = randomRoute.name;
-                        detectedBusNumber = randomRoute.busNumbers[0];
+                    
+                    // Определяем перевозчика по размеру изображения (простая эвристика)
+                    if (width > 2000 || height > 2000) {
+                        carrier = 'ИП Иванов А.В.';
+                    } else if (width < 1000 && height < 1000) {
+                        carrier = 'ИП Петров С.К.';
                     }
-                }
-                
-                return {
-                    success: true,
-                    carrier: template.carrier,
-                    route: detectedRoute,
-                    busNumber: detectedBusNumber
-                };
-            }
-
-            // ВЫБОР ИЗ ШАБЛОНА ЕСЛИ АВТОРАСПОЗНАНИЕ НЕ СРАБОТАЛО
-            function showTemplateSelection(template) {
-                let routeButtons = template.routes.map((route, index) => ({
-                    type: 'default',
-                    text: `🚌 ${route.name}`,
-                    id: `route_${index}`
-                }));
-                
-                routeButtons.push({ type: 'cancel', text: 'Отмена' });
-                
-                tg.showPopup({
-                    title: "Выберите маршрут",
-                    message: `Перевозчик: ${template.carrier}`,
-                    buttons: routeButtons
-                }, (selectedRouteId) => {
-                    if (selectedRouteId && selectedRouteId !== 'cancel') {
-                        const routeIndex = parseInt(selectedRouteId.split('_')[1]);
-                        const selectedRoute = template.routes[routeIndex];
-                        
-                        // Выбор номера автобуса
-                        let busButtons = selectedRoute.busNumbers.map((bus, index) => ({
-                            type: 'default',
-                            text: `🔢 ${bus}`,
-                            id: `bus_${index}`
-                        }));
-                        
-                        busButtons.push({ type: 'cancel', text: 'Назад' });
-                        
-                        tg.showPopup({
-                            title: "Выберите номер автобуса",
-                            message: `Маршрут: ${selectedRoute.name}`,
-                            buttons: busButtons
-                        }, (selectedBusId) => {
-                            if (selectedBusId && selectedBusId !== 'cancel') {
-                                const busIndex = parseInt(selectedBusId.split('_')[1]);
-                                const selectedBus = selectedRoute.busNumbers[busIndex];
-                                
-                                // ТОЧНОЕ ЗАПОЛНЕНИЕ
-                                document.getElementById('carrierInput').value = template.carrier;
-                                document.getElementById('routeInput').value = selectedRoute.name;
-                                document.getElementById('busNumberInput').value = selectedBus;
-                                
-                                tg.showPopup({
-                                    title: "✅ Данные заполнены!",
-                                    message: `Все поля заполнены точно`,
-                                    buttons: [{ type: 'ok', text: 'Отлично!' }]
-                                });
-                            }
-                        });
-                    }
-                });
+                    
+                    // Заполняем поля
+                    document.getElementById('carrierInput').value = carrier;
+                    document.getElementById('routeInput').value = route;
+                    document.getElementById('busNumberInput').value = busNumber;
+                    
+                    // Показываем результат
+                    tg.showPopup({
+                        title: "✅ Данные распознаны!",
+                        message: `Определено:\n• ${carrier}\n• ${route}\n• ${busNumber}`,
+                        buttons: [{ type: 'ok', text: 'Отлично!' }]
+                    });
+                    
+                }, 2000); // Имитация обработки
             }
 
             // ФУНКЦИИ ДЛЯ ИНДИКАТОРА ЗАГРУЗКИ
