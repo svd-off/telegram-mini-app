@@ -8,21 +8,29 @@
     <style>
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
         body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#000;color:#FFF;height:100vh;overflow:hidden;}
-        .app-container{height:100%;display:flex;flex-direction:column;padding:16px;padding-bottom:30px;}
-
-        /* ШАПКА + ПОЛОСКА ПОД НЕЙ */
-        .header-separator{
-            height:1px;
-            background:#2C2C2E;
-            margin:8px 0 12px;
+        
+        /* Главный контейнер — максимально прижат к верху */
+        .app-container{
+            height:100%;
+            display:flex;
+            flex-direction:column;
+            padding:0 16px 30px 16px; /* убрал верхний паддинг */
         }
 
-        /* ТАЙМЕР — ТОЧНО КАК В ОРИГИНАЛЕ */
+        /* САМАЯ ВЕРХНЯЯ ПОЛОСКА — ПРАКТИЧЕСКИ ПОД САМЫМ ВЕРХОМ */
+        .top-separator{
+            height:1px;
+            background:#2C2C2E;
+            margin:4px 0 10px 0; /* минимально от верха, как в оригинале */
+        }
+
+        /* ТАЙМЕР — ТОЧНО ПОД ПОЛОСКОЙ, КАК В ОРИГИНАЛЕ */
         .final-timer{
             font-size:26px;
-            font-weight:500; /* тоньше, как в оригинале */
+            font-weight:500;
             text-align:center;
             margin:0 0 20px;
+            line-height:1.2;
         }
 
         .page{display:none;flex-direction:column;height:100%;}
@@ -30,8 +38,10 @@
 
         .final-header-row{
             display:flex;justify-content:space-between;align-items:center;
-            padding-bottom:12px;border-bottom:1px solid #2C2C2E;
-            margin-bottom:8px;position:relative;
+            padding-bottom:12px;
+            border-bottom:1px solid #2C2C2E;
+            margin-bottom:8px;
+            position:relative;
         }
         .final-ticket-number{
             display:flex;align-items:center;gap:12px;
@@ -85,7 +95,7 @@
         }
         .final-close-btn:active{background:#E01E1E;}
 
-        /* Остальные стили без изменений */
+        /* Остальные стили */
         .code-input-field{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
         .code-box{width:40px;height:52px;border:1px solid #3A3A3C;border-radius:8px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;}
         .code-box.filled{background:#FFF;color:#000;border-color:#FFF;}
@@ -129,7 +139,7 @@
                 <div class="bottom-row">
                     <button class="action-btn" onclick="scanCode()">Сканировать</button>
                     <button class="key" onclick="addNumber(0)">0</button>
-                    <button class="action-btn" onclick="backspace()">←</button>
+                    <button class="action-btn" onclick="backspace()">Backspace</button>
                 </div>
             </div>
         </div>
@@ -148,13 +158,17 @@
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ФИНАЛЬНЫЙ БИЛЕТ -->
+        <!-- ФИНАЛЬНЫЙ БИЛЕТ — ПОЛНОСТЬЮ ПЕРЕДЕЛАН ПОД ОРИГИНАЛ -->
         <div id="finalTicketPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;">
-                <!-- ПОЛОСКА ПОД ШАПКОЙ + ТАЙМЕР -->
-                <div class="header-separator"></div>
+                
+                <!-- САМАЯ ВЕРХНЯЯ ПОЛОСКА — ПОЧТИ ПОД САМЫМ ВЕРХОМ -->
+                <div class="top-separator"></div>
+                
+                <!-- ТАЙМЕР — ПРЯМО ПОД ПОЛОСКОЙ -->
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
                 
+                <!-- НОМЕР БИЛЕТА + КОНТРОЛЬ -->
                 <div class="final-header-row">
                     <div class="final-ticket-number" onclick="switchToTicket()">
                         <img src="big-ticket.png" class="ticket-icon" alt="Билет">
@@ -181,7 +195,7 @@
                             <div class="info-content">
                                 <div class="route-fromto" id="finalRouteFromTo">Соколовская — Стела</div>
                                 <div class="route-number" id="finalBusNumber">в523ок124</div>
-23                        </div>
+                            </div>
                         </div>
                         <div class="info-row">
                             <img src="rub.png" class="info-icon big">
@@ -205,7 +219,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
+                    <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫ492ТЬ</div>
                 </div>
 
                 <div id="controlContent" class="control-content">
@@ -258,11 +272,26 @@
             indicator.style.width = controlEl.offsetWidth + 'px';
         }
 
-        function addNumber(n) { if (enteredCode.length < 6) { enteredCode += n; updateCodeDisplay(); if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); } }
+        function addNumber(n) { 
+            if (enteredCode.length < 6) { 
+                enteredCode += n; 
+                updateCodeDisplay(); 
+                if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); 
+            } 
+        }
         function backspace() { enteredCode = enteredCode.slice(0, -1); updateCodeDisplay(); }
-        function updateCodeDisplay() { document.querySelectorAll('.code-box').forEach((b, i) => { b.textContent = enteredCode[i] || ''; b.classList.toggle('filled', i < enteredCode.length); }); }
+        function updateCodeDisplay() { 
+            document.querySelectorAll('.code-box').forEach((b, i) => { 
+                b.textContent = enteredCode[i] || ''; 
+                b.classList.toggle('filled', i < enteredCode.length); 
+            }); 
+        }
         function scanCode() { tg.showScanQrPopup({ text: 'Наведите камеру на QR-код' }, () => { showPage('paymentPage'); }); }
-        function updatePrice() { const q = document.getElementById('quantityRange').value; document.getElementById('quantityValue').textContent = q; document.getElementById('totalPrice').textContent = (q * 48) + '.00 ₽'; }
+        function updatePrice() { 
+            const q = document.getElementById('quantityRange').value; 
+            document.getElementById('quantityValue').textContent = q; 
+            document.getElementById('totalPrice').textContent = (q * 48) + '.00 ₽'; 
+        }
 
         function payTicket() {
             const qty = document.getElementById('quantityRange').value;
