@@ -68,7 +68,7 @@
         .apply-btn{background:#30D158;color:#000;padding:12px 16px;border-radius:10px;font-weight:600;cursor:pointer;}
         .apply-btn:active{background:#28A745;}
 
-        /* QR CODE STYLES - ТОЧНО КАК НА СКРИНЕ */
+        /* QR CODE STYLES */
         .qr-container{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;flex:1;padding:5px 0 0 0;}
         .qr-code-wrapper{background:#FFF;padding:25px;border-radius:0;margin-bottom:15px;width:100%;max-width:320px;}
         #controlQrCode{width:270px!important;height:270px!important;}
@@ -112,7 +112,7 @@
         <div id="paymentPage" class="page">
             <div style="font-size:18px;font-weight:600;margin-bottom:24px;">Данные билета</div>
             <input type="text" id="carrierInput" value="ИП Читащвили Н.С." style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
-            <input type="text" id="routeInput" value="Соколовская - Стела" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;}
+            <input type="text" id="routeInput" value="Соколовская - Стела" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
             <input type="text" id="busNumberInput" value="в523ок124" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
 
             <div style="display:flex;align-items:center;margin:16px 0;">
@@ -285,7 +285,7 @@
                 document.getElementById('finalCarrier').textContent = carrier;
                 document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g, '—');
                 document.getElementById('finalBusNumber').textContent = busNumber;
-                document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + totalAmount + ' ₽'; // ВСЕГДА "Полный"
+                document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + totalAmount + ' ₽';
                 document.getElementById('purchaseDate').textContent = purchaseDate;
                 document.getElementById('purchaseTime').textContent = purchaseTime;
 
@@ -371,7 +371,7 @@
                         document.getElementById('finalCarrier').textContent = t.carrier;
                         document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g, '—');
                         document.getElementById('finalBusNumber').textContent = t.busNumber;
-                        document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + total + ' ₽'; // ВСЕГДА "Полный"
+                        document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + total + ' ₽';
                         document.getElementById('purchaseDate').textContent = t.purchaseDate;
                         document.getElementById('purchaseTime').textContent = t.purchaseTime;
                         
