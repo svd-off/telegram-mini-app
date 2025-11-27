@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Городской Транспорт</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
         body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#000;color:#FFF;height:100vh;overflow:hidden;}
@@ -23,7 +24,7 @@
         .control-icon{width:36px;height:36px;flex-shrink:0;}
         .tab-indicator{position:absolute;bottom:-1px;height:2.5px;background:#FF3B30;border-radius:2px;transition:all 0.3s ease;z-index:1;}
         .ticket-content{flex:1;display:flex;flex-direction:column;}
-        .control-content{flex:1;display:none;flex-direction:column;justify-content:flex-end;}
+        .control-content{flex:1;display:none;flex-direction:column;justify-content:flex-start;}
         .final-info-block{flex:1;}
         .info-row{display:flex;align-items:flex-start;gap:0;padding:6px 0 7px;border-bottom:1px solid #2C2C2E;}
         .info-row:last-child{border-bottom:none;}
@@ -66,6 +67,12 @@
         .custom-price{width:100%;background:#000;border:1px solid #444;border-radius:10px;padding:12px;color:#FFF;font-size:16px;text-align:center;}
         .apply-btn{background:#30D158;color:#000;padding:12px 16px;border-radius:10px;font-weight:600;cursor:pointer;}
         .apply-btn:active{background:#28A745;}
+
+        /* QR CODE STYLES */
+        .qr-container{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:20px 0;}
+        .qr-code-wrapper{background:#FFF;padding:20px;border-radius:16px;margin-bottom:30px;}
+        #controlQrCode{width:280px!important;height:280px!important;}
+        .control-ticket-number{font-size:24px;font-weight:600;text-align:center;color:#FFF;letter-spacing:1px;}
     </style>
 </head>
 <body>
@@ -188,6 +195,12 @@
                 </div>
 
                 <div id="controlContent" class="control-content">
+                    <div class="qr-container">
+                        <div class="qr-code-wrapper">
+                            <div id="controlQrCode"></div>
+                        </div>
+                        <div class="control-ticket-number" id="controlTicketNumber">1 314 306 766</div>
+                    </div>
                     <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
                 </div>
             </div>
@@ -264,6 +277,7 @@
                 localStorage.setItem('user_tickets', JSON.stringify(tickets));
 
                 document.getElementById('currentTicketNumber').textContent = ticketNum;
+                document.getElementById('controlTicketNumber').textContent = ticketNum;
                 document.getElementById('finalCarrier').textContent = carrier;
                 document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g, '—');
                 document.getElementById('finalBusNumber').textContent = busNumber;
@@ -271,12 +285,27 @@
                 document.getElementById('purchaseDate').textContent = purchaseDate;
                 document.getElementById('purchaseTime').textContent = purchaseTime;
 
+                // ГЕНЕРАЦИЯ QR КОДА
+                generateQrCode(ticketNum);
+
                 showPage('finalTicketPage');
                 switchToTicket();
                 startViewTimer();
             }
 
-            // ВСЁ ОСТАЛЬНОЕ — БЕЗ ИЗМЕНЕНИЙ
+            function generateQrCode(ticketNumber) {
+                const qrContainer = document.getElementById('controlQrCode');
+                qrContainer.innerHTML = '';
+                new QRCode(qrContainer, {
+                    text: ticketNumber,
+                    width: 280,
+                    height: 280,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            }
+
             function switchToTicket() {
                 document.getElementById('ticketContent').style.display = 'flex';
                 document.getElementById('controlContent').style.display = 'none';
@@ -334,12 +363,17 @@
                     const el = document.createElement('div'); el.className = 'active-ticket-item';
                     el.onclick = () => {
                         document.getElementById('currentTicketNumber').textContent = t.number;
+                        document.getElementById('controlTicketNumber').textContent = t.number;
                         document.getElementById('finalCarrier').textContent = t.carrier;
                         document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g, '—');
                         document.getElementById('finalBusNumber').textContent = t.busNumber;
                         document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + total + ' ₽'; // ВСЕГДА "Полный"
                         document.getElementById('purchaseDate').textContent = t.purchaseDate;
                         document.getElementById('purchaseTime').textContent = t.purchaseTime;
+                        
+                        // ГЕНЕРАЦИЯ QR КОДА ПРИ ОТКРЫТИИ СУЩЕСТВУЮЩЕГО БИЛЕТА
+                        generateQrCode(t.number);
+                        
                         showPage('finalTicketPage');
                         switchToTicket();
                         startViewTimer();
