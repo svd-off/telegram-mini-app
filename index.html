@@ -130,7 +130,7 @@
                         <img src="calendar.png" class="info-icon">
                         <div class="info-content">
                             <div class="info-label">Дата покупки</div>
-                            <div class="info-value" id="purchaseDate">27 ноября 2025</div>
+                            <div class="info-value" id="purchaseDate">27.11.2025</div>
                         </div>
                     </div>
                     <div class="info-row">
@@ -182,7 +182,11 @@
             const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
 
             const d = new Date();
-            const purchaseDate = d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }) + ' г.';  // ← ТОЧНО ОДНА "г."
+            // ← ВОТ ЭТО ТО, ЧТО ТЫ ХОТЕЛ: 27.11.2025 ←
+            const purchaseDate = d.getDate().toString().padStart(2, '0') + '.' + 
+                                 (d.getMonth() + 1).toString().padStart(2, '0') + '.' + 
+                                 d.getFullYear();
+
             const purchaseTime = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 
             tickets.push({
@@ -199,7 +203,7 @@
             document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g, '—');
             document.getElementById('finalBusNumber').textContent = busNumber;
             document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + (qty * 48) + '.00 ₽';
-            document.getElementById('purchaseDate').textContent = purchaseDate;
+            document.getElementById('purchaseDate').textContent = purchaseDate;  // ← 27.11.2025
             document.getElementById('purchaseTime').textContent = purchaseTime;
 
             showPage('finalTicketPage');
@@ -243,7 +247,7 @@
                     document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g, '—');
                     document.getElementById('finalBusNumber').textContent = t.busNumber;
                     document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + (t.quantity * 48) + '.00 ₽';
-                    document.getElementById('purchaseDate').textContent = t.purchaseDate;     // ← ровно "27 ноября 2025 г."
+                    document.getElementById('purchaseDate').textContent = t.purchaseDate;  // ← 27.11.2025
                     document.getElementById('purchaseTime').textContent = t.purchaseTime;
                     showPage('finalTicketPage'); startViewTimer();
                 };
