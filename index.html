@@ -26,14 +26,13 @@
         .action-btn{flex:1;background:#1E1E1E;color:#FFF;border:none;border-radius:12px;font-size:16px;font-weight:500;height:68px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
         .action-btn:active{background:#3A3A3C;}
 
-        /* Финальный билет — УЛЬТРА-КОМПАКТНЫЙ КАК НА СКРИНЕ */
+        /* Финальный билет — 1 в 1 КАК НА СКРИНЕ */
         .final-timer{font-size:26px;font-weight:600;text-align:center;margin-bottom:24px;}
         .final-header-row{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid #2C2C2E;margin-bottom:28px;}
-        
         .final-ticket-number{
             display:flex;
             align-items:center;
-            gap:12px;                    /* ← текст вплотную к иконке билета */
+            gap:12px; /* текст вплотную к иконке билета */
             font-size:24px;
             font-weight:600;
             color:#FF3B30;
@@ -43,7 +42,7 @@
         .final-ticket-number::after{
             content:'';
             position:absolute;
-            left:68px;                   /* 56 + 12 = 68px — линия начинается сразу после иконки */
+            left:68px;
             right:0;
             bottom:-9px;
             height:2.5px;
@@ -52,29 +51,29 @@
         }
         .final-control{font-size:16px;opacity:0.8;cursor:pointer;}
 
-        /* Инфо-блок — ещё компактнее и ближе к оригиналу */
+        /* Инфо-блок — КАК В ОРИГИНАЛЕ: большие иконки + текст вплотную */
         .final-info-block{margin-bottom:28px;}
         .info-row{
             display:flex;
             align-items:flex-start;
-            gap:10px;                    /* ← текст максимально близко к иконкам */
-            padding:11px 0;              /* ← меньше воздуха сверху/снизу */
+            gap:12px;                    /* ← как на скрине — не слишком близко, не далеко */
+            padding:12px 0;
             border-bottom:1px solid #2C2C2E;
         }
         .info-row:last-child{border-bottom:none;padding-bottom:0;}
         .info-icon{
-            width:24px;
-            height:24px;
-            opacity:0.9;
+            width:28px;                  /* ← КАК НА СКРИНЕ — большие белые иконки */
+            height:28px;
+            opacity:1;
             flex-shrink:0;
-            margin-top:1px;
+            margin-top:2px;
         }
         .info-content{flex:1;}
         .info-label{
             font-size:13px;
             color:#AAAAAA;
             font-weight:500;
-            margin-bottom:1px;
+            margin-bottom:2px;
         }
         .info-value{
             font-size:16px;
@@ -88,7 +87,18 @@
             font-weight:500;
         }
 
-        .final-close-btn{background:#FF3B30;color:#FFF;font-size:19px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;box-shadow:0 4px 12px rgba(255,59,48,0.3);}
+        .final-close-btn{
+            background:#FF3B30;
+            color:#FFF;
+            font-size:19px;
+            font-weight:600;
+            padding:20px;
+            border-radius:16px;
+            text-align:center;
+            margin-top:auto;
+            cursor:pointer;
+            box-shadow:0 4px 12px rgba(255,59,48,0.3);
+        }
         .final-close-btn:active{background:#E01E1E;}
         .pay-button{background:#30D158;color:#000;font-size:18px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;}
         .pay-button:active{background:#28A745;}
@@ -127,7 +137,7 @@
                 <div class="bottom-row">
                     <button class="action-btn" onclick="scanCode()">Сканировать</button>
                     <button class="key" onclick="addNumber(0)">0</button>
-                    <button class="action-btn" onclick="backspace()">Backspace</button>
+                    <button class="action-btn" onclick="backspace()">←</button>
                 </div>
             </div>
         </div>
@@ -146,7 +156,7 @@
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ФИНАЛЬНЫЙ БИЛЕТ — ИДЕАЛЬНО КАК НА СКРИНЕ -->
+        <!-- ФИНАЛЬНЫЙ БИЛЕТ — 1 В 1 КАК НА СКРИНЕ -->
         <div id="finalTicketPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;padding-top:20px;">
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
@@ -163,35 +173,35 @@
                         <img src="carrier.png" class="info-icon">
                         <div class="info-content">
                             <div class="info-label">Перевозчик</div>
-                            <div class="info-value" id="finalCarrier">ИП Галченкова Е. А.</div>
+                            <div class="info-value" id="finalCarrier">ИП Читащвили Н.С.</div>
                         </div>
                     </div>
                     <div class="info-row">
                         <img src="bus.png" class="info-icon">
                         <div class="info-content">
                             <div class="info-label">Маршрут</div>
-                            <div class="info-value" id="finalRouteDisplay">ст. Красноярск-Северный — ДК Кировский<br><small id="finalBusNumber">к378тв124</small></div>
+                            <div class="info-value" id="finalRouteDisplay">Соколовская — Стела<br><small id="finalBusNumber">в523ок124</small></div>
                         </div>
                     </div>
                     <div class="info-row">
                         <img src="rub.png" class="info-icon">
                         <div class="info-content">
                             <div class="info-label">Стоимость</div>
-                            <div class="info-value" id="finalCost">1 шт., Полный, 48.00 ₽</div>
+                            <div class="info-value" id="finalCost">2 шт., Полный, 96.00 ₽</div>
                         </div>
                     </div>
                     <div class="info-row">
                         <img src="calendar.png" class="info-icon">
                         <div class="info-content">
                             <div class="info-label">Дата покупки</div>
-                            <div class="info-value" id="purchaseDate">15 ноября 2025 г.</div>
+                            <div class="info-value" id="purchaseDate">26 ноября 2025 г.</div>
                         </div>
                     </div>
                     <div class="info-row">
                         <img src="clock.png" class="info-icon">
                         <div class="info-content">
                             <div class="info-label">Время покупки</div>
-                            <div class="info-value" id="purchaseTime">12:08</div>
+                            <div class="info-value" id="purchaseTime">18:36</div>
                         </div>
                     </div>
                 </div>
