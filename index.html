@@ -11,62 +11,8 @@
         .app-container{height:100%;display:flex;flex-direction:column;padding:16px;}
         .page{display:none;flex-direction:column;height:100%;}
         .page.active{display:flex;}
-        .code-input-field{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
-        .code-box{width:40px;height:52px;border:1px solid #3A3A3C;border-radius:8px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;}
-        .code-box.filled{background:#FFF;color:#000;border-color:#FFF;}
-        .header-inner{display:flex;align-items:center;justify-content:center;margin-bottom:32px;}
-        .header-icon{width:20px;height:20px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFF" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01"/><path d="M15 15h.01"/><path d="M9 15h.01"/><path d="M15 9h.01"/><path d="M5 5h4v4H5z"/><path d="M15 5h4v4h-4z"/><path d="M5 15h4v4H5z"/><path d="M15 15h4v4h-4z"/></svg>') center/contain no-repeat;margin-right:8px;}
-        .keyboard-container{border:1.5px solid #FFF;border-radius:16px;padding:16px;background:#000;}
-        .keyboard{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
-        .key{background:#FFF;color:#000;border:none;border-radius:12px;font-size:28px;font-weight:500;height:68px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-        .key:active{background:#D1D1D6;transform:scale(0.98);}
-        .bottom-row{display:flex;justify-content:space-between;gap:12px;}
-        .action-btn{flex:1;background:#1E1E1E;color:#FFF;border:none;border-radius:12px;font-size:16px;font-weight:500;height:68px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-        .action-btn:active{background:#3A3A3C;}
-        .final-timer{font-size:26px;font-weight:600;text-align:center;margin-bottom:26px;}
 
-        /* ТАБЫ — КАК В ОРИГИНАЛЕ */
-        .tabs-container{
-            display:flex;
-            position:relative;
-            margin-bottom:20px;
-            border-bottom:1px solid #333;
-        }
-        .tab{
-            flex:1;
-            text-align:center;
-            padding:12px 0;
-            font-size:17px;
-            font-weight:500;
-            color:#888;
-            cursor:pointer;
-            transition:all 0.3s;
-            position:relative;
-            z-index:2;
-        }
-        .tab.active{
-            color:#FF3B30;
-            font-weight:600;
-        }
-        .tab-indicator{
-            position:absolute;
-            bottom:0;
-            height:3px;
-            background:#FF3B30;
-            border-radius:2px;
-            transition:left 0.3s ease, width 0.3s ease;
-            z-index:3;
-        }
-
-        /* КОНТЕНТ ТАБОВ */
-        .tab-content{display:none;}
-        .tab-content.active{display:flex;}
-
-        /* БИЛЕТ */
-        .ticket-content{
-            flex-direction:column;
-            flex:1;
-        }
+        /* ТАБЫ — ТОЧНО КАК В ОРИГИНАЛЕ */
         .final-header-row{
             display:flex;
             justify-content:space-between;
@@ -74,6 +20,7 @@
             padding-bottom:14px;
             border-bottom:1px solid #2C2C2E;
             margin-bottom:30px;
+            position:relative;
         }
         .final-ticket-number{
             display:flex;
@@ -83,9 +30,48 @@
             font-weight:400;
             color:#FF3B30;
             margin-left:-6px;
+            cursor:pointer;
+            position:relative;
+            z-index:2;
         }
         .ticket-icon{width:56px;height:56px;flex-shrink:0;}
 
+        /* КОНТРОЛЬ */
+        .final-control{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            font-size:16px;
+            color:#888;
+            cursor:pointer;
+            opacity:0.85;
+            position:relative;
+            z-index:2;
+        }
+        .control-icon{width:40px;height:40px;flex-shrink:0;}
+
+        /* КРАСНАЯ ПОЛОСКА — ПЕРЕДВИГАЕТСЯ */
+        .tab-indicator{
+            position:absolute;
+            bottom:-1px;
+            height:2.5px;
+            background:#FF3B30;
+            border-radius:2px;
+            transition:left 0.3s ease, width 0.3s ease;
+            z-index:1;
+        }
+
+        /* КОНТЕНТ */
+        .ticket-content, .control-content{flex:1;}
+        .control-content{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#555;
+            font-size:18px;
+        }
+
+        .final-timer{font-size:26px;font-weight:600;text-align:center;margin-bottom:26px;}
         .final-info-block{margin-bottom:32px;}
         .info-row{display:flex;align-items:flex-start;gap:16px;padding:15px 0;border-bottom:1px solid #2C2C2E;}
         .info-row:last-child{border-bottom:none;padding-bottom:0;}
@@ -96,17 +82,10 @@
         .final-close-btn{background:#FF3B30;color:#FFF;font-size:19px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;box-shadow:0 4px 12px rgba(255,59,48,0.3);}
         .final-close-btn:active{background:#E01E1E;}
 
-        /* КОНТРОЛЬ — ПУСТОЙ ЭКРАН */
-        .control-content{
-            flex:1;
-            background:#000;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:#555;
-            font-size:18px;
-        }
-
+        /* Остальные стили без изменений */
+        .code-input-field{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
+        .code-box{width:40px;height:52px;border:1px solid #3A3A3C;border-radius:8px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;}
+        .code-box.filled{background:#FFF;color:#000;border-color:#FFF;}
         .pay-button{background:#30D158;color:#000;font-size:18px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;}
         .pay-button:active{background:#28A745;}
         .active-tickets-list{flex:1;overflow-y:auto;margin-bottom:12px;}
@@ -125,12 +104,11 @@
             <div class="code-input-field" id="codeDisplay">
                 <div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div>
             </div>
-            <div class="header-inner">
-                <div class="header-icon"></div>
+            <div style="text-align:center;margin-bottom:32px;">
                 <div style="font-size:16px;font-weight:500">Введите код с наклейки</div>
             </div>
-            <div class="keyboard-container">
-                <div class="keyboard">
+            <div style="border:1.5px solid #FFF;border-radius:16px;padding:16px;">
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
                     <button class="key" onclick="addNumber(1)">1</button>
                     <button class="key" onclick="addNumber(2)">2</button>
                     <button class="key" onclick="addNumber(3)">3</button>
@@ -141,10 +119,10 @@
                     <button class="key" onclick="addNumber(8)">8</button>
                     <button class="key" onclick="addNumber(9)">9</button>
                 </div>
-                <div class="bottom-row">
-                    <button class="action-btn" onclick="scanCode()">Сканировать</button>
+                <div style="display:flex;gap:12px;">
+                    <button style="flex:1;background:#1E1E1E;color:#FFF;border:none;border-radius:12px;padding:20px;font-size:16px;" onclick="scanCode()">Сканировать</button>
                     <button class="key" onclick="addNumber(0)">0</button>
-                    <button class="action-btn" onclick="backspace()">←</button>
+                    <button style="flex:1;background:#1E1E1E;color:#FFF;border:none;border-radius:12px;padding:20px;font-size:16px;" onclick="backspace()">←</button>
                 </div>
             </div>
         </div>
@@ -163,27 +141,26 @@
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ФИНАЛЬНЫЙ БИЛЕТ С ТАБАМИ -->
+        <!-- ФИНАЛЬНЫЙ БИЛЕТ — КАК В ОРИГИНАЛЕ -->
         <div id="finalTicketPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;padding-top:20px;">
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
 
-                <!-- ТАБЫ -->
-                <div class="tabs-container">
-                    <div class="tab active" onclick="switchTab('ticket')">Билет</div>
-                    <div class="tab" onclick="switchTab('control')">Контроль</div>
-                    <div class="tab-indicator" id="indicator" style="left:0; width:50%;"></div>
+                <!-- ВЕРХНЯЯ СТРОКА С НОМЕРОМ И КОНТРОЛЕМ -->
+                <div class="final-header-row">
+                    <div class="final-ticket-number" onclick="switchToTicket()">
+                        <img src="big-ticket.png" class="ticket-icon" alt="Билет">
+                        <span id="currentTicketNumber">1 299 814 483</span>
+                    </div>
+                    <div class="final-control" onclick="switchToControl()">
+                        <img src="control.png" class="control-icon" alt="Контроль">
+                        <span>Контроль</span>
+                    </div>
+                    <div class="tab-indicator" id="indicator"></div>
                 </div>
 
-                <!-- КОНТЕНТ ТАБОВ -->
-                <div id="ticketTab" class="tab-content active ticket-content">
-                    <div class="final-header-row">
-                        <div class="final-ticket-number">
-                            <img src="big-ticket.png" class="ticket-icon" alt="Билет">
-                            <span id="currentTicketNumber">1 299 814 483</span>
-                        </div>
-                    </div>
-
+                <!-- КОНТЕНТ -->
+                <div id="ticketContent" class="ticket-content">
                     <div class="final-info-block">
                         <div class="info-row">
                             <img src="carrier.png" class="info-icon">
@@ -224,8 +201,8 @@
                     <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
                 </div>
 
-                <div id="controlTab" class="tab-content control-content">
-                    <!-- Пустой экран для контроля -->
+                <div id="controlContent" class="control-content" style="display:none;">
+                    <!-- Пустой экран контроля -->
                 </div>
             </div>
         </div>
@@ -253,29 +230,26 @@
         if (tickets.length > 0) { showPage('activeTicketsPage'); renderActiveTickets(); }
         else showPage('codeInputPage');
 
-        // Переключение табов
-        function switchTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-            if (tab === 'ticket') {
-                document.querySelector('.tab:nth-child(1)').classList.add('active');
-                document.getElementById('ticketTab').classList.add('active');
-                document.getElementById('indicator').style.left = '0%';
-                document.getElementById('indicator').style.width = '50%';
-            } else {
-                document.querySelector('.tab:nth-child(2)').classList.add('active');
-                document.getElementById('controlTab').classList.add('active');
-                document.getElementById('indicator').style.left = '50%';
-                document.getElementById('indicator').style.width = '50%';
-            }
+        function switchToTicket() {
+            document.getElementById('ticketContent').style.display = 'flex';
+            document.getElementById('controlContent').style.display = 'none';
+            document.querySelector('.final-ticket-number').style.color = '#FF3B30';
+            document.querySelector('.final-control span').style.color = '#888';
+            const indicator = document.getElementById('indicator');
+            indicator.style.left = '0px';
+            indicator.style.width = document.querySelector('.final-ticket-number').offsetWidth + 'px';
         }
 
-        function addNumber(n) { if (enteredCode.length < 6) { enteredCode += n; updateCodeDisplay(); if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); } }
-        function backspace() { enteredCode = enteredCode.slice(0, -1); updateCodeDisplay(); }
-        function updateCodeDisplay() { document.querySelectorAll('.code-box').forEach((b, i) => { b.textContent = enteredCode[i] || ''; b.classList.toggle('filled', i < enteredCode.length); }); }
-        function scanCode() { tg.showScanQrPopup({ text: 'Наведите камеру на QR-код' }, () => { showPage('paymentPage'); return true; }); }
-        function updatePrice() { const q = document.getElementById('quantityRange').value; document.getElementById('quantityValue').textContent = q; document.getElementById('totalPrice').textContent = (q * 48) + '.00 ₽'; }
+        function switchToControl() {
+            document.getElementById('ticketContent').style.display = 'none';
+            document.getElementById('controlContent').style.display = 'flex';
+            document.querySelector('.final-ticket-number').style.color = '#888';
+            document.querySelector('.final-control span').style.color = '#FF3B30';
+            const controlEl = document.querySelector('.final-control');
+            const indicator = document.getElementById('indicator');
+            indicator.style.left = (controlEl.getBoundingClientRect().left - controlEl.parentElement.getBoundingClientRect().left) + 'px';
+            indicator.style.width = controlEl.offsetWidth + 'px';
+        }
 
         function payTicket() {
             const qty = document.getElementById('quantityRange').value;
@@ -290,7 +264,6 @@
 
             tickets.push({ number: ticketNum, carrier, route, busNumber, quantity: qty, created_at: Date.now(), purchaseDate, purchaseTime });
             localStorage.setItem('user_tickets', JSON.stringify(tickets));
-            tg.sendData(JSON.stringify({ action: "ticket_created", ticket_num: ticketNum }));
 
             document.getElementById('currentTicketNumber').textContent = ticketNum;
             document.getElementById('finalCarrier').textContent = carrier;
@@ -301,7 +274,7 @@
             document.getElementById('purchaseTime').textContent = purchaseTime;
 
             showPage('finalTicketPage');
-            switchTab('ticket'); // всегда открываем на вкладке "Билет"
+            switchToTicket(); // всегда открываем на билете
             startViewTimer();
         }
 
@@ -341,7 +314,7 @@
                     document.getElementById('purchaseDate').textContent = t.purchaseDate;
                     document.getElementById('purchaseTime').textContent = t.purchaseTime;
                     showPage('finalTicketPage');
-                    switchTab('ticket');
+                    switchToTicket();
                     startViewTimer();
                 };
                 el.innerHTML = `<div><div style="font-weight:600;">Билет № ${t.number}</div><div style="font-size:14px;color:#AAA">Осталось: ${mins} мин</div></div><div class="delete-btn" onclick="event.stopPropagation();deleteTicket(${i})"></div>`;
@@ -355,7 +328,16 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', () => { updateCodeDisplay(); updatePrice(); });
+        // Инициализация при открытии билета
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCodeDisplay(); updatePrice();
+            // При первом открытии билета — правильно ставим полоску
+            setTimeout(() => {
+                if (document.getElementById('finalTicketPage').classList.contains('active')) {
+                    switchToTicket();
+                }
+            }, 100);
+        });
     </script>
 </body>
 </html>
