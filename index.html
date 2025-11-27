@@ -11,8 +11,21 @@
         .app-container{height:100%;display:flex;flex-direction:column;padding:16px;}
         .page{display:none;flex-direction:column;height:100%;}
         .page.active{display:flex;}
+        .code-input-field{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
+        .code-box{width:40px;height:52px;border:1px solid #3A3A3C;border-radius:8px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;}
+        .code-box.filled{background:#FFF;color:#000;border-color:#FFF;}
+        .header-inner{display:flex;align-items:center;justify-content:center;margin-bottom:32px;}
+        .header-icon{width:20px;height:20px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFF" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01"/><path d="M15 15h.01"/><path d="M9 15h.01"/><path d="M15 9h.01"/><path d="M5 5h4v4H5z"/><path d="M15 5h4v4h-4z"/><path d="M5 15h4v4H5z"/><path d="M15 15h4v4h-4z"/></svg>') center/contain no-repeat;margin-right:8px;}
+        .keyboard-container{border:1.5px solid #FFF;border-radius:16px;padding:16px;background:#000;}
+        .keyboard{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
+        .key{background:#FFF;color:#000;border:none;border-radius:12px;font-size:28px;font-weight:500;height:68px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+        .key:active{background:#D1D1D6;transform:scale(0.98);}
+        .bottom-row{display:flex;justify-content:space-between;gap:12px;}
+        .action-btn{flex:1;background:#1E1E1E;color:#FFF;border:none;border-radius:12px;font-size:16px;font-weight:500;height:68px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+        .action-btn:active{background:#3A3A3C;}
+        .final-timer{font-size:26px;font-weight:600;text-align:center;margin-bottom:26px;}
 
-        /* ТАБЫ — ТОЧНО КАК В ОРИГИНАЛЕ */
+        /* ВЕРХНЯЯ СТРОКА — КАК В ОРИГИНАЛЕ */
         .final-header-row{
             display:flex;
             justify-content:space-between;
@@ -35,8 +48,7 @@
             z-index:2;
         }
         .ticket-icon{width:56px;height:56px;flex-shrink:0;}
-
-        /* КОНТРОЛЬ */
+        
         .final-control{
             display:flex;
             align-items:center;
@@ -50,28 +62,17 @@
         }
         .control-icon{width:40px;height:40px;flex-shrink:0;}
 
-        /* КРАСНАЯ ПОЛОСКА — ПЕРЕДВИГАЕТСЯ */
+        /* КРАСНАЯ ПОЛОСКА */
         .tab-indicator{
             position:absolute;
             bottom:-1px;
             height:2.5px;
             background:#FF3B30;
             border-radius:2px;
-            transition:left 0.3s ease, width 0.3s ease;
+            transition:all 0.3s ease;
             z-index:1;
         }
 
-        /* КОНТЕНТ */
-        .ticket-content, .control-content{flex:1;}
-        .control-content{
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:#555;
-            font-size:18px;
-        }
-
-        .final-timer{font-size:26px;font-weight:600;text-align:center;margin-bottom:26px;}
         .final-info-block{margin-bottom:32px;}
         .info-row{display:flex;align-items:flex-start;gap:16px;padding:15px 0;border-bottom:1px solid #2C2C2E;}
         .info-row:last-child{border-bottom:none;padding-bottom:0;}
@@ -81,11 +82,6 @@
         .info-value,.route-number{font-size:16.5px;font-weight:600;color:#FFFFFF;line-height:1.35;}
         .final-close-btn{background:#FF3B30;color:#FFF;font-size:19px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;box-shadow:0 4px 12px rgba(255,59,48,0.3);}
         .final-close-btn:active{background:#E01E1E;}
-
-        /* Остальные стили без изменений */
-        .code-input-field{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
-        .code-box{width:40px;height:52px;border:1px solid #3A3A3C;border-radius:8px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;}
-        .code-box.filled{background:#FFF;color:#000;border-color:#FFF;}
         .pay-button{background:#30D158;color:#000;font-size:18px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;}
         .pay-button:active{background:#28A745;}
         .active-tickets-list{flex:1;overflow-y:auto;margin-bottom:12px;}
@@ -98,17 +94,17 @@
 </head>
 <body>
     <div class="app-container">
-
         <!-- ВВОД КОДА -->
         <div id="codeInputPage" class="page active">
             <div class="code-input-field" id="codeDisplay">
                 <div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div>
             </div>
-            <div style="text-align:center;margin-bottom:32px;">
+            <div class="header-inner">
+                <div class="header-icon"></div>
                 <div style="font-size:16px;font-weight:500">Введите код с наклейки</div>
             </div>
-            <div style="border:1.5px solid #FFF;border-radius:16px;padding:16px;">
-                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
+            <div class="keyboard-container">
+                <div class="keyboard">
                     <button class="key" onclick="addNumber(1)">1</button>
                     <button class="key" onclick="addNumber(2)">2</button>
                     <button class="key" onclick="addNumber(3)">3</button>
@@ -119,10 +115,10 @@
                     <button class="key" onclick="addNumber(8)">8</button>
                     <button class="key" onclick="addNumber(9)">9</button>
                 </div>
-                <div style="display:flex;gap:12px;">
-                    <button style="flex:1;background:#1E1E1E;color:#FFF;border:none;border-radius:12px;padding:20px;font-size:16px;" onclick="scanCode()">Сканировать</button>
+                <div class="bottom-row">
+                    <button class="action-btn" onclick="scanCode()">Сканировать</button>
                     <button class="key" onclick="addNumber(0)">0</button>
-                    <button style="flex:1;background:#1E1E1E;color:#FFF;border:none;border-radius:12px;padding:20px;font-size:16px;" onclick="backspace()">←</button>
+                    <button class="action-btn" onclick="backspace()">backspace</button>
                 </div>
             </div>
         </div>
@@ -141,12 +137,11 @@
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ФИНАЛЬНЫЙ БИЛЕТ — КАК В ОРИГИНАЛЕ -->
+        <!-- ФИНАЛЬНЫЙ БИЛЕТ — ТОЛЬКО ДОБАВИЛИ ПОЛОСКУ -->
         <div id="finalTicketPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;padding-top:20px;">
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
-
-                <!-- ВЕРХНЯЯ СТРОКА С НОМЕРОМ И КОНТРОЛЕМ -->
+                
                 <div class="final-header-row">
                     <div class="final-ticket-number" onclick="switchToTicket()">
                         <img src="big-ticket.png" class="ticket-icon" alt="Билет">
@@ -159,8 +154,7 @@
                     <div class="tab-indicator" id="indicator"></div>
                 </div>
 
-                <!-- КОНТЕНТ -->
-                <div id="ticketContent" class="ticket-content">
+                <div id="ticketContent">
                     <div class="final-info-block">
                         <div class="info-row">
                             <img src="carrier.png" class="info-icon">
@@ -201,7 +195,7 @@
                     <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
                 </div>
 
-                <div id="controlContent" class="control-content" style="display:none;">
+                <div id="controlContent" style="display:none; flex:1; display:flex; align-items:center; justify-content:center; color:#555; font-size:18px;">
                     <!-- Пустой экран контроля -->
                 </div>
             </div>
@@ -231,7 +225,7 @@
         else showPage('codeInputPage');
 
         function switchToTicket() {
-            document.getElementById('ticketContent').style.display = 'flex';
+            document.getElementById('ticketContent').style.display = 'block';
             document.getElementById('controlContent').style.display = 'none';
             document.querySelector('.final-ticket-number').style.color = '#FF3B30';
             document.querySelector('.final-control span').style.color = '#888';
@@ -250,6 +244,12 @@
             indicator.style.left = (controlEl.getBoundingClientRect().left - controlEl.parentElement.getBoundingClientRect().left) + 'px';
             indicator.style.width = controlEl.offsetWidth + 'px';
         }
+
+        function addNumber(n) { if (enteredCode.length < 6) { enteredCode += n; updateCodeDisplay(); if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); } }
+        function backspace() { enteredCode = enteredCode.slice(0, -1); updateCodeDisplay(); }
+        function updateCodeDisplay() { document.querySelectorAll('.code-box').forEach((b, i) => { b.textContent = enteredCode[i] || ''; b.classList.toggle('filled', i < enteredCode.length); }); }
+        function scanCode() { tg.showScanQrPopup({ text: 'Наведите камеру на QR-код' }, () => { showPage('paymentPage'); return true; }); }
+        function updatePrice() { const q = document.getElementById('quantityRange').value; document.getElementById('quantityValue').textContent = q; document.getElementById('totalPrice').textContent = (q * 48) + '.00 ₽'; }
 
         function payTicket() {
             const qty = document.getElementById('quantityRange').value;
@@ -274,7 +274,7 @@
             document.getElementById('purchaseTime').textContent = purchaseTime;
 
             showPage('finalTicketPage');
-            switchToTicket(); // всегда открываем на билете
+            switchToTicket();
             startViewTimer();
         }
 
@@ -328,10 +328,10 @@
             });
         }
 
-        // Инициализация при открытии билета
-        document.addEventListener('DOMContentLoaded', () => {
-            updateCodeDisplay(); updatePrice();
-            // При первом открытии билета — правильно ставим полоску
+        document.addEventListener('DOMContentLoaded', () => { 
+            updateCodeDisplay(); 
+            updatePrice();
+            // При открытии билета — ставим полоску под номером
             setTimeout(() => {
                 if (document.getElementById('finalTicketPage').classList.contains('active')) {
                     switchToTicket();
