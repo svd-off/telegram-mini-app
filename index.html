@@ -26,7 +26,7 @@
         .action-btn{flex:1;background:#1E1E1E;color:#FFF;border:none;border-radius:12px;font-size:16px;font-weight:500;height:68px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
         .action-btn:active{background:#3A3A3C;}
 
-        /* Финальный билет — 1 в 1 как на скрине */
+        /* Финальный билет — 100% как на скрине */
         .final-timer{font-size:26px;font-weight:600;text-align:center;margin-bottom:26px;}
         .final-header-row{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid #2C2C2E;margin-bottom:30px;}
         .final-ticket-number{display:flex;align-items:center;gap:14px;font-size:24px;font-weight:600;color:#FF3B30;position:relative;}
@@ -41,7 +41,10 @@
         .info-content{flex:1;}
         .info-label{font-size:13.5px;color:#AAAAAA;font-weight:500;margin-bottom:3px;}
         .info-value{font-size:16.5px;font-weight:600;color:#FFFFFF;line-height:1.35;}
-        .info-value small{font-size:14.5px;color:#AAAAAA;font-weight:500;}
+
+        /* Специально для маршрута — как в оригинале */
+        .route-fromto{font-size:13.5px;color:#AAAAAA;font-weight:500;margin-bottom:2px;}
+        .route-number{font-size:19px;font-weight:700;color:#FFFFFF;}
 
         .final-close-btn{background:#FF3B30;color:#FFF;font-size:19px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;box-shadow:0 4px 12px rgba(255,59,48,0.3);}
         .final-close-btn:active{background:#E01E1E;}
@@ -90,9 +93,9 @@
         <!-- ОПЛАТА -->
         <div id="paymentPage" class="page">
             <div style="font-size:18px;font-weight:600;margin-bottom:24px;">Данные билета</div>
-            <input type="text" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;" id="carrierInput" value="ИП Галченкова Е. А.">
-            <input type="text" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;" id="routeInput" value="7, ст. Красноярск-Северный - ДК Кировский">
-            <input type="text" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;" id="busNumberInput" value="к378тв124">
+            <input type="text" id="carrierInput" value="ИП Читащвили Н.С." style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
+            <input type="text" id="routeInput" value="Соколовская - Стела" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
+            <input type="text" id="busNumberInput" value="в523ок124" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
             <div style="display:flex;align-items:center;margin:16px 0;">
                 <span style="font-size:18px;font-weight:600;color:#FF3B30;" id="quantityValue">1</span>
                 <input type="range" min="1" max="10" value="1" id="quantityRange" oninput="updatePrice()" style="-webkit-appearance:none;flex:1;height:4px;background:#333;border-radius:2px;margin:0 12px;">
@@ -101,7 +104,7 @@
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ФИНАЛЬНЫЙ БИЛЕТ — 100% КАК НА СКРИНЕ -->
+        <!-- ФИНАЛЬНЫЙ БИЛЕТ — ТОЧНО КАК НА СКРИНЕ -->
         <div id="finalTicketPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;padding-top:20px;">
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
@@ -118,35 +121,39 @@
                         <img src="carrier.png" class="info-icon">
                         <div class="info-content">
                             <div class="info-label">Перевозчик</div>
-                            <div class="info-value" id="finalCarrier">ИП Галченкова Е. А.</div>
+                            <div class="info-value" id="finalCarrier">ИП Читащвили Н.С.</div>
                         </div>
                     </div>
+
                     <div class="info-row">
                         <img src="bus.png" class="info-icon">
                         <div class="info-content">
-                            <div class="info-label">Маршрут</div>
-                            <div class="info-value" id="finalRouteDisplay">ст. Красноярск-Северный — ДК Кировский<br><small id="finalBusNumber">к378тв124</small></div>
+                            <div class="route-fromto" id="finalRouteFromTo">Соколовская — Стела</div>
+                            <div class="route-number" id="finalBusNumber">В523ОК124</div>
                         </div>
                     </div>
+
                     <div class="info-row">
                         <img src="rub.png" class="info-icon">
                         <div class="info-content">
                             <div class="info-label">Стоимость</div>
-                            <div class="info-value" id="finalCost">1 шт., Полный, 48.00 ₽</div>
+                            <div class="info-value" id="finalCost">2 шт., Полный, 96.00 ₽</div>
                         </div>
                     </div>
+
                     <div class="info-row">
                         <img src="calendar.png" class="info-icon">
                         <div class="info-content">
                             <div class="info-label">Дата покупки</div>
-                            <div class="info-value" id="purchaseDate">15 ноября 2025 г.</div>
+                            <div class="info-value" id="purchaseDate">26 ноября 2025 г.</div>
                         </div>
                     </div>
+
                     <div class="info-row">
                         <img src="clock.png" class="info-icon">
                         <div class="info-content">
                             <div class="info-label">Время покупки</div>
-                            <div class="info-value" id="purchaseTime">12:08</div>
+                            <div class="info-value" id="purchaseTime">18:36</div>
                         </div>
                     </div>
                 </div>
@@ -184,46 +191,80 @@
         function updatePrice(){ const q=document.getElementById('quantityRange').value; document.getElementById('quantityValue').textContent=q; document.getElementById('totalPrice').textContent=(q*48)+'.00 ₽'; }
 
         function payTicket(){
-            const qty=document.getElementById('quantityRange').value;
-            const carrier=document.getElementById('carrierInput').value.trim()||"ИП Галченкова Е. А.";
-            const route=document.getElementById('routeInput').value.trim()||"7, ст. Красноярск-Северный - ДК Кировский";
-            const busNumber=document.getElementById('busNumberInput').value.trim()||"к378тв124";
-            const ticketNum=`1 ${random3()} ${random3()} ${random3()}`;
+            const qty = document.getElementById('quantityRange').value;
+            const carrier = document.getElementById('carrierInput').value.trim() || "ИП Читащвили Н.С.";
+            const route = document.getElementById('routeInput').value.trim();
+            const busNumber = document.getElementById('busNumberInput').value.trim().toUpperCase();
+            const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
+
             tickets.push({number:ticketNum,carrier,route,busNumber,quantity:qty,created_at:Date.now()});
             localStorage.setItem('user_tickets',JSON.stringify(tickets));
             tg.sendData(JSON.stringify({action:"ticket_created",ticket_num:ticketNum}));
 
-            document.getElementById('currentTicketNumber').textContent=ticketNum;
-            document.getElementById('finalCarrier').textContent=carrier;
-            document.getElementById('finalRouteDisplay').innerHTML=route.replace(', ',' — ')+'<br><small id="finalBusNumber">'+busNumber+'</small>';
-            document.getElementById('finalCost').textContent=qty+' шт., Полный, '+(qty*48)+'.00 ₽';
-            const d=new Date();
-            document.getElementById('purchaseDate').textContent=d.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'})+' г.';
-            document.getElementById('purchaseTime').textContent=d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
-            showPage('finalTicketPage'); startViewTimer();
+            document.getElementById('currentTicketNumber').textContent = ticketNum;
+            document.getElementById('finalCarrier').textContent = carrier;
+            document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g,'—');
+            document.getElementById('finalBusNumber').textContent = busNumber;
+            document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + (qty*48) + '.00 ₽';
+
+            const d = new Date();
+            document.getElementById('purchaseDate').textContent = d.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'})+' г.';
+            document.getElementById('purchaseTime').textContent = d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+
+            showPage('finalTicketPage');
+            startViewTimer();
         }
+
         function random3(){return Math.floor(Math.random()*900)+100;}
+
         function startViewTimer(){
-            viewSecondsLeft=15;
-            document.getElementById('timer').textContent='Действует: '+viewSecondsLeft+' сек.';
+            viewSecondsLeft = 15;
+            document.getElementById('timer').textContent = 'Действует: '+viewSecondsLeft+' сек.';
             clearInterval(viewTimer);
-            viewTimer=setInterval(()=>{viewSecondsLeft--;document.getElementById('timer').textContent='Действует: '+viewSecondsLeft+' сек.';if(viewSecondsLeft<=0){clearInterval(viewTimer);showPage('activeTicketsPage');renderActiveTickets();}},1000);
+            viewTimer = setInterval(()=>{
+                viewSecondsLeft--;
+                document.getElementById('timer').textContent = 'Действует: '+viewSecondsLeft+' сек.';
+                if(viewSecondsLeft<=0){clearInterval(viewTimer);showPage('activeTicketsPage');renderActiveTickets();}
+            },1000);
         }
+
         function closeTicket(){clearInterval(viewTimer);showPage('activeTicketsPage');renderActiveTickets();}
         function switchToControl(){alert('Контроль пока недоступен');}
-        function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='activeTicketsPage')renderActiveTickets();}
+
+        function showPage(id){
+            document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(id==='activeTicketsPage') renderActiveTickets();
+        }
+
         function renderActiveTickets(){
-            const list=document.getElementById('activeTicketsList'); list.innerHTML='';
-            if(tickets.length===0){list.innerHTML='<div style="text-align:center;color:#AAA;margin-top:20px;">Нет билетов</div>';return;}
+            const list = document.getElementById('activeTicketsList'); list.innerHTML='';
+            if(tickets.length===0){
+                list.innerHTML='<div style="text-align:center;color:#AAA;margin-top:20px;">Нет билетов</div>';
+                return;
+            }
             tickets.forEach((t,i)=>{
-                const mins=Math.floor((TOTAL_DURATION-(Date.now()-t.created_at))/60000);
-                const el=document.createElement('div'); el.className='active-ticket-item';
-                el.onclick=()=>{document.getElementById('currentTicketNumber').textContent=t.number;document.getElementById('finalCarrier').textContent=t.carrier;document.getElementById('finalRouteDisplay').innerHTML=t.route.replace(', ',' — ')+'<br><small id="finalBusNumber">'+t.busNumber+'</small>';document.getElementById('finalCost').textContent=t.quantity+' шт., Полный, '+(t.quantity*48)+'.00 ₽';showPage('finalTicketPage');startViewTimer();}
-                el.innerHTML=`<div><div style="font-weight:600;">Билет № ${t.number}</div><div style="font-size:14px;color:#AAA">Осталось: ${mins} мин</div></div><div class="delete-btn" onclick="event.stopPropagation();deleteTicket(${i})"></div>`;
+                const mins = Math.floor((TOTAL_DURATION-(Date.now()-t.created_at))/60000);
+                const el = document.createElement('div'); el.className='active-ticket-item';
+                el.onclick = ()=>{
+                    document.getElementById('currentTicketNumber').textContent = t.number;
+                    document.getElementById('finalCarrier').textContent = t.carrier;
+                    document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g,'—');
+                    document.getElementById('finalBusNumber').textContent = t.busNumber;
+                    document.getElementById('finalCost').textContent = t.quantity+' шт., Полный, '+(t.quantity*48)+'.00 ₽';
+                    showPage('finalTicketPage'); startViewTimer();
+                };
+                el.innerHTML = `<div><div style="font-weight:600;">Билет № ${t.number}</div><div style="font-size:14px;color:#AAA">Осталось: ${mins} мин</div></div><div class="delete-btn" onclick="event.stopPropagation();deleteTicket(${i})"></div>`;
                 list.appendChild(el);
             });
         }
-        function deleteTicket(i){tg.showPopup({title:"Удалить билет?",message:"Без возврата",buttons:[{type:'destructive',text:'Удалить',id:'del'},{type:'cancel'}]},b=>{if(b==='del'){tickets.splice(i,1);localStorage.setItem('user_tickets',JSON.stringify(tickets));renderActiveTickets();}});}
+
+        function deleteTicket(i){
+            tg.showPopup({title:"Удалить билет?",message:"Без возврата",buttons:[{type:'destructive',text:'Удалить',id:'del'},{type:'cancel'}]},b=>{
+                if(b==='del'){tickets.splice(i,1);localStorage.setItem('user_tickets',JSON.stringify(tickets));renderActiveTickets();}
+            });
+        }
+
         document.addEventListener('DOMContentLoaded',()=>{updateCodeDisplay();updatePrice();});
     </script>
 </body>
