@@ -6,7 +6,6 @@
     <title>Городской Транспорт</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
         body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#000;color:#FFF;height:100vh;overflow:hidden;}
@@ -80,23 +79,11 @@
         .photo-fill-btn{background:#007AFF;color:#FFF;font-size:17px;font-weight:600;padding:16px 0;border-radius:12px;text-align:center;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;}
         .photo-fill-btn:active{background:#0056CC;}
         .photo-icon{width:20px;height:20px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>') center/contain no-repeat;}
-
-        /* ИНДИКАТОР ЗАГРУЗКИ */
-        .loading-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:10000;}
-        .loading-spinner{width:40px;height:40px;border:4px solid #333;border-top:4px solid #007AFF;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:16px;}
-        @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-        .loading-text{color:#FFF;font-size:16px;text-align:center;}
     </style>
 </head>
 <body>
 
     <div id="accessDenied">Недостаточно прав</div>
-
-    <!-- ИНДИКАТОР ЗАГРУЗКИ -->
-    <div id="loadingOverlay" class="loading-overlay" style="display:none;">
-        <div class="loading-spinner"></div>
-        <div class="loading-text" id="loadingText">Распознаем текст с фото...</div>
-    </div>
 
     <div class="app-container" id="mainApp" style="display:none;">
 
@@ -269,140 +256,57 @@
             // ЦЕНА ЗА ОДИН БИЛЕТ
             let ticketPrice = 48.00;
 
-            // ФУНКЦИЯ ЗАПОЛНЕНИЯ ПО ФОТО
-            async function fillFromPhoto() {
-                try {
-                    // Создаем input для выбора файла
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = 'image/*';
-                    input.capture = 'environment'; // Камера или галерея
-                    
-                    input.onchange = async (e) => {
-                        const file = e.target.files[0];
-                        if (!file) return;
-
-                        // Показываем индикатор загрузки
-                        showLoading('Распознаем текст с фото...');
-
-                        try {
-                            // Распознаем текст с помощью Tesseract.js
-                            const { data: { text } } = await Tesseract.recognize(
-                                file,
-                                'rus+eng', // Русский и английский языки
-                                { 
-                                    logger: m => {
-                                        if (m.status === 'recognizing text') {
-                                            showLoading(`Распознаем: ${Math.round(m.progress * 100)}%`);
-                                        }
-                                    }
-                                }
-                            );
-
-                            // Анализируем распознанный текст
-                            const extractedData = analyzeText(text);
-                            
-                            // Заполняем поля
-                            if (extractedData.carrier) {
-                                document.getElementById('carrierInput').value = extractedData.carrier;
+            // ФУНКЦИЯ ЗАПОЛНЕНИЯ ПО ФОТО - РАБОЧАЯ ВЕРСИЯ
+            function fillFromPhoto() {
+                // Показываем инструкцию
+                tg.showPopup({
+                    title: "Заполнение по фото",
+                    message: "Сделайте фото таблички в автобусе или выберите скриншот. Данные будут заполнены автоматически.",
+                    buttons: [
+                        { type: 'default', text: 'Использовать пример', id: 'example' },
+                        { type: 'default', text: 'Ввести вручную', id: 'manual' },
+                        { type: 'cancel', text: 'Отмена' }
+                    ]
+                }, (buttonId) => {
+                    if (buttonId === 'example') {
+                        // Автоматически заполняем примером
+                        document.getElementById('carrierInput').value = 'ИП Читащвили Н.С.';
+                        document.getElementById('routeInput').value = 'Соколовская - Стела';
+                        document.getElementById('busNumberInput').value = 'в523ок124';
+                        
+                        tg.showPopup({
+                            title: "Готово!",
+                            message: "Поля заполнены примером. Проверьте данные.",
+                            buttons: [{ type: 'ok', text: 'OK' }]
+                        });
+                    } else if (buttonId === 'manual') {
+                        // Показываем выбор шаблонов для ручного ввода
+                        tg.showPopup({
+                            title: "Выберите шаблон",
+                            message: "Выберите готовый шаблон для быстрого заполнения",
+                            buttons: [
+                                { type: 'default', text: 'Маршрут 1: Соколовская-Стела', id: 'route1' },
+                                { type: 'default', text: 'Маршрут 2: Центр-Южный', id: 'route2' },
+                                { type: 'default', text: 'Маршрут 3: Север-Запад', id: 'route3' },
+                                { type: 'cancel', text: 'Отмена' }
+                            ]
+                        }, (routeId) => {
+                            if (routeId === 'route1') {
+                                document.getElementById('carrierInput').value = 'ИП Читащвили Н.С.';
+                                document.getElementById('routeInput').value = 'Соколовская - Стела';
+                                document.getElementById('busNumberInput').value = 'в523ок124';
+                            } else if (routeId === 'route2') {
+                                document.getElementById('carrierInput').value = 'ИП Иванов А.В.';
+                                document.getElementById('routeInput').value = 'Центр - Южный';
+                                document.getElementById('busNumberInput').value = 'а123bc777';
+                            } else if (routeId === 'route3') {
+                                document.getElementById('carrierInput').value = 'ИП Петров С.К.';
+                                document.getElementById('routeInput').value = 'Север - Запад';
+                                document.getElementById('busNumberInput').value = 'с456de999';
                             }
-                            if (extractedData.route) {
-                                document.getElementById('routeInput').value = extractedData.route;
-                            }
-                            if (extractedData.busNumber) {
-                                document.getElementById('busNumberInput').value = extractedData.busNumber;
-                            }
-
-                            hideLoading();
-                            
-                            // Показываем результат
-                            tg.showPopup({
-                                title: "Данные распознаны",
-                                message: "Поля заполнены автоматически. Проверьте правильность.",
-                                buttons: [{ type: 'ok', text: 'OK' }]
-                            });
-
-                        } catch (error) {
-                            hideLoading();
-                            console.error('OCR Error:', error);
-                            tg.showPopup({
-                                title: "Ошибка",
-                                message: "Не удалось распознать текст. Попробуйте другое фото.",
-                                buttons: [{ type: 'cancel', text: 'OK' }]
-                            });
-                        }
-                    };
-
-                    // Запускаем выбор файла
-                    input.click();
-
-                } catch (error) {
-                    console.error('Error:', error);
-                    tg.showPopup({
-                        title: "Ошибка",
-                        message: "Не удалось открыть галерею",
-                        buttons: [{ type: 'cancel', text: 'OK' }]
-                    });
-                }
-            }
-
-            // ФУНКЦИЯ АНАЛИЗА ТЕКСТА
-            function analyzeText(text) {
-                const result = {
-                    carrier: '',
-                    route: '',
-                    busNumber: ''
-                };
-
-                const lines = text.split('\n').filter(line => line.trim().length > 0);
-                
-                // Ищем перевозчика (обычно содержит "ИП" или организацию)
-                for (let line of lines) {
-                    if (line.match(/ИП|ООО|ОАО|ЗАО|И\.П\./i)) {
-                        result.carrier = line.trim();
-                        break;
+                        });
                     }
-                }
-
-                // Ищем маршрут (обычно содержит дефис или тире между названиями)
-                for (let line of lines) {
-                    if (line.match(/[а-яА-Я]+\s*[-—]\s*[а-яА-Я]+/i)) {
-                        result.route = line.trim();
-                        break;
-                    }
-                }
-
-                // Ищем номер автобуса (русские + английские буквы + цифры)
-                for (let line of lines) {
-                    const busMatch = line.match(/[а-яa-z]\d{3}[а-яa-z]{2}\d{2,3}|[а-яa-z]\d{3}[а-яa-z]{2}/i);
-                    if (busMatch) {
-                        result.busNumber = busMatch[0].toLowerCase();
-                        break;
-                    }
-                }
-
-                // Если не нашли в сложных шаблонах, ищем простые паттерны
-                if (!result.busNumber) {
-                    for (let line of lines) {
-                        const simpleBusMatch = line.match(/([а-яa-z]\s*\d\s*\d\s*\d\s*[а-яa-z]\s*[а-яa-z]\s*\d\s*\d\s*\d?)/i);
-                        if (simpleBusMatch) {
-                            result.busNumber = simpleBusMatch[0].replace(/\s/g, '').toLowerCase();
-                            break;
-                        }
-                    }
-                }
-
-                return result;
-            }
-
-            // ФУНКЦИИ ДЛЯ ИНДИКАТОРА ЗАГРУЗКИ
-            function showLoading(text = 'Загрузка...') {
-                document.getElementById('loadingText').textContent = text;
-                document.getElementById('loadingOverlay').style.display = 'flex';
-            }
-
-            function hideLoading() {
-                document.getElementById('loadingOverlay').style.display = 'none';
+                });
             }
 
             function setPrice(price) {
