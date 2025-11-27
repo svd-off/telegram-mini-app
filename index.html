@@ -130,7 +130,7 @@
                         <img src="calendar.png" class="info-icon">
                         <div class="info-content">
                             <div class="info-label">Дата покупки</div>
-                            <div class="info-value" id="purchaseDate">27 ноября 2025</div>
+                            <div class="info-value" id="purchaseDate">27 ноября 2025 г.</div>
                         </div>
                     </div>
                     <div class="info-row">
@@ -180,21 +180,19 @@
             const busNumber = document.getElementById('busNumberInput').value.trim().toLowerCase();
             const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
 
-            // ФИКСИРУЕМ ДАТУ И ВРЕМЯ ОДИН РАЗ ПРИ СОЗДАНИИ
-            const purchaseDate = new Date().toLocaleDateString('ru-RU', {day:'numeric', month:'long', year:'numeric'}) + ' г.';
-            const purchaseTime = new Date().toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
+            const d = new Date();
+            const purchaseDate = d.toLocaleDateString('ru-RU', {day:'numeric', month:'long', year:'numeric'}) + ' г.';  // ← ОДНА "г."
+            const purchaseTime = d.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
 
             tickets.push({
-                number: ticketNum,
-                carrier, route, busNumber, quantity: qty,
+                number: ticketNum, carrier, route, busNumber, quantity: qty,
                 created_at: Date.now(),
-                purchaseDate: purchaseDate,   // ← сохраняем навсегда
-                purchaseTime: purchaseTime    // ← сохраняем навсегда
+                purchaseDate: purchaseDate,
+                purchaseTime: purchaseTime
             });
             localStorage.setItem('user_tickets', JSON.stringify(tickets));
             tg.sendData(JSON.stringify({action:"ticket_created",ticket_num:ticketNum}));
 
-            // Показываем зафиксированные значения
             document.getElementById('currentTicketNumber').textContent = ticketNum;
             document.getElementById('finalCarrier').textContent = carrier;
             document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g,'—');
@@ -244,8 +242,8 @@
                     document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g,'—');
                     document.getElementById('finalBusNumber').textContent = t.busNumber;
                     document.getElementById('finalCost').textContent = t.quantity+' шт., Полный, '+(t.quantity*48)+'.00 ₽';
-                    document.getElementById('purchaseDate').textContent = t.purchaseDate;     // ← берём сохранённую дату
-                    document.getElementById('purchaseTime').textContent = t.purchaseTime;     // ← берём сохранённое время
+                    document.getElementById('purchaseDate').textContent = t.purchaseDate;
+                    document.getElementById('purchaseTime').textContent = t.purchaseTime;
                     showPage('finalTicketPage'); startViewTimer();
                 };
                 el.innerHTML = `<div><div style="font-weight:600;">Билет № ${t.number}</div><div style="font-size:14px;color:#AAA">Осталось: ${mins} мин</div></div><div class="delete-btn" onclick="event.stopPropagation();deleteTicket(${i})"></div>`;
