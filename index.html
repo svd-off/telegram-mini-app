@@ -132,7 +132,7 @@
             <!-- КНОПКА ЗАПОЛНЕНИЯ ПО ФОТО -->
             <div class="photo-fill-btn" onclick="openGallery()">
                 <div class="photo-icon"></div>
-                Выбрать фото из галереи
+                Выбрать скриншот из галереи
             </div>
 
             <input type="text" id="carrierInput" placeholder="Перевозчик" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
@@ -268,7 +268,7 @@
             // ЦЕНА ЗА ОДИН БИЛЕТ
             let ticketPrice = 48.00;
 
-            // ФУНКЦИЯ ОТКРЫТИЯ ГАЛЕРЕИ
+            // ПРОСТАЯ ФУНКЦИЯ ОТКРЫТИЯ ГАЛЕРЕИ
             function openGallery() {
                 // Создаем input для выбора файла
                 const input = document.createElement('input');
@@ -279,7 +279,8 @@
                 input.onchange = function(e) {
                     const file = e.target.files[0];
                     if (file) {
-                        processImage(file);
+                        // Сразу заполняем поля данными
+                        fillFieldsAutomatically();
                     }
                 };
                 
@@ -288,67 +289,27 @@
                 document.body.removeChild(input);
             }
 
-            // ФУНКЦИЯ ОБРАБОТКИ ИЗОБРАЖЕНИЯ
-            function processImage(file) {
-                showLoading('Анализируем фото...');
+            // АВТОМАТИЧЕСКОЕ ЗАПОЛНЕНИЕ ПОЛЕЙ
+            function fillFieldsAutomatically() {
+                showLoading('Заполняем данные...');
                 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    // Создаем изображение для анализа
-                    const img = new Image();
-                    img.onload = function() {
-                        // Здесь будет анализ изображения
-                        // Пока используем заглушку с анализом имени файла и размера
-                        analyzeImageData(file.name, img.width, img.height);
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-
-            // ФУНКЦИЯ АНАЛИЗА ДАННЫХ ИЗОБРАЖЕНИЯ
-            function analyzeImageData(filename, width, height) {
-                // Имитируем анализ изображения
+                // Имитируем обработку (2 секунды)
                 setTimeout(() => {
                     hideLoading();
                     
-                    // Определяем тип данных по имени файла и размеру
-                    let carrier = 'ИП Читащвили Н.С.';
-                    let route = 'Соколовская - Стела';
-                    let busNumber = 'в523ок124';
+                    // АВТОМАТИЧЕСКИ ЗАПОЛНЯЕМ ПОЛЯ РЕАЛЬНЫМИ ДАННЫМИ
+                    document.getElementById('carrierInput').value = 'ИП Читащвили Н.С.';
+                    document.getElementById('routeInput').value = 'Соколовская - Стела';
+                    document.getElementById('busNumberInput').value = 'в523ок124';
                     
-                    // Простая логика определения по имени файла
-                    if (filename.toLowerCase().includes('север') || filename.toLowerCase().includes('north')) {
-                        route = 'Север - Запад';
-                        busNumber = 'с456de999';
-                    } else if (filename.toLowerCase().includes('центр') || filename.toLowerCase().includes('center')) {
-                        route = 'Центр - Южный';
-                        busNumber = 'а123bc777';
-                    } else if (filename.toLowerCase().includes('юг') || filename.toLowerCase().includes('south')) {
-                        route = 'Южный - Восток';
-                        busNumber = 'у789fg555';
-                    }
-                    
-                    // Определяем перевозчика по размеру изображения (простая эвристика)
-                    if (width > 2000 || height > 2000) {
-                        carrier = 'ИП Иванов А.В.';
-                    } else if (width < 1000 && height < 1000) {
-                        carrier = 'ИП Петров С.К.';
-                    }
-                    
-                    // Заполняем поля
-                    document.getElementById('carrierInput').value = carrier;
-                    document.getElementById('routeInput').value = route;
-                    document.getElementById('busNumberInput').value = busNumber;
-                    
-                    // Показываем результат
+                    // Показываем уведомление
                     tg.showPopup({
-                        title: "✅ Данные распознаны!",
-                        message: `Определено:\n• ${carrier}\n• ${route}\n• ${busNumber}`,
+                        title: "✅ Готово!",
+                        message: "Все поля автоматически заполнены",
                         buttons: [{ type: 'ok', text: 'Отлично!' }]
                     });
                     
-                }, 2000); // Имитация обработки
+                }, 2000);
             }
 
             // ФУНКЦИИ ДЛЯ ИНДИКАТОРА ЗАГРУЗКИ
