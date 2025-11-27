@@ -12,6 +12,18 @@
         .page{display:none;flex-direction:column;height:100%;}
         .page.active{display:flex;}
 
+        /* ВВОД КОДА */
+        .code-input-field{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
+        .code-box{width:40px;height:52px;border:1px solid #3A3A3C;border-radius:8px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;}
+        .code-box.filled{background:#FFF;color:#000;border-color:#FFF;}
+        .keyboard-container{border:1.5px solid #FFF;border-radius:16px;padding:16px;background:#000;margin-top:20px;}
+        .keyboard{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
+        .key{background:#FFF;color:#000;border:none;border-radius:12px;font-size:28px;font-weight:500;height:68px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+        .key:active{background:#D1D1D6;}
+        .bottom-row{display:flex;gap:12px;}
+        .action-btn{flex:1;background:#1E1E1E;color:#FFF;border:none;border-radius:12px;font-size:16px;font-weight:500;height:68px;cursor:pointer;}
+        .action-btn:active{background:#3A3A3C;}
+
         /* ТАЙМЕР */
         .final-timer{font-size:26px;font-weight:600;text-align:center;margin:20px 0 32px;}
 
@@ -36,7 +48,7 @@
             border-radius:2px;transition:all 0.3s ease;z-index:1;
         }
 
-        /* КОНТЕНТ БИЛЕТА */
+        /* БИЛЕТ */
         .ticket-content{flex:1;display:flex;flex-direction:column;}
         .final-info-block{flex:1;}
         .info-row{
@@ -45,7 +57,7 @@
             border-bottom:1px solid #2C2C2E;
         }
         .info-row:last-child{border-bottom:none;}
-        .info-icon{width:52px;height:52px;flex-shrink:0;} /* ← БОЛЬШИЕ ИКОНКИ */
+        .info-icon{width:52px;height:52px;flex-shrink:0;}
         .info-content{flex:1;}
         .info-label, .route-fromto{
             font-size:15px;color:#AAAAAA;font-weight:500;margin-bottom:4px;
@@ -54,7 +66,7 @@
             font-size:19px;font-weight:600;color:#FFFFFF;
         }
 
-        /* КНОПКА ЗАКРЫТЬ — ВСЕГДА ВНИЗУ */
+        /* КНОПКА ЗАКРЫТЬ */
         .final-close-btn{
             background:#FF3B30;color:#FFF;
             font-size:19px;font-weight:600;
@@ -65,23 +77,13 @@
         }
         .final-close-btn:active{background:#E01E1E;}
 
-        /* КОНТРОЛЬ — ПУСТАЯ СТРАНИЦА */
+        /* КОНТРОЛЬ */
         #controlContent{
-            flex:1;display:flex;align-items:center;justify-content:center;
-            color:#555;font-size:22px;background:#000;
+            display:none;flex:1;flex-direction:column;justify-content:center;align-items:center;
+            color:#666;font-size:22px;background:#000;
         }
 
-        /* Остальные стили */
-        .code-input-field{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
-        .code-box{width:40px;height:52px;border:1px solid #3A3A3C;border-radius:8px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;}
-        .code-box.filled{background:#FFF;color:#000;border-color:#FFF;}
-        .keyboard-container{border:1.5px solid #FFF;border-radius:16px;padding:16px;background:#000;margin-top:20px;}
-        .keyboard{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
-        .key{background:#FFF;color:#000;border:none;border-radius:12px;font-size:28px;font-weight:500;height:68px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-        .key:active{background:#D1D1D6;}
-        .bottom-row{display:flex;gap:12px;}
-        .action-btn{flex:1;background:#1E1E1E;color:#FFF;border:none;border-radius:12px;font-size:16px;font-weight:500;height:68px;cursor:pointer;}
-        .action-btn:active{background:#3A3A3C;}
+        /* ОПЛАТА */
         .pay-button{background:#30D158;color:#000;font-size:18px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;}
         .pay-button:active{background:#28A745;}
     </style>
@@ -116,7 +118,7 @@
         </div>
 
         <!-- ОПЛАТА -->
-        <div_bias id="paymentPage" class="page">
+        <div id="paymentPage" class="page">
             <div style="font-size:18px;font-weight:600;margin-bottom:24px;">Данные билета</div>
             <input type="text" id="carrierInput" value="ИП Читащвили Н.С." style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
             <input type="text" id="routeInput" value="Соколовская - Стела" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
@@ -188,8 +190,8 @@
                     <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
                 </div>
 
-                <!-- КОНТРОЛЬ — ПУСТАЯ ЧЁРНАЯ СТРАНИЦА -->
-                <div id="controlContent" style="display:none;">
+                <!-- КОНТРОЛЬ -->
+                <div id="controlContent">
                     <div style="flex:1;display:flex;align-items:center;justify-content:center;color:#666;font-size:22px;">
                         Режим контроля
                     </div>
@@ -203,14 +205,60 @@
         const tg = window.Telegram.WebApp;
         tg.expand(); tg.MainButton.hide();
 
+        let enteredCode = '';
+
+        function addNumber(n) {
+            if (enteredCode.length < 6) {
+                enteredCode += n;
+                updateCodeDisplay();
+                if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300);
+            }
+        }
+        function backspace() { enteredCode = enteredCode.slice(0, -1); updateCodeDisplay(); }
+        function updateCodeDisplay() {
+            document.querySelectorAll('.code-box').forEach((b, i) => {
+                b.textContent = enteredCode[i] || '';
+                b.classList.toggle('filled', i < enteredCode.length);
+            });
+        }
+        function scanCode() { tg.showScanQrPopup({text: 'Наведите камеру на QR-код'}, () => showPage('paymentPage')); }
+        function updatePrice() {
+            const q = document.getElementById('quantityRange').value;
+            document.getElementById('quantityValue').textContent = q;
+            document.getElementById('totalPrice').textContent = (q * 48) + '.00 ₽';
+        }
+
+        function payTicket() {
+            const qty = document.getElementById('quantityRange').value;
+            const carrier = document.getElementById('carrierInput').value || "ИП Читащвили Н.С.";
+            const route = document.getElementById('routeInput').value;
+            const busNumber = document.getElementById('busNumberInput').value.toLowerCase();
+            const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
+            const d = new Date();
+            const purchaseDate = d.toLocaleDateString('ru-RU', {day:'numeric', month:'long', year:'numeric'}).replace(/ \d{4}/, '') + ' ' + d.getFullYear() + ' г.';
+            const purchaseTime = d.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
+
+            document.getElementById('currentTicketNumber').textContent = ticketNum;
+            document.getElementById('finalCarrier').textContent = carrier;
+            document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g, '—');
+            document.getElementById('finalBusNumber').textContent = busNumber;
+            document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + (qty*48) + '.00 ₽';
+            document.getElementById('purchaseDate').textContent = purchaseDate;
+            document.getElementById('purchaseTime').textContent = purchaseTime;
+
+            showPage('finalTicketPage');
+            switchToTicket();
+        }
+
+        function random3() { return Math.floor(Math.random()*900)+100; }
+
         function switchToTicket() {
             document.getElementById('ticketContent').style.display = 'flex';
             document.getElementById('controlContent').style.display = 'none';
             document.querySelector('.final-ticket-number').style.color = '#FF3B30';
             document.querySelector('.final-control span').style.color = '#888';
-            const indicator = document.getElementById('indicator');
-            indicator.style.left = '0px';
-            indicator.style.width = document.querySelector('.final-ticket-number').offsetWidth + 'px';
+            document.getElementById('indicator').style.left = '0px';
+            document.getElementById('indicator').style.width = document.querySelector('.final-ticket-number').offsetWidth + 'px';
         }
 
         function switchToControl() {
@@ -224,9 +272,7 @@
             indicator.style.width = controlEl.offsetWidth + 'px';
         }
 
-        function closeTicket() {
-            showPage('codeInputPage');
-        }
+        function closeTicket() { showPage('codeInputPage'); }
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -234,9 +280,9 @@
             if (id === 'finalTicketPage') switchToTicket();
         }
 
-        // Для теста — сразу открываем билет
         document.addEventListener('DOMContentLoaded', () => {
-            showPage('finalTicketPage');
+            updateCodeDisplay();
+            updatePrice();
         });
     </script>
 </body>
