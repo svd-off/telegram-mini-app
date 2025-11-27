@@ -12,12 +12,12 @@
         .page{display:none;flex-direction:column;height:100%;}
         .page.active{display:flex;}
 
-        .final-timer{font-size:26px;font-weight:600;text-align:center;margin:20px 0 32px;}
+        .final-timer{font-size:26px;font-weight:600;text-align:center;margin:16px 0 20px;}
 
         .final-header-row{
             display:flex;justify-content:space-between;align-items:center;
-            padding-bottom:14px;border-bottom:1px solid #2C2C2E;
-            margin-bottom:28px;position:relative;
+            padding-bottom:12px;border-bottom:1px solid #2C2C2E;
+            margin-bottom:8px;position:relative;
         }
         .final-ticket-number{
             display:flex;align-items:center;gap:12px;
@@ -39,11 +39,10 @@
 
         .final-info-block{flex:1;}
 
-        /* ГЛАВНОЕ — ПОЛОСКИ ВПЛОТНУЮ К ТЕКСТУ */
         .info-row{
             display:flex;align-items:flex-start;
             gap:0;
-            padding:9px 0 10px; /* минимальные отступы сверху/снизу — как в оригинале */
+            padding:6px 0 7px;
             border-bottom:1px solid #2C2C2E;
         }
         .info-row:last-child{border-bottom:none;}
@@ -51,13 +50,13 @@
         .info-icon.big{
             width:60px;height:60px;
             margin-right:16px;
-            margin-top:-2px;
+            margin-top:-3px;
             flex-shrink:0;
         }
 
         .info-content{flex:1;}
         .info-label, .route-fromto{
-            font-size:15px;color:#AAAAAA;font-weight:500;margin-bottom:3px;
+            font-size:15px;color:#AAAAAA;font-weight:500;margin-bottom:2px;
         }
         .info-value, .route-number{
             font-size:19px;font-weight:600;color:#FFFFFF;
@@ -68,12 +67,11 @@
             font-size:19px;font-weight:600;
             padding:18px 0;border-radius:16px;
             text-align:center;cursor:pointer;
-            margin-top:32px;
+            margin-top:28px;
             box-shadow:0 4px 12px rgba(255,59,48,0.3);
         }
         .final-close-btn:active{background:#E01E1E;}
 
-        /* Остальное без изменений */
         .code-input-field{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
         .code-box{width:40px;height:52px;border:1px solid #3A3A3C;border-radius:8px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;}
         .code-box.filled{background:#FFF;color:#000;border-color:#FFF;}
@@ -144,7 +142,7 @@
                 <div class="final-header-row">
                     <div class="final-ticket-number" onclick="switchToTicket()">
                         <img src="big-ticket.png" class="ticket-icon" alt="Билет">
-                        <span id="currentTicketNumber">1 299 814 483</span>
+                        <span id="currentTicketNumber">1 314 306 766</span>
                     </div>
                     <div class="final-control" onclick="switchToControl()">
                         <img src="control.png" class="control-icon" alt="Контроль">
@@ -173,7 +171,7 @@
                             <img src="rub.png" class="info-icon big">
                             <div class="info-content">
                                 <div class="info-label">Стоимость</div>
-                                <div class="info-value" id="finalCost">1 шт., Полный, 48.00 ₽</div>
+                                <div class="info-value" id="finalCost">2 шт., Полный, 96.00 ₽</div>
                             </div>
                         </div>
                         <div class="info-row">
@@ -187,7 +185,7 @@
                             <img src="clock.png" class="info-icon big">
                             <div class="info-content">
                                 <div class="info-label">Время покупки</div>
-                                <div class="info-value" id="purchaseTime">14:27</div>
+                                <div class="info-value" id="purchaseTime">18:36</div>
                             </div>
                         </div>
                     </div>
@@ -244,11 +242,26 @@
             indicator.style.width = controlEl.offsetWidth + 'px';
         }
 
-        function addNumber(n) { if (enteredCode.length < 6) { enteredCode += n; updateCodeDisplay(); if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); } }
+        function addNumber(n) { 
+            if (enteredCode.length < 6) { 
+                enteredCode += n; 
+                updateCodeDisplay(); 
+                if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); 
+            } 
+        }
         function backspace() { enteredCode = enteredCode.slice(0, -1); updateCodeDisplay(); }
-        function updateCodeDisplay() { document.querySelectorAll('.code-box').forEach((b, i) => { b.textContent = enteredCode[i] || ''; b.classList.toggle('filled', i < enteredCode.length); }); }
+        function updateCodeDisplay() { 
+            document.querySelectorAll('.code-box').forEach((b, i) => { 
+                b.textContent = enteredCode[i] || ''; 
+                b.classList.toggle('filled', i < enteredCode.length); 
+            }); 
+        }
         function scanCode() { tg.showScanQrPopup({ text: 'Наведите камеру на QR-код' }, () => { showPage('paymentPage'); }); }
-        function updatePrice() { const q = document.getElementById('quantityRange').value; document.getElementById('quantityValue').textContent = q; document.getElementById('totalPrice').textContent = (q * 48) + '.00 ₽'; }
+        function updatePrice() { 
+            const q = document.getElementById('quantityRange').value; 
+            document.getElementById('quantityValue').textContent = q; 
+            document.getElementById('totalPrice').textContent = (q * 48) + '.00 ₽'; 
+        }
 
         function payTicket() {
             const qty = document.getElementById('quantityRange').value;
@@ -290,7 +303,11 @@
             }, 1000);
         }
 
-        function closeTicket() { clearInterval(viewTimer); showPage(tickets.length > 0 ? 'activeTicketsPage' : 'codeInputPage'); renderActiveTickets(); }
+        function closeTicket() { 
+            clearInterval(viewTimer); 
+            showPage(tickets.length > 0 ? 'activeTicketsPage' : 'codeInputPage'); 
+            renderActiveTickets(); 
+        }
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -309,7 +326,9 @@
                     document.getElementById('currentTicketNumber').textContent = t.number;
                     document.getElementById('finalCarrier').textContent = t.carrier;
                     document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g, '—');
-                    document.getElementById('finalBusNumber').textContent = t.busNumber;
+                    document
+
+.getElementById('finalBusNumber').textContent = t.busNumber;
                     document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + (t.quantity * 48) + '.00 ₽';
                     document.getElementById('purchaseDate').textContent = t.purchaseDate;
                     document.getElementById('purchaseTime').textContent = t.purchaseTime;
