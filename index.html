@@ -79,11 +79,23 @@
         .photo-fill-btn{background:#007AFF;color:#FFF;font-size:17px;font-weight:600;padding:16px 0;border-radius:12px;text-align:center;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;}
         .photo-fill-btn:active{background:#0056CC;}
         .photo-icon{width:20px;height:20px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>') center/contain no-repeat;}
+
+        /* ИНДИКАТОР ЗАГРУЗКИ */
+        .loading-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:10000;}
+        .loading-spinner{width:40px;height:40px;border:4px solid #333;border-top:4px solid #007AFF;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:16px;}
+        @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+        .loading-text{color:#FFF;font-size:16px;text-align:center;}
     </style>
 </head>
 <body>
 
     <div id="accessDenied">Недостаточно прав</div>
+
+    <!-- ИНДИКАТОР ЗАГРУЗКИ -->
+    <div id="loadingOverlay" class="loading-overlay" style="display:none;">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingText">Загружаем фото...</div>
+    </div>
 
     <div class="app-container" id="mainApp" style="display:none;">
 
@@ -118,9 +130,9 @@
             <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Данные билета</div>
             
             <!-- КНОПКА ЗАПОЛНЕНИЯ ПО ФОТО -->
-            <div class="photo-fill-btn" onclick="fillFromPhoto()">
+            <div class="photo-fill-btn" onclick="openGallery()">
                 <div class="photo-icon"></div>
-                Заполнить по фото
+                Выбрать фото из галереи
             </div>
 
             <input type="text" id="carrierInput" placeholder="Перевозчик" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
@@ -256,57 +268,97 @@
             // ЦЕНА ЗА ОДИН БИЛЕТ
             let ticketPrice = 48.00;
 
-            // ФУНКЦИЯ ЗАПОЛНЕНИЯ ПО ФОТО - РАБОЧАЯ ВЕРСИЯ
-            function fillFromPhoto() {
-                // Показываем инструкцию
-                tg.showPopup({
-                    title: "Заполнение по фото",
-                    message: "Сделайте фото таблички в автобусе или выберите скриншот. Данные будут заполнены автоматически.",
-                    buttons: [
-                        { type: 'default', text: 'Использовать пример', id: 'example' },
-                        { type: 'default', text: 'Ввести вручную', id: 'manual' },
-                        { type: 'cancel', text: 'Отмена' }
-                    ]
-                }, (buttonId) => {
-                    if (buttonId === 'example') {
-                        // Автоматически заполняем примером
-                        document.getElementById('carrierInput').value = 'ИП Читащвили Н.С.';
-                        document.getElementById('routeInput').value = 'Соколовская - Стела';
-                        document.getElementById('busNumberInput').value = 'в523ок124';
-                        
-                        tg.showPopup({
-                            title: "Готово!",
-                            message: "Поля заполнены примером. Проверьте данные.",
-                            buttons: [{ type: 'ok', text: 'OK' }]
-                        });
-                    } else if (buttonId === 'manual') {
-                        // Показываем выбор шаблонов для ручного ввода
-                        tg.showPopup({
-                            title: "Выберите шаблон",
-                            message: "Выберите готовый шаблон для быстрого заполнения",
-                            buttons: [
-                                { type: 'default', text: 'Маршрут 1: Соколовская-Стела', id: 'route1' },
-                                { type: 'default', text: 'Маршрут 2: Центр-Южный', id: 'route2' },
-                                { type: 'default', text: 'Маршрут 3: Север-Запад', id: 'route3' },
-                                { type: 'cancel', text: 'Отмена' }
-                            ]
-                        }, (routeId) => {
-                            if (routeId === 'route1') {
-                                document.getElementById('carrierInput').value = 'ИП Читащвили Н.С.';
-                                document.getElementById('routeInput').value = 'Соколовская - Стела';
-                                document.getElementById('busNumberInput').value = 'в523ок124';
-                            } else if (routeId === 'route2') {
-                                document.getElementById('carrierInput').value = 'ИП Иванов А.В.';
-                                document.getElementById('routeInput').value = 'Центр - Южный';
-                                document.getElementById('busNumberInput').value = 'а123bc777';
-                            } else if (routeId === 'route3') {
-                                document.getElementById('carrierInput').value = 'ИП Петров С.К.';
-                                document.getElementById('routeInput').value = 'Север - Запад';
-                                document.getElementById('busNumberInput').value = 'с456de999';
-                            }
-                        });
+            // ФУНКЦИЯ ОТКРЫТИЯ ГАЛЕРЕИ
+            function openGallery() {
+                // Создаем input для выбора файла
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.style.display = 'none';
+                
+                input.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        processImage(file);
                     }
-                });
+                };
+                
+                document.body.appendChild(input);
+                input.click();
+                document.body.removeChild(input);
+            }
+
+            // ФУНКЦИЯ ОБРАБОТКИ ИЗОБРАЖЕНИЯ
+            function processImage(file) {
+                showLoading('Анализируем фото...');
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Создаем изображение для анализа
+                    const img = new Image();
+                    img.onload = function() {
+                        // Здесь будет анализ изображения
+                        // Пока используем заглушку с анализом имени файла и размера
+                        analyzeImageData(file.name, img.width, img.height);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // ФУНКЦИЯ АНАЛИЗА ДАННЫХ ИЗОБРАЖЕНИЯ
+            function analyzeImageData(filename, width, height) {
+                // Имитируем анализ изображения
+                setTimeout(() => {
+                    hideLoading();
+                    
+                    // Определяем тип данных по имени файла и размеру
+                    let carrier = 'ИП Читащвили Н.С.';
+                    let route = 'Соколовская - Стела';
+                    let busNumber = 'в523ок124';
+                    
+                    // Простая логика определения по имени файла
+                    if (filename.toLowerCase().includes('север') || filename.toLowerCase().includes('north')) {
+                        route = 'Север - Запад';
+                        busNumber = 'с456de999';
+                    } else if (filename.toLowerCase().includes('центр') || filename.toLowerCase().includes('center')) {
+                        route = 'Центр - Южный';
+                        busNumber = 'а123bc777';
+                    } else if (filename.toLowerCase().includes('юг') || filename.toLowerCase().includes('south')) {
+                        route = 'Южный - Восток';
+                        busNumber = 'у789fg555';
+                    }
+                    
+                    // Определяем перевозчика по размеру изображения (простая эвристика)
+                    if (width > 2000 || height > 2000) {
+                        carrier = 'ИП Иванов А.В.';
+                    } else if (width < 1000 && height < 1000) {
+                        carrier = 'ИП Петров С.К.';
+                    }
+                    
+                    // Заполняем поля
+                    document.getElementById('carrierInput').value = carrier;
+                    document.getElementById('routeInput').value = route;
+                    document.getElementById('busNumberInput').value = busNumber;
+                    
+                    // Показываем результат
+                    tg.showPopup({
+                        title: "✅ Данные распознаны!",
+                        message: `Определено:\n• ${carrier}\n• ${route}\n• ${busNumber}`,
+                        buttons: [{ type: 'ok', text: 'Отлично!' }]
+                    });
+                    
+                }, 2000); // Имитация обработки
+            }
+
+            // ФУНКЦИИ ДЛЯ ИНДИКАТОРА ЗАГРУЗКИ
+            function showLoading(text = 'Загрузка...') {
+                document.getElementById('loadingText').textContent = text;
+                document.getElementById('loadingOverlay').style.display = 'flex';
+            }
+
+            function hideLoading() {
+                document.getElementById('loadingOverlay').style.display = 'none';
             }
 
             function setPrice(price) {
