@@ -40,11 +40,24 @@
             margin-bottom:8px;
             position:relative;
         }
+
+        /* САМОЕ ГЛАВНОЕ — НОМЕР БИЛЕТА УМЕНЬШЕН, КАК В ОРИГИНАЛЕ */
         .final-ticket-number{
-            display:flex;align-items:center;gap:12px;
-            font-size:24px;font-weight:500;color:#FF3B30;cursor:pointer;z-index:2;
+            display:flex;
+            align-items:center;
+            gap:12px;
+            color:#FF3B30;
+            cursor:pointer;
+            z-index:2;
         }
         .ticket-icon{width:48px;height:48px;flex-shrink:0;}
+        #currentTicketNumber{
+            font-size:21px;        /* было 24px → стало 21px */
+            font-weight:500;       /* как в оригинале */
+            letter-spacing:0.3px;
+            white-space:nowrap;
+        }
+
         .final-control{
             display:flex;align-items:center;gap:8px;
             font-size:18px;color:#888;cursor:pointer;z-index:2;
@@ -92,6 +105,7 @@
         }
         .final-close-btn:active{background:#E01E1E;}
 
+        /* Остальные стили без изменений */
         .code-input-field{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
         .code-box{width:40px;height:52px;border:1px solid #3A3A3C;border-radius:8px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;}
         .code-box.filled{background:#FFF;color:#000;border-color:#FFF;}
@@ -135,7 +149,7 @@
                 <div class="bottom-row">
                     <button class="action-btn" onclick="scanCode()">Сканировать</button>
                     <button class="key" onclick="addNumber(0)">0</button>
-                    <button class="action-btn" onclick="backspace()">Backspace</button>
+                    <button class="action-btn" onclick="backspace()">←</button>
                 </div>
             </div>
         </div>
@@ -231,6 +245,7 @@
         </div>
     </div>
 
+    <!-- СКРИПТ ОСТАЛСЯ БЕЗ ИЗМЕНЕНИЙ — ОН И ТАК ИДЕАЛЕН -->
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand(); tg.MainButton.hide();
@@ -265,26 +280,11 @@
             indicator.style.width = controlEl.offsetWidth + 'px';
         }
 
-        function addNumber(n) { 
-            if (enteredCode.length < 6) { 
-                enteredCode += n; 
-                updateCodeDisplay(); 
-                if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); 
-            } 
-        }
+        function addNumber(n) { if (enteredCode.length < 6) { enteredCode += n; updateCodeDisplay(); if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); } }
         function backspace() { enteredCode = enteredCode.slice(0, -1); updateCodeDisplay(); }
-        function updateCodeDisplay() { 
-            document.querySelectorAll('.code-box').forEach((b, i) => { 
-                b.textContent = enteredCode[i] || ''; 
-                b.classList.toggle('filled', i < enteredCode.length); 
-            }); 
-        }
+        function updateCodeDisplay() { document.querySelectorAll('.code-box').forEach((b, i) => { b.textContent = enteredCode[i] || ''; b.classList.toggle('filled', i < enteredCode.length); }); }
         function scanCode() { tg.showScanQrPopup({ text: 'Наведите камеру на QR-код' }, () => { showPage('paymentPage'); }); }
-        function updatePrice() { 
-            const q = document.getElementById('quantityRange').value; 
-            document.getElementById('quantityValue').textContent = q; 
-            document.getElementById('totalPrice').textContent = (q * 48) + '.00 ₽'; 
-        }
+        function updatePrice() { const q = document.getElementById('quantityRange').value; document.getElementById('quantityValue').textContent = q; document.getElementById('totalPrice').textContent = (q * 48) + '.00 ₽'; }
 
         function payTicket() {
             const qty = document.getElementById('quantityRange').value;
@@ -326,11 +326,7 @@
             }, 1000);
         }
 
-        function closeTicket() { 
-            clearInterval(viewTimer); 
-            showPage(tickets.length > 0 ? 'activeTicketsPage' : 'codeInputPage'); 
-            renderActiveTickets(); 
-        }
+        function closeTicket() { clearInterval(viewTimer); showPage(tickets.length > 0 ? 'activeTicketsPage' : 'codeInputPage'); renderActiveTickets(); }
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
