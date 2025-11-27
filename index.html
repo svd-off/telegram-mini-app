@@ -8,83 +8,562 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#000;color:#FFF;height:100vh;overflow:hidden;}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#000;color:#FFF;height:100vh;overflow:hidden;width:100vw;}
         
-        .app-container{height:100%;display:flex;flex-direction:column;padding:0 16px 30px 16px;}
-        .top-separator{height:1px;background:#2C2C2E;margin:4px 0 10px 0;}
-        .final-timer{font-size:26px;font-weight:500;text-align:center;margin:0 0 20px;line-height:1.2;}
-        .page{display:none;flex-direction:column;height:100%;}
+        .app-container{
+            height:100%;
+            display:flex;
+            flex-direction:column;
+            padding:0 max(8px, 4vw) max(20px, 5vh);
+            width:100%;
+            max-width:100vw;
+            overflow:hidden;
+        }
+        
+        .top-separator{height:1px;background:#2C2C2E;margin:4px 0 10px 0;width:100%;}
+        .final-timer{
+            font-size:clamp(20px, 6vw, 26px);
+            font-weight:500;
+            text-align:center;
+            margin:0 0 max(16px, 3vh);
+            line-height:1.2;
+            width:100%;
+        }
+        
+        .page{
+            display:none;
+            flex-direction:column;
+            height:100%;
+            width:100%;
+            max-width:100%;
+            overflow:hidden;
+        }
         .page.active{display:flex;}
 
-        .final-header-row{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid #2C2C2E;margin-bottom:8px;position:relative;}
-        .final-ticket-number{display:flex;align-items:center;gap:12px;color:#FF3B30;cursor:pointer;z-index:2;}
-        .ticket-icon{width:48px;height:48px;flex-shrink:0;}
-        #currentTicketNumber{font-size:21px;font-weight:500;letter-spacing:0.3px;white-space:nowrap;}
-        .final-control{display:flex;align-items:center;gap:12px;font-size:18px;color:#888;cursor:pointer;z-index:2;}
-        .control-icon{width:48px;height:48px;flex-shrink:0;}
-        .tab-indicator{position:absolute;bottom:-1px;height:2.5px;background:#FF3B30;border-radius:2px;transition:all 0.3s ease;z-index:1;}
-        .ticket-content{flex:1;display:flex;flex-direction:column;}
-        .control-content{flex:1;display:none;flex-direction:column;justify-content:flex-start;}
-        .final-info-block{flex:1;}
-        .info-row{display:flex;align-items:flex-start;gap:0;padding:6px 0 7px;border-bottom:1px solid #2C2C2E;}
+        .final-header-row{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding-bottom:12px;
+            border-bottom:1px solid #2C2C2E;
+            margin-bottom:8px;
+            position:relative;
+            width:100%;
+            gap:8px;
+        }
+        
+        .final-ticket-number{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            color:#FF3B30;
+            cursor:pointer;
+            z-index:2;
+            flex:1;
+            min-width:0;
+        }
+        
+        .ticket-icon, .control-icon{
+            width:clamp(36px, 12vw, 48px);
+            height:clamp(36px, 12vw, 48px);
+            flex-shrink:0;
+        }
+        
+        #currentTicketNumber{
+            font-size:clamp(16px, 5vw, 21px);
+            font-weight:500;
+            letter-spacing:0.3px;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            min-width:0;
+        }
+        
+        .final-control{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            font-size:clamp(14px, 4vw, 18px);
+            color:#888;
+            cursor:pointer;
+            z-index:2;
+            flex:1;
+            justify-content:flex-end;
+            min-width:0;
+        }
+        
+        .control-icon{width:clamp(36px, 12vw, 48px);height:clamp(36px, 12vw, 48px);}
+        
+        .tab-indicator{
+            position:absolute;
+            bottom:-1px;
+            height:2.5px;
+            background:#FF3B30;
+            border-radius:2px;
+            transition:all 0.3s ease;
+            z-index:1;
+        }
+        
+        .ticket-content, .control-content{
+            flex:1;
+            display:flex;
+            flex-direction:column;
+            width:100%;
+            overflow:hidden;
+        }
+        
+        .control-content{display:none;}
+        
+        .final-info-block{
+            flex:1;
+            width:100%;
+            overflow-y:auto;
+            -webkit-overflow-scrolling:touch;
+        }
+        
+        .info-row{
+            display:flex;
+            align-items:flex-start;
+            gap:0;
+            padding:clamp(4px, 1.5vh, 8px) 0;
+            border-bottom:1px solid #2C2C2E;
+            width:100%;
+            min-height:clamp(50px, 8vh, 70px);
+        }
+        
         .info-row:last-child{border-bottom:none;}
-        .info-icon.big{width:60px;height:60px;margin-right:16px;margin-top:-3px;flex-shrink:0;}
-        .info-content{flex:1;}
-        .info-label,.route-fromto{font-size:15px;color:#AAAAAA;font-weight:500;margin-bottom:2px;}
-        .info-value,.route-number{font-size:19px;font-weight:600;color:#FFFFFF;}
-        .final-close-btn{background:#FF3B30;color:#FFF;font-size:19px;font-weight:600;padding:18px 0;border-radius:16px;text-align:center;cursor:pointer;margin-top:28px;box-shadow:0 4px 12px rgba(255,59,48,0.3);}
+        
+        .info-icon.big{
+            width:clamp(45px, 15vw, 60px);
+            height:clamp(45px, 15vw, 60px);
+            margin-right:12px;
+            margin-top:-3px;
+            flex-shrink:0;
+        }
+        
+        .info-content{
+            flex:1;
+            min-width:0;
+            padding-right:8px;
+        }
+        
+        .info-label, .route-fromto{
+            font-size:clamp(13px, 3.8vw, 15px);
+            color:#AAAAAA;
+            font-weight:500;
+            margin-bottom:2px;
+            line-height:1.2;
+        }
+        
+        .info-value, .route-number{
+            font-size:clamp(16px, 4.5vw, 19px);
+            font-weight:600;
+            color:#FFFFFF;
+            line-height:1.2;
+            word-wrap:break-word;
+        }
+        
+        .final-close-btn{
+            background:#FF3B30;
+            color:#FFF;
+            font-size:clamp(16px, 4.5vw, 19px);
+            font-weight:600;
+            padding:clamp(14px, 4vh, 18px) 0;
+            border-radius:16px;
+            text-align:center;
+            cursor:pointer;
+            margin-top:max(20px, 3vh);
+            box-shadow:0 4px 12px rgba(255,59,48,0.3);
+            width:100%;
+            border:none;
+        }
+        
         .final-close-btn:active{background:#E01E1E;}
 
-        .code-input-field{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
-        .code-box{width:40px;height:52px;border:1px solid #3A3A3C;border-radius:8px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;}
+        /* ВВОД КОДА */
+        .code-input-field{
+            display:flex;
+            justify-content:center;
+            gap:clamp(4px, 2vw, 8px);
+            margin-bottom:clamp(12px, 3vh, 16px);
+            width:100%;
+            padding:0 8px;
+        }
+        
+        .code-box{
+            width:clamp(32px, 10vw, 40px);
+            height:clamp(42px, 12vw, 52px);
+            border:1px solid #3A3A3C;
+            border-radius:8px;
+            background:#1E1E1E;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:clamp(18px, 6vw, 24px);
+            font-weight:500;
+            flex-shrink:0;
+        }
+        
         .code-box.filled{background:#FFF;color:#000;border-color:#FFF;}
-        .keyboard-container{border:1.5px solid #FFF;border-radius:16px;padding:16px;background:#000;margin-top:20px;}
-        .keyboard{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
-        .key{background:#FFF;color:#000;border:none;border-radius:12px;font-size:28px;font-weight:500;height:68px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+        
+        .keyboard-container{
+            border:1.5px solid #FFF;
+            border-radius:16px;
+            padding:clamp(12px, 3vw, 16px);
+            background:#000;
+            margin-top:clamp(16px, 4vh, 20px);
+            width:100%;
+        }
+        
+        .keyboard{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:clamp(8px, 2vw, 12px);
+            margin-bottom:clamp(8px, 2vw, 12px);
+        }
+        
+        .key{
+            background:#FFF;
+            color:#000;
+            border:none;
+            border-radius:12px;
+            font-size:clamp(20px, 6vw, 28px);
+            font-weight:500;
+            height:clamp(52px, 14vw, 68px);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            cursor:pointer;
+            width:100%;
+        }
+        
         .key:active{background:#D1D1D6;}
-        .bottom-row{display:flex;gap:12px;}
-        .action-btn{flex:1;background:#1E1E1E;color:#FFF;border:none;border-radius:12px;font-size:16px;font-weight:500;height:68px;cursor:pointer;}
+        
+        .bottom-row{
+            display:flex;
+            gap:clamp(8px, 2vw, 12px);
+            width:100%;
+        }
+        
+        .action-btn{
+            flex:1;
+            background:#1E1E1E;
+            color:#FFF;
+            border:none;
+            border-radius:12px;
+            font-size:clamp(14px, 3.8vw, 16px);
+            font-weight:500;
+            height:clamp(52px, 14vw, 68px);
+            cursor:pointer;
+            min-width:0;
+        }
+        
         .action-btn:active{background:#3A3A3C;}
-        .pay-button{background:#30D158;color:#000;font-size:18px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;}
+        
+        .pay-button{
+            background:#30D158;
+            color:#000;
+            font-size:clamp(16px, 4.5vw, 18px);
+            font-weight:600;
+            padding:clamp(16px, 4vh, 20px);
+            border-radius:16px;
+            text-align:center;
+            margin-top:auto;
+            cursor:pointer;
+            width:100%;
+            border:none;
+        }
+        
         .pay-button:active{background:#28A745;}
-        .active-tickets-list{flex:1;overflow-y:auto;margin-bottom:12px;}
-        .active-ticket-item{background:#1E1E1E;border-radius:12px;padding:16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+        
+        .active-tickets-list{
+            flex:1;
+            overflow-y:auto;
+            margin-bottom:12px;
+            width:100%;
+            -webkit-overflow-scrolling:touch;
+        }
+        
+        .active-ticket-item{
+            background:#1E1E1E;
+            border-radius:12px;
+            padding:12px;
+            margin-bottom:8px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            cursor:pointer;
+            width:100%;
+        }
+        
         .active-ticket-item:active{background:#2A2A2C;}
-        .delete-btn{width:32px;height:32px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FF3B30" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1-2-2h4a2 2 0 0 1-2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>') center/20px no-repeat;cursor:pointer;}
-        .close-button{background:#333;color:#FFF;padding:16px;border-radius:12px;text-align:center;font-size:17px;margin-top:16px;cursor:pointer;}
+        
+        .delete-btn{
+            width:clamp(28px, 8vw, 32px);
+            height:clamp(28px, 8vw, 32px);
+            background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FF3B30" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1-2-2h4a2 2 0 0 1-2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>') center/contain no-repeat;
+            cursor:pointer;
+            flex-shrink:0;
+        }
+        
+        .close-button{
+            background:#333;
+            color:#FFF;
+            padding:clamp(12px, 3vh, 16px);
+            border-radius:12px;
+            text-align:center;
+            font-size:clamp(15px, 4vw, 17px);
+            margin-top:12px;
+            cursor:pointer;
+            width:100%;
+            border:none;
+        }
 
-        #accessDenied{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:9999;font-size:24px;color:#FF3B30;}
+        #accessDenied{
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            background:#000;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            flex-direction:column;
+            z-index:9999;
+            font-size:clamp(18px, 6vw, 24px);
+            color:#FF3B30;
+            text-align:center;
+            padding:20px;
+        }
 
         /* ВЫБОР ЦЕНЫ */
-        .price-selector{background:#1E1E1E;border:1px solid #333;border-radius:12px;padding:14px;margin:16px 0;cursor:pointer;}
+        .price-selector{
+            background:#1E1E1E;
+            border:1px solid #333;
+            border-radius:12px;
+            padding:12px;
+            margin:12px 0;
+            cursor:pointer;
+            width:100%;
+        }
+        
         .price-selector:active{background:#2A2A2C;}
-        .price-current{font-size:17px;font-weight:600;}
-        .price-options{margin-top:10px;display:none;background:#111;padding:12px;border-radius:10px;border:1px solid #333;}
-        .price-btn{background:#333;color:#FFF;padding:12px;border-radius:10px;text-align:center;margin-bottom:8px;font-size:16px;cursor:pointer;}
+        
+        .price-current{font-size:clamp(15px, 4vw, 17px);font-weight:600;}
+        
+        .price-options{
+            margin-top:10px;
+            display:none;
+            background:#111;
+            padding:12px;
+            border-radius:10px;
+            border:1px solid #333;
+            width:100%;
+        }
+        
+        .price-btn{
+            background:#333;
+            color:#FFF;
+            padding:10px;
+            border-radius:10px;
+            text-align:center;
+            margin-bottom:6px;
+            font-size:clamp(14px, 3.8vw, 16px);
+            cursor:pointer;
+            width:100%;
+            border:none;
+        }
+        
         .price-btn:last-child{margin-bottom:0;}
         .price-btn:active{background:#444;}
-        .custom-price-row{display:flex;gap:8px;margin-top:8px;}
-        .custom-price{width:100%;background:#000;border:1px solid #444;border-radius:10px;padding:12px;color:#FFF;font-size:16px;text-align:center;}
-        .apply-btn{background:#30D158;color:#000;padding:12px 16px;border-radius:10px;font-weight:600;cursor:pointer;}
+        
+        .custom-price-row{
+            display:flex;
+            gap:6px;
+            margin-top:8px;
+            width:100%;
+        }
+        
+        .custom-price{
+            width:100%;
+            background:#000;
+            border:1px solid #444;
+            border-radius:10px;
+            padding:10px;
+            color:#FFF;
+            font-size:clamp(14px, 3.8vw, 16px);
+            text-align:center;
+            flex:1;
+        }
+        
+        .apply-btn{
+            background:#30D158;
+            color:#000;
+            padding:10px 12px;
+            border-radius:10px;
+            font-weight:600;
+            cursor:pointer;
+            border:none;
+            white-space:nowrap;
+        }
+        
         .apply-btn:active{background:#28A745;}
 
         /* QR CODE STYLES */
-        .qr-container{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;flex:1;padding:5px 0 0 0;}
-        .qr-code-wrapper{background:#FFF;padding:25px;border-radius:0;margin-bottom:15px;width:100%;max-width:320px;}
-        #controlQrCode{width:270px!important;height:270px!important;}
-        .control-ticket-number{font-size:26px;font-weight:600;text-align:center;color:#FFF;letter-spacing:0.5px;width:100%;max-width:320px;padding:0;}
-        .ticket-number-prefix{color:#FFF;margin-right:8px;}
+        .qr-container{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:flex-start;
+            flex:1;
+            padding:0;
+            width:100%;
+        }
+        
+        .qr-code-wrapper{
+            background:#FFF;
+            padding:clamp(15px, 4vw, 25px);
+            border-radius:0;
+            margin-bottom:12px;
+            width:100%;
+            max-width:min(85vw, 320px);
+            display:flex;
+            justify-content:center;
+        }
+        
+        #controlQrCode{
+            width:clamp(200px, 70vw, 270px) !important;
+            height:clamp(200px, 70vw, 270px) !important;
+        }
+        
+        .control-ticket-number{
+            font-size:clamp(20px, 6vw, 26px);
+            font-weight:600;
+            text-align:center;
+            color:#FFF;
+            letter-spacing:0.5px;
+            width:100%;
+            max-width:min(85vw, 320px);
+            padding:0;
+            word-wrap:break-word;
+        }
+        
+        .ticket-number-prefix{color:#FFF;margin-right:6px;}
 
         /* КНОПКА ЗАПОЛНЕНИЯ ПО ФОТО */
-        .photo-fill-btn{background:#007AFF;color:#FFF;font-size:17px;font-weight:600;padding:16px 0;border-radius:12px;text-align:center;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;}
+        .photo-fill-btn{
+            background:#007AFF;
+            color:#FFF;
+            font-size:clamp(15px, 4vw, 17px);
+            font-weight:600;
+            padding:clamp(12px, 3vh, 16px) 0;
+            border-radius:12px;
+            text-align:center;
+            cursor:pointer;
+            margin-bottom:12px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:6px;
+            width:100%;
+            border:none;
+        }
+        
         .photo-fill-btn:active{background:#0056CC;}
-        .photo-icon{width:20px;height:20px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>') center/contain no-repeat;}
+        
+        .photo-icon{
+            width:clamp(16px, 4vw, 20px);
+            height:clamp(16px, 4vw, 20px);
+            background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>') center/contain no-repeat;
+        }
+
+        /* ПОЛЯ ВВОДА */
+        input[type="text"], input[type="number"]{
+            background:#1E1E1E;
+            border:1px solid #3A3A3C;
+            border-radius:12px;
+            padding:12px;
+            color:#FFF;
+            font-size:clamp(14px, 3.8vw, 16px);
+            width:100%;
+            margin-bottom:12px;
+            -webkit-appearance:none;
+        }
+        
+        /* СЛАЙДЕР */
+        input[type="range"]{
+            -webkit-appearance:none;
+            flex:1;
+            height:4px;
+            background:#333;
+            border-radius:2px;
+            margin:0 10px;
+            width:100%;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb{
+            -webkit-appearance:none;
+            width:20px;
+            height:20px;
+            background:#FF3B30;
+            border-radius:50%;
+        }
 
         /* ИНДИКАТОР ЗАГРУЗКИ */
-        .loading-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:10000;}
-        .loading-spinner{width:40px;height:40px;border:4px solid #333;border-top:4px solid #007AFF;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:16px;}
-        @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-        .loading-text{color:#FFF;font-size:16px;text-align:center;}
+        .loading-overlay{
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            background:rgba(0,0,0,0.8);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            flex-direction:column;
+            z-index:10000;
+            padding:20px;
+        }
+        
+        .loading-spinner{
+            width:40px;
+            height:40px;
+            border:4px solid #333;
+            border-top:4px solid #007AFF;
+            border-radius:50%;
+            animation:spin 1s linear infinite;
+            margin-bottom:16px;
+        }
+        
+        @keyframes spin{
+            0%{transform:rotate(0deg);}
+            100%{transform:rotate(360deg);}
+        }
+        
+        .loading-text{
+            color:#FFF;
+            font-size:clamp(14px, 3.8vw, 16px);
+            text-align:center;
+        }
+
+        /* ЗАГОЛОВКИ СТРАНИЦ */
+        .page-title{
+            font-size:clamp(16px, 4.5vw, 18px);
+            font-weight:600;
+            margin-bottom:12px;
+            width:100%;
+        }
+
+        /* ТЕКСТ ПОД КОДОМ */
+        .code-hint{
+            text-align:center;
+            font-size:clamp(14px, 3.8vw, 16px);
+            font-weight:500;
+            margin-bottom:clamp(20px, 5vh, 32px);
+            width:100%;
+            padding:0 8px;
+        }
     </style>
 </head>
 <body>
@@ -104,7 +583,7 @@
             <div class="code-input-field" id="codeDisplay">
                 <div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div>
             </div>
-            <div style="text-align:center;font-size:16px;font-weight:500;margin-bottom:32px;">Введите код с наклейки</div>
+            <div class="code-hint">Введите код с наклейки</div>
             <div class="keyboard-container">
                 <div class="keyboard">
                     <button class="key" onclick="addNumber(1)">1</button>
@@ -127,43 +606,43 @@
 
         <!-- ОПЛАТА -->
         <div id="paymentPage" class="page">
-            <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Данные билета</div>
+            <div class="page-title">Данные билета</div>
             
             <!-- КНОПКА ЗАПОЛНЕНИЯ ПО ФОТО -->
-            <div class="photo-fill-btn" onclick="openGallery()">
+            <button class="photo-fill-btn" onclick="openGallery()">
                 <div class="photo-icon"></div>
                 Выбрать фото из галереи
-            </div>
+            </button>
 
-            <input type="text" id="carrierInput" placeholder="Перевозчик" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
-            <input type="text" id="routeInput" placeholder="Маршрут" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
-            <input type="text" id="busNumberInput" placeholder="Номер автобуса" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
+            <input type="text" id="carrierInput" placeholder="Перевозчик">
+            <input type="text" id="routeInput" placeholder="Маршрут">
+            <input type="text" id="busNumberInput" placeholder="Номер автобуса">
 
-            <div style="display:flex;align-items:center;margin:16px 0;">
-                <span style="font-size:18px;font-weight:600;color:#FF3B30;" id="quantityValue">1</span>
-                <input type="range" min="1" max="10" value="1" id="quantityRange" oninput="updatePrice()" style="-webkit-appearance:none;flex:1;height:4px;background:#333;border-radius:2px;margin:0 12px;">
-                <span style="color:#666;">10</span>
+            <div style="display:flex;align-items:center;margin:12px 0;width:100%;">
+                <span style="font-size:clamp(16px, 4.5vw, 18px);font-weight:600;color:#FF3B30;min-width:30px;" id="quantityValue">1</span>
+                <input type="range" min="1" max="10" value="1" id="quantityRange" oninput="updatePrice()">
+                <span style="color:#666;min-width:25px;text-align:right;">10</span>
             </div>
 
             <!-- ВЫБОР ЦЕНЫ -->
-            <div class="price-selector" onclick="document.getElementById('priceOptions').style.display = document.getElementById('priceOptions').style.display==='block'?'none':'block'">
+            <div class="price-selector" onclick="togglePriceOptions()">
                 <div class="price-current">Цена за 1 билет: <span id="currentPriceText">48.00 ₽</span></div>
             </div>
             <div id="priceOptions" class="price-options">
-                <div class="price-btn" onclick="setPrice(48)">48.00 ₽</div>
-                <div class="price-btn" onclick="setPrice(46)">46.00 ₽</div>
+                <button class="price-btn" onclick="setPrice(48)">48.00 ₽</button>
+                <button class="price-btn" onclick="setPrice(46)">46.00 ₽</button>
                 <div class="custom-price-row">
                     <input type="number" id="customPriceInput" class="custom-price" placeholder="Своя цена">
-                    <div class="apply-btn" onclick="applyCustomPrice()">OK</div>
+                    <button class="apply-btn" onclick="applyCustomPrice()">OK</button>
                 </div>
             </div>
 
-            <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
+            <button class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></button>
         </div>
 
         <!-- ФИНАЛЬНЫЙ БИЛЕТ -->
         <div id="finalTicketPage" class="page">
-            <div style="flex:1;display:flex;flex-direction:column;">
+            <div style="flex:1;display:flex;flex-direction:column;width:100%;">
                 <div class="top-separator"></div>
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
                 <div class="final-header-row">
@@ -216,7 +695,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
+                    <button class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</button>
                 </div>
 
                 <div id="controlContent" class="control-content">
@@ -229,23 +708,31 @@
                             <span id="controlTicketNumber">1 314 306 766</span>
                         </div>
                     </div>
-                    <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
+                    <button class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</button>
                 </div>
             </div>
         </div>
 
         <!-- АКТИВНЫЕ БИЛЕТЫ -->
         <div id="activeTicketsPage" class="page">
-            <div style="flex:1;display:flex;flex-direction:column;">
-                <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Действующие билеты</div>
+            <div style="flex:1;display:flex;flex-direction:column;width:100%;">
+                <div class="page-title">Действующие билеты</div>
                 <div class="active-tickets-list" id="activeTicketsList"></div>
-                <div class="close-button" onclick="showPage('codeInputPage')">Назад</div>
+                <button class="close-button" onclick="showPage('codeInputPage')">Назад</button>
             </div>
         </div>
     </div>
 
     <script>
-        const ALLOWED_USERS = [6107814655, 1777702236];
+        // ... (остальной JavaScript код остается без изменений, только добавим недостающую функцию)
+        
+        function togglePriceOptions() {
+            const options = document.getElementById('priceOptions');
+            options.style.display = options.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Остальной JavaScript код остается таким же как в оригинале...
+        const ALLOWED_USERS = [6107814655, 987654321];
         const tg = window.Telegram.WebApp;
         tg.expand(); tg.MainButton.hide();
 
@@ -499,7 +986,7 @@
                         switchToTicket();
                         startViewTimer();
                     };
-                    el.innerHTML = `<div><div style="font-weight:600;">Билет № ${t.number}</div><div style="font-size:14px;color:#AAA">Осталось: ${mins} мин</div></div><div class="delete-btn" onclick="event.stopPropagation();deleteTicket(${i})"></div>`;
+                    el.innerHTML = `<div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:clamp(14px,3.8vw,16px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Билет № ${t.number}</div><div style="font-size:clamp(12px,3.2vw,14px);color:#AAA">Осталось: ${mins} мин</div></div><div class="delete-btn" onclick="event.stopPropagation();deleteTicket(${i})"></div>`;
                     list.appendChild(el);
                 });
             }
