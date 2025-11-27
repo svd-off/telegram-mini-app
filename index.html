@@ -12,10 +12,8 @@
         .page{display:none;flex-direction:column;height:100%;}
         .page.active{display:flex;}
 
-        /* ТАЙМЕР */
         .final-timer{font-size:26px;font-weight:600;text-align:center;margin:20px 0 32px;}
 
-        /* ВЕРХНЯЯ СТРОКА */
         .final-header-row{
             display:flex;justify-content:space-between;align-items:center;
             padding-bottom:14px;border-bottom:1px solid #2C2C2E;
@@ -36,28 +34,27 @@
             border-radius:2px;transition:all 0.3s ease;z-index:1;
         }
 
-        /* КОНТЕНТ */
         .ticket-content{flex:1;display:flex;flex-direction:column;}
         .control-content{flex:1;display:none;flex-direction:column;justify-content:flex-end;}
 
         .final-info-block{flex:1;}
         .info-row{
-            display:flex;align-items:flex-start;gap:16px;
-            padding:14px 0;
-            border BOTTOM:1px solid #2C2C2E;
+            display:flex;align-items:flex-start;
+            gap:0; /* убираем gap полностью */
+            padding:16px 0;
+            border-bottom:1px solid #2C2C2E;
         }
         .info-row:last-child{border-bottom:none;}
 
-        /* ОБЫЧНЫЕ ИКОНКИ — ОСТАЮТСЯ МАЛЕНЬКИМИ */
+        /* Обычные иконки (если вдруг будут) */
         .info-icon{width:40px;height:40px;flex-shrink:0;}
 
-        /* КРУПНЫЕ ИКОНКИ — ТОЛЬКО 5 ШТУК, КАК НА СКРИНЕ */
-        .info-icon.big-icon{
-            width:80px !important;
-            height:80px !important;
-            margin-top:-12px; /* чтобы визуально прижать к тексту */
-            margin-bottom:-12px;
-            margin-left:-8px;
+        /* ТОЛЬКО 5 КРУПНЫХ ИКОНОК — 60×60, ПРИЖАТЫ ВПЛОТНУЮ */
+        .info-icon.big{
+            width:60px !important;
+            height:60px !important;
+            margin-right:16px; /* точное расстояние как в оригинале */
+            margin-top:-2px; /* лёгкая подгонка по вертикали */
         }
 
         .info-content{flex:1;}
@@ -78,7 +75,7 @@
         }
         .final-close-btn:active{background:#E01E1E;}
 
-        /* КЛАВИАТУРА И ОСТАЛЬНОЕ — БЕЗ ИЗМЕНЕНИЙ */
+        /* Остальное без изменений */
         .code-input-field{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
         .code-box{width:40px;height:52px;border:1px solid #3A3A3C;border-radius:8px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;}
         .code-box.filled{background:#FFF;color:#000;border-color:#FFF;}
@@ -158,39 +155,38 @@
                     <div class="tab-indicator" id="indicator"></div>
                 </div>
 
-                <!-- БИЛЕТ -->
                 <div id="ticketContent" class="ticket-content">
                     <div class="final-info-block">
                         <div class="info-row">
-                            <img src="carrier.png" class="info-icon big-icon">
+                            <img src="carrier.png" class="info-icon big">
                             <div class="info-content">
                                 <div class="info-label">Перевозчик</div>
                                 <div class="info-value" id="finalCarrier">ИП Читащвили Н.С.</div>
                             </div>
                         </div>
                         <div class="info-row">
-                            <img src="bus.png" class="info-icon big-icon">
+                            <img src="bus.png" class="info-icon big">
                             <div class="info-content">
                                 <div class="route-fromto" id="finalRouteFromTo">Соколовская — Стела</div>
                                 <div class="route-number" id="finalBusNumber">в523ок124</div>
                             </div>
                         </div>
                         <div class="info-row">
-                            <img src="rub.png" class="info-icon big-icon">
+                            <img src="rub.png" class="info-icon big">
                             <div class="info-content">
                                 <div class="info-label">Стоимость</div>
                                 <div class="info-value" id="finalCost">1 шт., Полный, 48.00 ₽</div>
                             </div>
                         </div>
                         <div class="info-row">
-                            <img src="calendar.png" class="info-icon big-icon">
+                            <img src="calendar.png" class="info-icon big">
                             <div class="info-content">
                                 <div class="info-label">Дата покупки</div>
                                 <div class="info-value" id="purchaseDate">27.11.2025</div>
                             </div>
                         </div>
                         <div class="info-row">
-                            <img src="clock.png" class="info-icon big-icon">
+                            <img src="clock.png" class="info-icon big">
                             <div class="info-content">
                                 <div class="info-label">Время покупки</div>
                                 <div class="info-value" id="purchaseTime">14:27</div>
@@ -200,7 +196,6 @@
                     <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
                 </div>
 
-                <!-- КОНТРОЛЬ — ПОЛНОСТЬЮ ПУСТОЙ ЧЁРНЫЙ ЭКРАН -->
                 <div id="controlContent" class="control-content">
                     <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
                 </div>
