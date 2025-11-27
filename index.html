@@ -69,11 +69,11 @@
         .apply-btn:active{background:#28A745;}
 
         /* QR CODE STYLES - ТОЧНО КАК НА СКРИНЕ */
-        .qr-container{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;flex:1;padding:10px 0 0 0;}
-        .qr-code-wrapper{background:#FFF;padding:20px;border-radius:0;margin-bottom:20px;}
-        #controlQrCode{width:220px!important;height:220px!important;}
-        .control-ticket-number{font-size:24px;font-weight:600;text-align:center;color:#FFF;letter-spacing:0.5px;width:100%;padding:0 10px;}
-        .ticket-number-prefix{color:#FF3B30;margin-right:5px;}
+        .qr-container{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;flex:1;padding:5px 0 0 0;}
+        .qr-code-wrapper{background:#FFF;padding:25px;border-radius:0;margin-bottom:15px;width:100%;max-width:320px;}
+        #controlQrCode{width:270px!important;height:270px!important;}
+        .control-ticket-number{font-size:26px;font-weight:600;text-align:center;color:#FFF;letter-spacing:0.5px;width:100%;max-width:320px;padding:0;}
+        .ticket-number-prefix{color:#FFF;margin-right:8px;}
     </style>
 </head>
 <body>
@@ -302,8 +302,8 @@
                 qrContainer.innerHTML = '';
                 new QRCode(qrContainer, {
                     text: ticketNumber,
-                    width: 220,
-                    height: 220,
+                    width: 270,
+                    height: 270,
                     colorDark: "#000000",
                     colorLight: "#ffffff",
                     correctLevel: QRCode.CorrectLevel.H
