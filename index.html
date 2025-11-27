@@ -14,23 +14,26 @@
 
         .final-timer{font-size:26px;font-weight:600;text-align:center;margin:20px 0 32px;}
 
+        /* ВЕРХНЯЯ ПАНЕЛЬ — ТОЧНО КАК В ОРИГИНАЛЕ */
         .final-header-row{
             display:flex;justify-content:space-between;align-items:center;
-            padding-bottom:14px;border-bottom:1px solid #2C2C2E;
-            margin-bottom:28px 0;position:relative;
+            padding:0 12px 14px;
+            border-bottom:1px solid #2C2C2E;
+            margin-bottom:28px;
+            position:relative;
         }
         .final-ticket-number{
-            display:flex;align-items:center;gap:14px;
-            font-size:24px;font-weight:500;color:#FF3B30;cursor:pointer;z-index:2;
+            display:flex;align-items:center;gap:12px;
+            font-size:21px;font-weight:500;color:#FF3B30;cursor:pointer;z-index:2;
         }
-        .ticket-icon{width:58px;height:58px;flex-shrink:0;} /* БОЛЬШЕ */
+        .ticket-icon{width:52px;height:52px;flex-shrink:0;}
         .final-control{
-            display:flex;align-items:center;gap:10px;
-            font-size:18px;color:#888;cursor:pointer;z-index:2;
+            display:flex;align-items:center;gap:9px;
+            font-size:17px;color:#888;cursor:pointer;z-index:2;
         }
-        .control-icon{width:44px;height:44px;flex-shrink:0;} /* БОЛЬШЕ */
+        .control-icon{width:40px;height:40px;flex-shrink:0;}
         .tab-indicator{
-            position:absolute;bottom:-1px;height:2.5px;background:#FF3B30;
+            position:absolute;bottom:-1px;left:12px;height:2.5px;background:#FF3B30;
             border-radius:2px;transition:all 0.3s ease;z-index:1;
         }
 
@@ -44,14 +47,14 @@
             border-bottom:1px solid #2C2C2E;
         }
         .info-row:last-child{border-bottom:none;}
-        .info-icon{width:58px;height:58px;flex-shrink:0;} /* САМЫЕ БОЛЬШИЕ */
+        .info-icon{width:56px;height:56px;flex-shrink:0;}
         .info-content{flex:1;}
         .info-label, .route-fromto{font-size:15px;color:#AAAAAA;font-weight:500;margin-bottom:4px;}
         .info-value, .route-number{font-size:19px;font-weight:600;color:#FFFFFF;}
 
         .final-close-btn{
             background:#FF3B30;color:#FFF;
-            font-size:600 19px/1 -apple-system;
+            font-size:19px;font-weight:600;
             padding:18px 0;border-radius:16px;
             text-align:center;cursor:pointer;
             margin-top:30px;
@@ -59,7 +62,7 @@
         }
         .final-close-btn:active{background:#E01E1E;}
 
-        /* ВСЁ ОСТАЛЬНОЕ — БЕЗ ИЗМЕНЕНИЙ */
+        /* Клавиатура и всё остальное — без изменений */
         .code-input-field{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
         .code-box{width:40px;height:52px;border:1px solid #3A3A3C;border-radius:8px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;}
         .code-box.filled{background:#FFF;color:#000;border-color:#FFF;}
@@ -103,7 +106,7 @@
                 <div class="bottom-row">
                     <button class="action-btn" onclick="scanCode()">Сканировать</button>
                     <button class="key" onclick="addNumber(0)">0</button>
-                    <button class="action-btn" onclick="backspace()">Backspace</button>
+                    <button class="action-btn" onclick="backspace()">←</button>
                 </div>
             </div>
         </div>
@@ -166,7 +169,7 @@
                             <img src="calendar.png" class="info-icon">
                             <div class="info-content">
                                 <div class="info-label">Дата покупки</div>
-                                <div class="info-value" id="purchaseDate">27.11.2025</div>
+                                <div class="info-value" id="purchaseDate">27 ноября 2025 г.</div>
                             </div>
                         </div>
                         <div class="info-row">
@@ -180,14 +183,13 @@
                     <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
                 </div>
 
-                <!-- ПУСТОЙ КОНТРОЛЬ -->
                 <div id="controlContent" class="control-content">
                     <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
                 </div>
             </div>
         </div>
 
-        <!-- АКТИВНЫЕ БИЛЕТЫ (если нужны) -->
+        <!-- АКТИВНЫЕ БИЛЕТЫ -->
         <div id="activeTicketsPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;">
                 <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Действующие билеты</div>
@@ -215,9 +217,10 @@
             document.getElementById('controlContent').style.display = 'none';
             document.querySelector('.final-ticket-number').style.color = '#FF3B30';
             document.querySelector('.final-control span').style.color = '#888';
+            const leftBlock = document.querySelector('.final-ticket-number');
             const indicator = document.getElementById('indicator');
-            indicator.style.left = '0px';
-            indicator.style.width = document.querySelector('.final-ticket-number').offsetWidth + 'px';
+            indicator.style.left = '12px';
+            indicator.style.width = (leftBlock.offsetWidth + 24) + 'px';
         }
 
         function switchToControl() {
@@ -225,10 +228,13 @@
             document.getElementById('controlContent').style.display = 'flex';
             document.querySelector('.final-ticket-number').style.color = '#888';
             document.querySelector('.final-control span').style.color = '#FF3B30';
-            const controlEl = document.querySelector('.final-control');
+            const rightBlock = document.querySelector('.final-control');
+            const header = document.querySelector('.final-header-row');
             const indicator = document.getElementById('indicator');
-            indicator.style.left = (controlEl.getBoundingClientRect().left - controlEl.parentElement.getBoundingClientRect().left) + 'px';
-            indicator.style.width = controlEl.offsetWidth + 'px';
+            const rightPos = header.offsetWidth - rightBlock.getBoundingClientRect().right + 12;
+            indicator.style.left = 'auto';
+            indicator.style.right = rightPos + 'px';
+            indicator.style.width = (rightBlock.offsetWidth + 18) + 'px';
         }
 
         function addNumber(n) { if (enteredCode.length < 6) { enteredCode += n; updateCodeDisplay(); if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); } }
@@ -277,12 +283,17 @@
             }, 1000);
         }
 
-        function closeTicket() { clearInterval(viewTimer); showPage(tickets.length > 0 ? 'activeTicketsPage' : 'codeInputPage'); renderActiveTickets(); }
+        function closeTicket() { 
+            clearInterval(viewTimer); 
+            showPage(tickets.length > 0 ? 'activeTicketsPage' : 'codeInputPage'); 
+            if (tickets.length > 0) renderActiveTickets();
+        }
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             if (id === 'finalTicketPage') setTimeout(switchToTicket, 50);
+            if (id === 'activeTicketsPage') renderActiveTickets();
         }
 
         function renderActiveTickets() {
@@ -314,7 +325,10 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', () => { updateCodeDisplay(); updatePrice(); });
+        document.addEventListener('DOMContentLoaded', () => { 
+            updateCodeDisplay(); 
+            updatePrice();
+        });
     </script>
 </body>
 </html>
