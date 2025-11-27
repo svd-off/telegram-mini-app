@@ -24,8 +24,8 @@
         .action-btn{flex:1;background:#1E1E1E;color:#FFF;border:none;border-radius:12px;font-size:16px;font-weight:500;height:68px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
         .action-btn:active{background:#3A3A3C;}
         .final-timer{font-size:26px;font-weight:600;text-align:center;margin-bottom:26px;}
-        
-        /* НОВАЯ СТРОКА — ИДЕАЛЬНО ВЫРОВНЯНА */
+
+        /* ВЕРХНЯЯ СТРОКА — КАК В ОРИГИНАЛЕ */
         .final-header-row{
             display:flex;
             justify-content:space-between;
@@ -37,36 +37,42 @@
         .final-ticket-number{
             display:flex;
             align-items:center;
-            gap:14px;
-            font-size:24px;
-            font-weight:600;
+            gap:10px; /* ближе к иконке */
+            font-size:20px;
+            font-weight:400; /* НЕ ЖИРНЫЙ */
             color:#FF3B30;
-            max-width:70%;
+            margin-left:-6px; /* сдвигаем левее к краю */
         }
-        .ticket-icon{width:56px;height:56px;flex-shrink:0;}
+        .ticket-icon{
+            width:56px;
+            height:56px;
+            flex-shrink:0;
+        }
         .final-ticket-number::after{
             content:'';
             position:absolute;
-            left:70px;right:0;
+            left:70px;
+            right:0;
             bottom:-9px;
             height:2.5px;
             background:#FF3B30;
             border-radius:2px;
         }
-        
-        /* КОНТРОЛЬ С ИКОНКОЙ — ТОЧНО КАК У ПЕРЕВОЗЧИКА */
+
+        /* КОНТРОЛЬ — ТОЧНО КАК ПЕРЕВОЗЧИК */
         .final-control{
             display:flex;
             align-items:center;
-            gap:8px;
+            gap:10px;
             font-size:16px;
-            opacity:0.9;
+            color:#FFFFFF;
+            opacity:0.85;
             cursor:pointer;
         }
         .control-icon{
-            width:32px;
-            height:32px;
-            opacity:0.8;
+            width:40px;
+            height:40px;
+            flex-shrink:0;
         }
 
         .final-info-block{margin-bottom:32px;}
@@ -90,7 +96,7 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- ВВОД КОДА (без изменений) -->
+        <!-- ВВОД КОДА -->
         <div id="codeInputPage" class="page active">
             <div class="code-input-field" id="codeDisplay">
                 <div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div>
@@ -119,7 +125,7 @@
             </div>
         </div>
 
-        <!-- ОПЛАТА (без изменений) -->
+        <!-- ОПЛАТА -->
         <div id="paymentPage" class="page">
             <div style="font-size:18px;font-weight:600;margin-bottom:24px;">Данные билета</div>
             <input type="text" id="carrierInput" value="ИП Читащвили Н.С." style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
@@ -133,7 +139,7 @@
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ФИНАЛЬНЫЙ БИЛЕТ — НОВАЯ ВЕРХНЯЯ СТРОКА -->
+        <!-- ФИНАЛЬНЫЙ БИЛЕТ — КАК В ОРИГИНАЛЕ -->
         <div id="finalTicketPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;padding-top:20px;">
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
@@ -190,7 +196,7 @@
             </div>
         </div>
 
-        <!-- АКТИВНЫЕ БИЛЕТЫ (без изменений) -->
+        <!-- АКТИВНЫЕ БИЛЕТЫ -->
         <div id="activeTicketsPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;">
                 <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Действующие билеты</div>
