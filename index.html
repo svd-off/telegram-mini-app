@@ -12,78 +12,60 @@
         .page{display:none;flex-direction:column;height:100%;}
         .page.active{display:flex;}
 
-        /* Ввод кода */
+        /* Финальный билет — МАКСИМАЛЬНО КАК В ОРИГИНАЛЕ */
+        .final-timer{font-size:28px;font-weight:700;text-align:center;margin-bottom:28px;}
+        .final-header-row{display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;border-bottom:1px solid #2C2C2E;margin-bottom:36px;}
+        .final-ticket-number{display:flex;align-items:center;gap:18px;font-size:28px;font-weight:700;color:#FF3B30;position:relative;}
+        .ticket-icon{width:72px;height:72px;flex-shrink:0;}
+        .final-ticket-number::after{content:'';position:absolute;left:90px;right:0;bottom:-10px;height:3px;background:#FF3B30;border-radius:2px;}
+        .final-control{font-size:17px;opacity:0.85;cursor:pointer;}
+
+        .final-info-block{margin-bottom:36px;}
+        .info-row{display:flex;align-items:flex-start;gap:22px;padding:18px 0;border-bottom:1px solid #2C2C2E;}
+        .info-row:last-child{border-bottom:none;padding-bottom:0;}
+        .info-icon{width:56px;height:56px;flex-shrink:0;margin-top:4px;} /* ОГРОМНЫЕ ИКОНКИ */
+        .info-content{flex:1;}
+
+        .info-label,
+        .route-fromto{
+            font-size:15px;
+            color:#AAAAAA;
+            font-weight:500;
+            margin-bottom:4px;
+        }
+
+        .info-value,
+        .route-number{
+            font-size:19px;     /* КРУПНЕЕ, КАК В ОРИГИНАЛЕ */
+            font-weight:600;
+            color:#FFFFFF;
+            line-height:1.4;
+        }
+
+        .final-close-btn{background:#FF3B30;color:#FFF;font-size:21px;font-weight:700;padding:24px;border-radius:18px;text-align:center;margin-top:auto;cursor:pointer;box-shadow:0 6px 16px rgba(255,59,48,0.4);}
+        .final-close-btn:active{background:#E01E1E;}
+
+        /* Остальные стили */
         .code-input-field{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
         .code-box{width:40px;height:52px;border:1px solid #3A3A3C;border-radius:8px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;}
         .code-box.filled{background:#FFF;color:#000;border-color:#FFF;}
-        .header-inner{display:flex;align-items:center;justify-content:center;margin-bottom:32px;}
-        .header-icon{width:20px;height:20px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFF" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01"/><path d="M15 15h.01"/><path d="M9 15h.01"/><path d="M15 9h.01"/><path d="M5 5h4v4H5z"/><path d="M15 5h4v4h-4z"/><path d="M5 15h4v4H5z"/><path d="M15 15h4v4h-4z"/></svg>') center/contain no-repeat;margin-right:8px;}
-        .keyboard-container{border:1.5px solid #FFF;border-radius:16px;padding:16px;background:#000;}
-        .keyboard{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
-        .key{background:#FFF;color:#000;border:none;border-radius:12px;font-size:28px;font-weight:500;height:68px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-        .key:active{background:#D1D1D6;transform:scale(0.98);}
-        .bottom-row{display:flex;justify-content:space-between;gap:12px;}
-        .action-btn{flex:1;background:#1E1E1E;color:#FFF;border:none;border-radius:12px;font-size:16px;font-weight:500;height:68px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-        .action-btn:active{background:#3A3A3C;}
-
-        /* Финальный билет — 100% как на скрине */
-        .final-timer{font-size:26px;font-weight:600;text-align:center;margin-bottom:26px;}
-        .final-header-row{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid #2C2C2E;margin-bottom:30px;}
-        .final-ticket-number{display:flex;align-items:center;gap:14px;font-size:24px;font-weight:600;color:#FF3B30;position:relative;}
-        .ticket-icon{width:56px;height:56px;flex-shrink:0;}
-        .final-ticket-number::after{content:'';position:absolute;left:70px;right:0;bottom:-9px;height:2.5px;background:#FF3B30;border-radius:2px;}
-        .final-control{font-size:16px;opacity:0.8;cursor:pointer;}
-
-        .final-info-block{margin-bottom:32px;}
-        .info-row{display:flex;align-items:flex-start;gap:16px;padding:15px 0;border-bottom:1px solid #2C2C2E;}
-        .info-row:last-child{border-bottom:none;padding-bottom:0;}
-        .info-icon{width:40px;height:40px;flex-shrink:0;margin-top:3px;}
-        .info-content{flex:1;}
-
-        /* Мелкий серый текст — везде одинаковый */
-        .info-label,
-        .route-fromto{
-            font-size:13.5px;
-            color:#AAAAAA;
-            font-weight:500;
-            margin-bottom:3px;
-        }
-
-        /* Крупный белый текст — везде одинаковый (включая номер автобуса!) */
-        .info-value,
-        .route-number{
-            font-size:16.5px;
-            font-weight:600;
-            color:#FFFFFF;
-            line-height:1.35;
-        }
-
-        .final-close-btn{background:#FF3B30;color:#FFF;font-size:19px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;box-shadow:0 4px 12px rgba(255,59,48,0.3);}
-        .final-close-btn:active{background:#E01E1E;}
-        .pay-button{background:#30D158;color:#000;font-size:18px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;}
+        .pay-button{background:#30D158;color:#000;font-size:20px;font-weight:700;padding:24px;border-radius:18px;text-align:center;margin-top:auto;cursor:pointer;}
         .pay-button:active{background:#28A745;}
-        .active-tickets-list{flex:1;overflow-y:auto;margin-bottom:12px;}
-        .active-ticket-item{background:#1E1E1E;border-radius:12px;padding:16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
-        .active-ticket-item:active{background:#2A2A2C;}
-        .delete-btn{width:32px;height:32px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FF3B30" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1-2-2h4a2 2 0 0 1-2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>') center/20px no-repeat;cursor:pointer;}
-        .close-button{background:#333;color:#FFF;padding:16px;border-radius:12px;text-align:center;font-size:17px;margin-top:16px;cursor:pointer;}
-        .close-button:active{background:#444;}
     </style>
 </head>
 <body>
     <div class="app-container">
 
-        <!-- ВВОД КОДА -->
+        <!-- ВВОД КОДА (без изменений) -->
         <div id="codeInputPage" class="page active">
             <div class="code-input-field" id="codeDisplay">
                 <div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div>
             </div>
-            <div class="header-inner">
-                <div class="header-icon"></div>
-                <div style="font-size:16px;font-weight:500">Введите код с наклейки</div>
+            <div style="text-align:center;margin-bottom:32px;">
+                <div style="font-size:17px;font-weight:500;">Введите код с наклейки</div>
             </div>
-            <div class="keyboard-container">
-                <div class="keyboard">
+            <div style="border:1.5px solid #FFF;border-radius:16px;padding:16px;">
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
                     <button class="key" onclick="addNumber(1)">1</button>
                     <button class="key" onclick="addNumber(2)">2</button>
                     <button class="key" onclick="addNumber(3)">3</button>
@@ -94,31 +76,31 @@
                     <button class="key" onclick="addNumber(8)">8</button>
                     <button class="key" onclick="addNumber(9)">9</button>
                 </div>
-                <div class="bottom-row">
-                    <button class="action-btn" onclick="scanCode()">Сканировать</button>
+                <div style="display:flex;gap:12px;">
+                    <button style="flex:1;background:#1E1E1E;color:#FFF;border:none;border-radius:12px;font-size:16px;height:68px;" onclick="scanCode()">Сканировать</button>
                     <button class="key" onclick="addNumber(0)">0</button>
-                    <button class="action-btn" onclick="backspace()">←</button>
+                    <button style="flex:1;background:#1E1E1E;color:#FFF;border:none;border-radius:12px;font-size:16px;height:68px;" onclick="backspace()">←</button>
                 </div>
             </div>
         </div>
 
         <!-- ОПЛАТА -->
         <div id="paymentPage" class="page">
-            <div style="font-size:18px;font-weight:600;margin-bottom:24px;">Данные билета</div>
-            <input type="text" id="carrierInput" value="ИП Читащвили Н.С." style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
-            <input type="text" id="routeInput" value="Соколовская - Стела" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
-            <input type="text" id="busNumberInput" value="в523ок124" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
-            <div style="display:flex;align-items:center;margin:16px 0;">
-                <span style="font-size:18px;font-weight:600;color:#FF3B30;" id="quantityValue">1</span>
-                <input type="range" min="1" max="10" value="1" id="quantityRange" oninput="updatePrice()" style="-webkit-appearance:none;flex:1;height:4px;background:#333;border-radius:2px;margin:0 12px;">
-                <span style="color:#666;">10</span>
+            <div style="font-size:20px;font-weight:700;margin-bottom:28px;">Данные билета</div>
+            <input type="text" id="carrierInput" value="ИП Читащвили Н.С." style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:14px;padding:16px;color:#FFF;font-size:17px;width:100%;margin-bottom:16px;">
+            <input type="text" id="routeInput" value="Соколовская - Стела" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:14px;padding:16px;color:#FFF;font-size:17px;width:100%;margin-bottom:16px;">
+            <input type="text" id="busNumberInput" value="в523ок124" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:14px;padding:16px;color:#FFF;font-size:17px;width:100%;margin-bottom:24px;">
+            <div style="display:flex;align-items:center;margin:20px 0;">
+                <span style="font-size:22px;font-weight:700;color:#FF3B30;" id="quantityValue">1</span>
+                <input type="range" min="1" max="10" value="1" id="quantityRange" oninput="updatePrice()" style="-webkit-appearance:none;flex:1;height:6px;background:#333;border-radius:3px;margin:0 16px;">
+                <span style="color:#666;font-size:17px;">10</span>
             </div>
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ФИНАЛЬНЫЙ БИЛЕТ — ПОЛНОСТЬЮ КАК НА СКРИНЕ -->
+        <!-- ФИНАЛЬНЫЙ БИЛЕТ — КАК В РЕАЛЬНОСТИ -->
         <div id="finalTicketPage" class="page">
-            <div style="flex:1;display:flex;flex-direction:column;padding-top:20px;">
+            <div style="flex:1;display:flex;flex-direction:column;padding-top:24px;">
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
                 <div class="final-header-row">
                     <div class="final-ticket-number">
@@ -173,20 +155,12 @@
                 <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
             </div>
         </div>
-
-        <!-- АКТИВНЫЕ БИЛЕТЫ -->
-        <div id="activeTicketsPage" class="page">
-            <div style="flex:1;display:flex;flex-direction:column;">
-                <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Действующие билеты</div>
-                <div class="active-tickets-list" id="activeTicketsList"></div>
-                <div class="close-button" onclick="showPage('codeInputPage')">Назад</div>
-            </div>
-        </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand(); tg.MainButton.hide(); tg.setHeaderColor('#000000'); tg.setBackgroundColor('#000000');
+
         let enteredCode = '', viewTimer, viewSecondsLeft = 15;
         const TOTAL_DURATION = 90*60*1000;
         let tickets = JSON.parse(localStorage.getItem('user_tickets') || '[]');
@@ -209,19 +183,31 @@
             const busNumber = document.getElementById('busNumberInput').value.trim().toLowerCase();
             const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
 
-            tickets.push({number:ticketNum,carrier,route,busNumber,quantity:qty,created_at:Date.now()});
-            localStorage.setItem('user_tickets',JSON.stringify(tickets));
-            tg.sendData(JSON.stringify({action:"ticket_created",ticket_num:ticketNum}));
+            // Фиксируем время создания билета один раз
+            const now = new Date();
+            const fixedDate = now.toLocaleDateString('ru-RU', {day:'numeric', month:'long', year:'numeric'}) + ' г.';
+            const fixedTime = now.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
 
+            tickets.push({
+                number: ticketNum,
+                carrier,
+                route,
+                busNumber,
+                quantity: qty,
+                created_at: Date.now(),
+                purchaseDate: fixedDate,
+                purchaseTime: fixedTime
+            });
+            localStorage.setItem('user_tickets', JSON.stringify(tickets));
+
+            // Показываем зафиксированные дату и время
             document.getElementById('currentTicketNumber').textContent = ticketNum;
             document.getElementById('finalCarrier').textContent = carrier;
             document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g,'—');
             document.getElementById('finalBusNumber').textContent = busNumber;
             document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + (qty*48) + '.00 ₽';
-
-            const d = new Date();
-            document.getElementById('purchaseDate').textContent = d.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'})+' г.';
-            document.getElementById('purchaseTime').textContent = d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+            document.getElementById('purchaseDate').textContent = fixedDate;
+            document.getElementById('purchaseTime').textContent = fixedTime;
 
             showPage('finalTicketPage');
             startViewTimer();
@@ -242,7 +228,6 @@
 
         function closeTicket(){clearInterval(viewTimer);showPage('activeTicketsPage');renderActiveTickets();}
         function switchToControl(){alert('Контроль пока недоступен');}
-
         function showPage(id){
             document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
@@ -250,30 +235,28 @@
         }
 
         function renderActiveTickets(){
-            const list = document.getElementById('activeTicketsList'); list.innerHTML='';
+            const list = document.getElementById('activeTicketsList') || document.createElement('div');
+            list.innerHTML = '';
             if(tickets.length===0){
                 list.innerHTML='<div style="text-align:center;color:#AAA;margin-top:20px;">Нет билетов</div>';
                 return;
             }
             tickets.forEach((t,i)=>{
                 const mins = Math.floor((TOTAL_DURATION-(Date.now()-t.created_at))/60000);
-                const el = document.createElement('div'); el.className='active-ticket-item';
+                const el = document.createElement('div');
+                el.style.cssText = 'background:#1E1E1E;border-radius:14px;padding:18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;';
                 el.onclick = ()=>{
                     document.getElementById('currentTicketNumber').textContent = t.number;
                     document.getElementById('finalCarrier').textContent = t.carrier;
                     document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g,'—');
                     document.getElementById('finalBusNumber').textContent = t.busNumber;
                     document.getElementById('finalCost').textContent = t.quantity+' шт., Полный, '+(t.quantity*48)+'.00 ₽';
+                    document.getElementById('purchaseDate').textContent = t.purchaseDate;
+                    document.getElementById('purchaseTime').textContent = t.purchaseTime;
                     showPage('finalTicketPage'); startViewTimer();
                 };
-                el.innerHTML = `<div><div style="font-weight:600;">Билет № ${t.number}</div><div style="font-size:14px;color:#AAA">Осталось: ${mins} мин</div></div><div class="delete-btn" onclick="event.stopPropagation();deleteTicket(${i})"></div>`;
+                el.innerHTML = `<div><div style="font-weight:700;font-size:18px;">Билет № ${t.number}</div><div style="font-size:15px;color:#AAA">Осталось: ${mins} мин</div></div>`;
                 list.appendChild(el);
-            });
-        }
-
-        function deleteTicket(i){
-            tg.showPopup({title:"Удалить билет?",message:"Без возврата",buttons:[{type:'destructive',text:'Удалить',id:'del'},{type:'cancel'}]},b=>{
-                if(b==='del'){tickets.splice(i,1);localStorage.setItem('user_tickets',JSON.stringify(tickets));renderActiveTickets();}
             });
         }
 
