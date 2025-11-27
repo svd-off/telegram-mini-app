@@ -76,7 +76,12 @@
         .final-info-block{margin-bottom:32px;}
         .info-row{display:flex;align-items:flex-start;gap:16px;padding:15px 0;border-bottom:1px solid #2C2C2E;}
         .info-row:last-child{border-bottom:none;padding-bottom:0;}
-        .info-icon{width:40px;height:40px;flex-shrink:0;margin-top:3px;}
+        .info-icon{
+            width:52px;        /* Увеличено с 40px */
+            height:52px;       /* Увеличено с 40px */
+            flex-shrink:0;
+            margin-top:3px;
+        }
         .info-content{flex:1;}
         .info-label,.route-fromto{font-size:13.5px;color:#AAAAAA;font-weight:500;margin-bottom:3px;}
         .info-value,.route-number{font-size:16.5px;font-weight:600;color:#FFFFFF;line-height:1.35;}
@@ -118,7 +123,7 @@
                 <div class="bottom-row">
                     <button class="action-btn" onclick="scanCode()">Сканировать</button>
                     <button class="key" onclick="addNumber(0)">0</button>
-                    <button class="action-btn" onclick="backspace()">backspace</button>
+                    <button class="action-btn" onclick="backspace()">←</button>
                 </div>
             </div>
         </div>
@@ -137,7 +142,7 @@
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ФИНАЛЬНЫЙ БИЛЕТ — ТОЛЬКО ДОБАВИЛИ ПОЛОСКУ -->
+        <!-- ФИНАЛЬНЫЙ БИЛЕТ -- ТОЛЬКО УВЕЛИЧИЛ ИКОНКИ -->
         <div id="finalTicketPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;padding-top:20px;">
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
