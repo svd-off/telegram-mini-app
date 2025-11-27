@@ -181,7 +181,7 @@
             const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
 
             const d = new Date();
-            const purchaseDate = d.toLocaleDateString('ru-RU', {day:'numeric', month:'long', year:'numeric'}) + ' г.';  // ← ОДНА "г."
+            const purchaseDate = d.toLocaleDateString('ru-RU', {day:'numeric', month:'long', year:'numeric'}) + ' г.';  // ← ТОЧНО ОДНА "г." С ТОЧКОЙ
             const purchaseTime = d.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
 
             tickets.push({
@@ -242,7 +242,7 @@
                     document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g,'—');
                     document.getElementById('finalBusNumber').textContent = t.busNumber;
                     document.getElementById('finalCost').textContent = t.quantity+' шт., Полный, '+(t.quantity*48)+'.00 ₽';
-                    document.getElementById('purchaseDate').textContent = t.purchaseDate;
+                    document.getElementById('purchaseDate').textContent = t.purchaseDate;     // ← будет "27 ноября 2025 г."
                     document.getElementById('purchaseTime').textContent = t.purchaseTime;
                     showPage('finalTicketPage'); startViewTimer();
                 };
