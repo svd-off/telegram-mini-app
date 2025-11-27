@@ -70,9 +70,10 @@
 
         /* QR CODE STYLES - ТОЧНО КАК НА СКРИНЕ */
         .qr-container{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;flex:1;padding:10px 0 0 0;}
-        .qr-code-wrapper{background:#FFF;padding:15px;border-radius:0;margin-bottom:25px;}
-        #controlQrCode{width:260px!important;height:260px!important;}
-        .control-ticket-number{font-size:28px;font-weight:600;text-align:center;color:#FFF;letter-spacing:1px;margin-top:5px;}
+        .qr-code-wrapper{background:#FFF;padding:20px;border-radius:0;margin-bottom:20px;}
+        #controlQrCode{width:220px!important;height:220px!important;}
+        .control-ticket-number{font-size:24px;font-weight:600;text-align:center;color:#FFF;letter-spacing:0.5px;width:100%;padding:0 10px;}
+        .ticket-number-prefix{color:#FF3B30;margin-right:5px;}
     </style>
 </head>
 <body>
@@ -199,7 +200,10 @@
                         <div class="qr-code-wrapper">
                             <div id="controlQrCode"></div>
                         </div>
-                        <div class="control-ticket-number" id="controlTicketNumber">1 314 306 766</div>
+                        <div class="control-ticket-number">
+                            <span class="ticket-number-prefix">№</span>
+                            <span id="controlTicketNumber">1 314 306 766</span>
+                        </div>
                     </div>
                     <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
                 </div>
@@ -298,8 +302,8 @@
                 qrContainer.innerHTML = '';
                 new QRCode(qrContainer, {
                     text: ticketNumber,
-                    width: 260,
-                    height: 260,
+                    width: 220,
+                    height: 220,
                     colorDark: "#000000",
                     colorLight: "#ffffff",
                     correctLevel: QRCode.CorrectLevel.H
