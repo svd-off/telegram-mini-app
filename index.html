@@ -24,11 +24,51 @@
         .action-btn{flex:1;background:#1E1E1E;color:#FFF;border:none;border-radius:12px;font-size:16px;font-weight:500;height:68px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
         .action-btn:active{background:#3A3A3C;}
         .final-timer{font-size:26px;font-weight:600;text-align:center;margin-bottom:26px;}
-        .final-header-row{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid #2C2C2E;margin-bottom:30px;}
-        .final-ticket-number{display:flex;align-items:center;gap:14px;font-size:24px;font-weight:600;color:#FF3B30;position:relative;}
+        
+        /* НОВАЯ СТРОКА — ИДЕАЛЬНО ВЫРОВНЯНА */
+        .final-header-row{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding-bottom:14px;
+            border-bottom:1px solid #2C2C2E;
+            margin-bottom:30px;
+        }
+        .final-ticket-number{
+            display:flex;
+            align-items:center;
+            gap:14px;
+            font-size:24px;
+            font-weight:600;
+            color:#FF3B30;
+            max-width:70%;
+        }
         .ticket-icon{width:56px;height:56px;flex-shrink:0;}
-        .final-ticket-number::after{content:'';position:absolute;left:70px;right:0;bottom:-9px;height:2.5px;background:#FF3B30;border-radius:2px;}
-        .final-control{font-size:16px;opacity:0.8;cursor:pointer;}
+        .final-ticket-number::after{
+            content:'';
+            position:absolute;
+            left:70px;right:0;
+            bottom:-9px;
+            height:2.5px;
+            background:#FF3B30;
+            border-radius:2px;
+        }
+        
+        /* КОНТРОЛЬ С ИКОНКОЙ — ТОЧНО КАК У ПЕРЕВОЗЧИКА */
+        .final-control{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            font-size:16px;
+            opacity:0.9;
+            cursor:pointer;
+        }
+        .control-icon{
+            width:32px;
+            height:32px;
+            opacity:0.8;
+        }
+
         .final-info-block{margin-bottom:32px;}
         .info-row{display:flex;align-items:flex-start;gap:16px;padding:15px 0;border-bottom:1px solid #2C2C2E;}
         .info-row:last-child{border-bottom:none;padding-bottom:0;}
@@ -50,7 +90,7 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- ВВОД КОДА -->
+        <!-- ВВОД КОДА (без изменений) -->
         <div id="codeInputPage" class="page active">
             <div class="code-input-field" id="codeDisplay">
                 <div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div><div class="code-box"></div>
@@ -79,7 +119,7 @@
             </div>
         </div>
 
-        <!-- ОПЛАТА -->
+        <!-- ОПЛАТА (без изменений) -->
         <div id="paymentPage" class="page">
             <div style="font-size:18px;font-weight:600;margin-bottom:24px;">Данные билета</div>
             <input type="text" id="carrierInput" value="ИП Читащвили Н.С." style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
@@ -93,17 +133,22 @@
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ФИНАЛЬНЫЙ БИЛЕТ -->
+        <!-- ФИНАЛЬНЫЙ БИЛЕТ — НОВАЯ ВЕРХНЯЯ СТРОКА -->
         <div id="finalTicketPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;padding-top:20px;">
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
+                
                 <div class="final-header-row">
                     <div class="final-ticket-number">
                         <img src="big-ticket.png" class="ticket-icon" alt="Билет">
                         <span id="currentTicketNumber">1 299 814 483</span>
                     </div>
-                    <div class="final-control" onclick="switchToControl()">Контроль</div>
+                    <div class="final-control" onclick="switchToControl()">
+                        <img src="control.png" class="control-icon" alt="Контроль">
+                        <span>Контроль</span>
+                    </div>
                 </div>
+
                 <div class="final-info-block">
                     <div class="info-row">
                         <img src="carrier.png" class="info-icon">
@@ -145,7 +190,7 @@
             </div>
         </div>
 
-        <!-- АКТИВНЫЕ БИЛЕТЫ -->
+        <!-- АКТИВНЫЕ БИЛЕТЫ (без изменений) -->
         <div id="activeTicketsPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;">
                 <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Действующие билеты</div>
@@ -182,19 +227,10 @@
             const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
 
             const d = new Date();
-            // ← ВОТ ЭТО ТО, ЧТО ТЫ ХОТЕЛ: 27.11.2025 ←
-            const purchaseDate = d.getDate().toString().padStart(2, '0') + '.' + 
-                                 (d.getMonth() + 1).toString().padStart(2, '0') + '.' + 
-                                 d.getFullYear();
-
+            const purchaseDate = d.getDate().toString().padStart(2, '0') + '.' + (d.getMonth() + 1).toString().padStart(2, '0') + '.' + d.getFullYear();
             const purchaseTime = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 
-            tickets.push({
-                number: ticketNum, carrier, route, busNumber, quantity: qty,
-                created_at: Date.now(),
-                purchaseDate: purchaseDate,
-                purchaseTime: purchaseTime
-            });
+            tickets.push({ number: ticketNum, carrier, route, busNumber, quantity: qty, created_at: Date.now(), purchaseDate, purchaseTime });
             localStorage.setItem('user_tickets', JSON.stringify(tickets));
             tg.sendData(JSON.stringify({ action: "ticket_created", ticket_num: ticketNum }));
 
@@ -203,7 +239,7 @@
             document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g, '—');
             document.getElementById('finalBusNumber').textContent = busNumber;
             document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + (qty * 48) + '.00 ₽';
-            document.getElementById('purchaseDate').textContent = purchaseDate;  // ← 27.11.2025
+            document.getElementById('purchaseDate').textContent = purchaseDate;
             document.getElementById('purchaseTime').textContent = purchaseTime;
 
             showPage('finalTicketPage');
@@ -234,10 +270,7 @@
 
         function renderActiveTickets() {
             const list = document.getElementById('activeTicketsList'); list.innerHTML = '';
-            if (tickets.length === 0) {
-                list.innerHTML = '<div style="text-align:center;color:#AAA;margin-top:20px;">Нет билетов</div>';
-                return;
-            }
+            if (tickets.length === 0) { list.innerHTML = '<div style="text-align:center;color:#AAA;margin-top:20px;">Нет билетов</div>'; return; }
             tickets.forEach((t, i) => {
                 const mins = Math.floor((TOTAL_DURATION - (Date.now() - t.created_at)) / 60000);
                 const el = document.createElement('div'); el.className = 'active-ticket-item';
@@ -247,7 +280,7 @@
                     document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g, '—');
                     document.getElementById('finalBusNumber').textContent = t.busNumber;
                     document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + (t.quantity * 48) + '.00 ₽';
-                    document.getElementById('purchaseDate').textContent = t.purchaseDate;  // ← 27.11.2025
+                    document.getElementById('purchaseDate').textContent = t.purchaseDate;
                     document.getElementById('purchaseTime').textContent = t.purchaseTime;
                     showPage('finalTicketPage'); startViewTimer();
                 };
