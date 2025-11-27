@@ -158,8 +158,9 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand(); tg.MainButton.hide(); tg.setHeaderColor('#000000'); tg.setBackgroundColor('#000000');
+
         let enteredCode = '', viewTimer, viewSecondsLeft = 15;
-        const TOTAL_DURATION = 90*60*1000;
+        const TOTAL_DURATION = 90 * 60 * 1000;
         let tickets = JSON.parse(localStorage.getItem('user_tickets') || '[]');
         const now = Date.now();
         tickets = tickets.filter(t => now - t.created_at < TOTAL_DURATION);
@@ -167,13 +168,13 @@
         if (tickets.length > 0) { showPage('activeTicketsPage'); renderActiveTickets(); }
         else showPage('codeInputPage');
 
-        function addNumber(n){ if(enteredCode.length<6){ enteredCode+=n; updateCodeDisplay(); if(enteredCode.length===6) setTimeout(()=>showPage('paymentPage'),300); } }
-        function backspace(){ enteredCode=enteredCode.slice(0,-1); updateCodeDisplay(); }
-        function updateCodeDisplay(){ document.querySelectorAll('.code-box').forEach((b,i)=>{ b.textContent=enteredCode[i]||''; b.classList.toggle('filled',i<enteredCode.length); }); }
-        function scanCode(){ tg.showScanQrPopup({text:'Наведите камеру на QR-код'},()=>{showPage('paymentPage');return true;}); }
-        function updatePrice(){ const q=document.getElementById('quantityRange').value; document.getElementById('quantityValue').textContent=q; document.getElementById('totalPrice').textContent=(q*48)+'.00 ₽'; }
+        function addNumber(n) { if (enteredCode.length < 6) { enteredCode += n; updateCodeDisplay(); if (enteredCode.length === 6) setTimeout(() => showPage('paymentPage'), 300); } }
+        function backspace() { enteredCode = enteredCode.slice(0, -1); updateCodeDisplay(); }
+        function updateCodeDisplay() { document.querySelectorAll('.code-box').forEach((b, i) => { b.textContent = enteredCode[i] || ''; b.classList.toggle('filled', i < enteredCode.length); }); }
+        function scanCode() { tg.showScanQrPopup({ text: 'Наведите камеру на QR-код' }, () => { showPage('paymentPage'); return true; }); }
+        function updatePrice() { const q = document.getElementById('quantityRange').value; document.getElementById('quantityValue').textContent = q; document.getElementById('totalPrice').textContent = (q * 48) + '.00 ₽'; }
 
-        function payTicket(){
+        function payTicket() {
             const qty = document.getElementById('quantityRange').value;
             const carrier = document.getElementById('carrierInput').value.trim() || "ИП Читащвили Н.С.";
             const route = document.getElementById('routeInput').value.trim();
@@ -181,8 +182,8 @@
             const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
 
             const d = new Date();
-            const purchaseDate = d.toLocaleDateString('ru-RU', {day:'numeric', month:'long', year:'numeric'}) + ' г.';  // ← ТОЧНО ОДНА "г." С ТОЧКОЙ
-            const purchaseTime = d.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
+            const purchaseDate = d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }) + ' г.';  // ← ТОЧНО ОДНА "г."
+            const purchaseTime = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 
             tickets.push({
                 number: ticketNum, carrier, route, busNumber, quantity: qty,
@@ -191,13 +192,13 @@
                 purchaseTime: purchaseTime
             });
             localStorage.setItem('user_tickets', JSON.stringify(tickets));
-            tg.sendData(JSON.stringify({action:"ticket_created",ticket_num:ticketNum}));
+            tg.sendData(JSON.stringify({ action: "ticket_created", ticket_num: ticketNum }));
 
             document.getElementById('currentTicketNumber').textContent = ticketNum;
             document.getElementById('finalCarrier').textContent = carrier;
-            document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g,'—');
+            document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g, '—');
             document.getElementById('finalBusNumber').textContent = busNumber;
-            document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + (qty*48) + '.00 ₽';
+            document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + (qty * 48) + '.00 ₽';
             document.getElementById('purchaseDate').textContent = purchaseDate;
             document.getElementById('purchaseTime').textContent = purchaseTime;
 
@@ -205,44 +206,44 @@
             startViewTimer();
         }
 
-        function random3(){return Math.floor(Math.random()*900)+100;}
+        function random3() { return Math.floor(Math.random() * 900) + 100; }
 
-        function startViewTimer(){
+        function startViewTimer() {
             viewSecondsLeft = 15;
-            document.getElementById('timer').textContent = 'Действует: '+viewSecondsLeft+' сек.';
+            document.getElementById('timer').textContent = 'Действует: ' + viewSecondsLeft + ' сек.';
             clearInterval(viewTimer);
-            viewTimer = setInterval(()=>{
+            viewTimer = setInterval(() => {
                 viewSecondsLeft--;
-                document.getElementById('timer').textContent = 'Действует: '+viewSecondsLeft+' сек.';
-                if(viewSecondsLeft<=0){clearInterval(viewTimer);showPage('activeTicketsPage');renderActiveTickets();}
-            },1000);
+                document.getElementById('timer').textContent = 'Действует: ' + viewSecondsLeft + ' сек.';
+                if (viewSecondsLeft <= 0) { clearInterval(viewTimer); showPage('activeTicketsPage'); renderActiveTickets(); }
+            }, 1000);
         }
 
-        function closeTicket(){clearInterval(viewTimer);showPage('activeTicketsPage');renderActiveTickets();}
-        function switchToControl(){alert('Контроль пока недоступен');}
+        function closeTicket() { clearInterval(viewTimer); showPage('activeTicketsPage'); renderActiveTickets(); }
+        function switchToControl() { alert('Контроль пока недоступен'); }
 
-        function showPage(id){
-            document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            if(id==='activeTicketsPage') renderActiveTickets();
+            if (id === 'activeTicketsPage') renderActiveTickets();
         }
 
-        function renderActiveTickets(){
-            const list = document.getElementById('activeTicketsList'); list.innerHTML='';
-            if(tickets.length===0){
-                list.innerHTML='<div style="text-align:center;color:#AAA;margin-top:20px;">Нет билетов</div>';
+        function renderActiveTickets() {
+            const list = document.getElementById('activeTicketsList'); list.innerHTML = '';
+            if (tickets.length === 0) {
+                list.innerHTML = '<div style="text-align:center;color:#AAA;margin-top:20px;">Нет билетов</div>';
                 return;
             }
-            tickets.forEach((t,i)=>{
-                const mins = Math.floor((TOTAL_DURATION-(Date.now()-t.created_at))/60000);
-                const el = document.createElement('div'); el.className='active-ticket-item';
-                el.onclick = ()=>{
+            tickets.forEach((t, i) => {
+                const mins = Math.floor((TOTAL_DURATION - (Date.now() - t.created_at)) / 60000);
+                const el = document.createElement('div'); el.className = 'active-ticket-item';
+                el.onclick = () => {
                     document.getElementById('currentTicketNumber').textContent = t.number;
                     document.getElementById('finalCarrier').textContent = t.carrier;
-                    document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g,'—');
+                    document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g, '—');
                     document.getElementById('finalBusNumber').textContent = t.busNumber;
-                    document.getElementById('finalCost').textContent = t.quantity+' шт., Полный, '+(t.quantity*48)+'.00 ₽';
-                    document.getElementById('purchaseDate').textContent = t.purchaseDate;     // ← будет "27 ноября 2025 г."
+                    document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + (t.quantity * 48) + '.00 ₽';
+                    document.getElementById('purchaseDate').textContent = t.purchaseDate;     // ← ровно "27 ноября 2025 г."
                     document.getElementById('purchaseTime').textContent = t.purchaseTime;
                     showPage('finalTicketPage'); startViewTimer();
                 };
@@ -251,13 +252,13 @@
             });
         }
 
-        function deleteTicket(i){
-            tg.showPopup({title:"Удалить билет?",message:"Без возврата",buttons:[{type:'destructive',text:'Удалить',id:'del'},{type:'cancel'}]},b=>{
-                if(b==='del'){tickets.splice(i,1);localStorage.setItem('user_tickets',JSON.stringify(tickets));renderActiveTickets();}
+        function deleteTicket(i) {
+            tg.showPopup({ title: "Удалить билет?", message: "Без возврата", buttons: [{ type: 'destructive', text: 'Удалить', id: 'del' }, { type: 'cancel' }] }, b => {
+                if (b === 'del') { tickets.splice(i, 1); localStorage.setItem('user_tickets', JSON.stringify(tickets)); renderActiveTickets(); }
             });
         }
 
-        document.addEventListener('DOMContentLoaded',()=>{updateCodeDisplay();updatePrice();});
+        document.addEventListener('DOMContentLoaded', () => { updateCodeDisplay(); updatePrice(); });
     </script>
 </body>
 </html>
