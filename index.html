@@ -41,34 +41,22 @@
         .delete-btn{width:32px;height:32px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FF3B30" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1-2-2h4a2 2 0 0 1-2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>') center/20px no-repeat;cursor:pointer;}
         .close-button{background:#333;color:#FFF;padding:16px;border-radius:12px;text-align:center;font-size:17px;margin-top:16px;cursor:pointer;}
 
-        /* САМЫЙ КРАСИВЫЙ ЭКРАН НЕДОСТАТОЧНО ПРАВ */
+        /* ТОЛЬКО КРАСНАЯ НАДПИСЬ "НЕТ ДОСТУПА" */
         #accessDenied{
             position:fixed;top:0;left:0;width:100%;height:100%;
             background:#000;display:flex;align-items:center;justify-content:center;
-            flex-direction:column;z-index:9999;padding:20px;text-align:center;
-            background: radial-gradient(circle at center, #1A0000 0%, #000 70%);
+            z-index:9999;flex-direction:column;
+            background: radial-gradient(circle at center, #1A0000 0%, #000 80%);
         }
-        .access-big-red{
-            font-size:42px;font-weight:900;color:#FF3B30;
-            text-shadow:0 0 20px #FF3B30, 0 0 40px #FF0000;
-            letter-spacing:2px;margin-bottom:20px;
-            animation:pulse 2s infinite;
+        .no-access-text{
+            font-size:52px;font-weight:900;color:#FF3B30;
+            text-shadow:0 0 30px #FF0000, 0 0 60px #FF0000;
+            letter-spacing:5px;
+            animation:glow 1.8s infinite alternate;
         }
-        @keyframes pulse{
-            0%,100%{text-shadow:0 0 20px #FF3B30;}
-            50%{text-shadow:0 0 40px #FF0000, 0 0 60px #FF0000;}
-        }
-        .access-subtitle{
-            font-size:22px;font-weight:600;color:#FFF;margin-bottom:40px;opacity:0.9;
-        }
-        .access-btn{
-            background:#007AFF;color:#FFF;font-size:21px;font-weight:700;
-            padding:20px 50px;border-radius:18px;text-align:center;cursor:pointer;
-            box-shadow:0 8px 25px rgba(0,122,255,0.5);
-            transition:all 0.3s;min-width:280px;
-        }
-        .access-btn:active{
-            background:#0051BB;transform:translateY(4px);box-shadow:0 4px 15px rgba(0,122,255,0.4);
+        @keyframes glow{
+            from{ text-shadow:0 0 30px #FF0000, 0 0 50px #FF0000; }
+            to{ text-shadow:0 0 60px #FF0000, 0 0 90px #FF0000, 0 0 120px #FF0000; }
         }
 
         .price-selector{background:#1E1E1E;border:1px solid #333;border-radius:12px;padding:14px;margin:16px 0;cursor:pointer;}
@@ -98,13 +86,9 @@
 </head>
 <body>
 
-    <!-- САМЫЙ КРАСИВЫЙ ЭКРАН НЕТ ДОСТУПА -->
+    <!-- ТОЛЬКО КРАСНАЯ НАДПИСЬ "НЕТ ДОСТУПА" -->
     <div id="accessDenied" style="display:none;">
-        <div class="access-big-red">НЕДОСТАТОЧНО ПРАВ</div>
-        <div class="access-subtitle">Для покупки доступа нажмите кнопку ниже:</div>
-        <div class="access-btn" onclick="window.location.href='https://t.me/stavladmi_official'">
-            Написать разработчику
-        </div>
+        <div class="no-access-text">НЕТ ДОСТУПА</div>
     </div>
 
     <div id="loadingOverlay" class="loading-overlay" style="display:none;">
@@ -113,8 +97,8 @@
     </div>
 
     <div class="app-container" id="mainApp" style="display:none;">
-        <!-- Весь твой старый контент остался без изменений -->
-        <!-- ОПЛАТА — СРАЗУ ОТКРЫТА -->
+
+        <!-- ОПЛАТА -->
         <div id="paymentPage" class="page active">
             <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Данные билета</div>
            
@@ -145,9 +129,6 @@
             </div>
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
-
-        <!-- Остальные страницы (билет, активные билеты) — без изменений -->
-        <!-- Я их не трогал, они как были -->
 
         <!-- ФИНАЛЬНЫЙ БИЛЕТ -->
         <div id="finalTicketPage" class="page">
@@ -220,6 +201,7 @@
             </div>
         </div>
 
+        <!-- АКТИВНЫЕ БИЛЕТЫ -->
         <div id="activeTicketsPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;">
                 <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Действующие билеты</div>
@@ -230,7 +212,7 @@
     </div>
 
     <script>
-        const ALLOWED_USERS = [, 1777702236];
+        const ALLOWED_USERS = [6107814655, ];
         const tg = window.Telegram.WebApp;
         tg.expand(); tg.MainButton.hide();
         const userId = tg.initDataUnsafe?.user?.id;
@@ -241,7 +223,6 @@
             document.getElementById('accessDenied').style.display = 'none';
             document.getElementById('mainApp').style.display = 'flex';
 
-            // Весь твой старый скрипт без изменений
             let viewTimer, viewSecondsLeft = 15;
             const TOTAL_DURATION = 90 * 60 * 1000;
             let tickets = JSON.parse(localStorage.getItem('user_tickets') || '[]');
@@ -258,31 +239,19 @@
 
             let ticketPrice = 48.00;
 
-            // ... все твои функции остались 100% как были ...
-            // (openGallery, payTicket, generateQrCode и т.д. — не трогал ни строчки)
-
             function openGallery() {
                 const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.style.display = 'none';
-                input.onchange = function(e) {
-                    const file = e.target.files[0];
-                    if (file) processImage(file);
-                };
-                document.body.appendChild(input);
-                input.click();
-                document.body.removeChild(input);
+                input.type = 'file'; input.accept = 'image/*'; input.style.display = 'none';
+                input.onchange = e => { const file = e.target.files[0]; if (file) processImage(file); };
+                document.body.appendChild(input); input.click(); document.body.removeChild(input);
             }
 
             function processImage(file) {
                 showLoading('Анализируем фото...');
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = e => {
                     const img = new Image();
-                    img.onload = function() {
-                        analyzeImageData(file.name, img.width, img.height);
-                    };
+                    img.onload = () => analyzeImageData(file.name, img.width, img.height);
                     img.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
@@ -294,13 +263,9 @@
                     let carrier = 'ИП Читащвили Н.С.';
                     let route = 'Соколовская - Стела';
                     let busNumber = 'в523ок124';
-                    if (filename.toLowerCase().includes('север') || filename.toLowerCase().includes('north')) {
-                        route = 'Север - Запад'; busNumber = 'с456de999';
-                    } else if (filename.toLowerCase().includes('центр') || filename.toLowerCase().includes('center')) {
-                        route = 'Центр - Южный'; busNumber = 'а123bc777';
-                    } else if (filename.toLowerCase().includes('юг') || filename.toLowerCase().includes('south')) {
-                        route = 'Южный - Восток'; busNumber = 'у789fg555';
-                    }
+                    if (filename.toLowerCase().includes('север') || filename.toLowerCase().includes('north')) { route = 'Север - Запад'; busNumber = 'с456de999'; }
+                    else if (filename.toLowerCase().includes('центр') || filename.toLowerCase().includes('center')) { route = 'Центр - Южный'; busNumber = 'а123bc777'; }
+                    else if (filename.toLowerCase().includes('юг') || filename.toLowerCase().includes('south')) { route = 'Южный - Восток'; busNumber = 'у789fg555'; }
                     if (width > 2000 || height > 2000) carrier = 'ИП Иванов А.В.';
                     else if (width < 1000 && height < 1000) carrier = 'ИП Петров С.К.';
                     document.getElementById('carrierInput').value = carrier;
