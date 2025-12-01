@@ -64,6 +64,15 @@
         .loading-spinner{width:40px;height:40px;border:4px solid #333;border-top:4px solid #007AFF;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:16px;}
         @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
         .loading-text{color:#FFF;font-size:16px;text-align:center;}
+
+        /* КНОПКИ ВЫБОРА КОЛИЧЕСТВА БИЛЕТОВ */
+        .quantity-selector{margin:16px 0;}
+        .quantity-title{font-size:16px;font-weight:600;margin-bottom:12px;color:#FFF;}
+        .quantity-buttons{display:flex;gap:10px;justify-content:space-between;}
+        .quantity-btn{flex:1;background:#333;color:#FFF;border:none;border-radius:12px;padding:16px 0;font-size:18px;font-weight:600;text-align:center;cursor:pointer;transition:all 0.2s ease;}
+        .quantity-btn:hover{background:#444;}
+        .quantity-btn.active{background:#30D158;color:#000;}
+        .quantity-btn:active{transform:scale(0.98);}
     </style>
 </head>
 <body>
@@ -87,10 +96,16 @@
             <input type="text" id="routeInput" placeholder="Маршрут" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
             <input type="text" id="busNumberInput" placeholder="Номер автобуса" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
 
-            <div style="display:flex;align-items:center;margin:16px 0;">
-                <span style="font-size:18px;font-weight:600;color:#FF3B30;" id="quantityValue">1</span>
-                <input type="range" min="1" max="10" value="1" id="quantityRange" oninput="updatePrice()" style="-webkit-appearance:none;flex:1;height:4px;background:#333;border-radius:2px;margin:0 12px;">
-                <span style="color:#666;">10</span>
+            <!-- КРАСИВЫЕ КНОПКИ ВЫБОРА КОЛИЧЕСТВА -->
+            <div class="quantity-selector">
+                <div class="quantity-title">Количество билетов:</div>
+                <div class="quantity-buttons" id="quantityButtons">
+                    <button class="quantity-btn active" onclick="setQuantity(1)">1</button>
+                    <button class="quantity-btn" onclick="setQuantity(2)">2</button>
+                    <button class="quantity-btn" onclick="setQuantity(3)">3</button>
+                    <button class="quantity-btn" onclick="setQuantity(4)">4</button>
+                    <button class="quantity-btn" onclick="setQuantity(5)">5</button>
+                </div>
             </div>
 
             <div class="price-selector" onclick="document.getElementById('priceOptions').style.display = document.getElementById('priceOptions').style.display==='block'?'none':'block'">
@@ -215,6 +230,21 @@
             }
 
             let ticketPrice = 48.00;
+            let currentQuantity = 1; // Текущее количество билетов
+
+            // ФУНКЦИЯ УСТАНОВКИ КОЛИЧЕСТВА БИЛЕТОВ
+            function setQuantity(qty) {
+                currentQuantity = qty;
+                
+                // Обновляем активную кнопку
+                document.querySelectorAll('.quantity-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                event.target.classList.add('active');
+                
+                // Обновляем общую цену
+                updatePrice();
+            }
 
             function openGallery() {
                 const input = document.createElement('input');
@@ -281,14 +311,15 @@
                 const val = document.getElementById('customPriceInput').value.trim();
                 if (val && parseFloat(val) > 0) setPrice(parseFloat(val));
             }
+            
+            // ОБНОВЛЕНИЕ ОБЩЕЙ ЦЕНЫ
             function updatePrice() {
-                const qty = document.getElementById('quantityRange').value;
-                document.getElementById('quantityValue').textContent = qty;
-                document.getElementById('totalPrice').textContent = (ticketPrice * qty).toFixed(2) + ' ₽';
+                const total = (ticketPrice * currentQuantity).toFixed(2);
+                document.getElementById('totalPrice').textContent = total + ' ₽';
             }
 
             function payTicket() {
-                const qty = parseInt(document.getElementById('quantityRange').value);
+                const qty = currentQuantity; // Используем текущее количество
                 const carrier = document.getElementById('carrierInput').value.trim() || "ИП Читащвили Н.С.";
                 const route = document.getElementById('routeInput').value.trim();
                 const busNumber = document.getElementById('busNumberInput').value.trim().toLowerCase();
