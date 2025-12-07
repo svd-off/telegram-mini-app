@@ -66,14 +66,23 @@
         .loading-text{color:#FFF;font-size:16px;text-align:center;}
         
         /* Модальное окно базы маршрутов */
-        .routes-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:10001;display:flex;flex-direction:column;padding:20px;}
+        .routes-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:10001;display:flex;flex-direction:column;padding:20px;}
         .routes-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
         .routes-title{font-size:22px;font-weight:600;}
         .routes-close{width:24px;height:24px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>') center/contain no-repeat;cursor:pointer;}
         .routes-search{background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;}
         .routes-search::placeholder{color:#888;}
-        .routes-list{flex:1;overflow-y:auto;}
-        .routes-empty{text-align:center;color:#AAA;margin-top:40px;font-size:16px;}
+        .routes-list{flex:1;overflow-y:auto;display:grid;grid-template-columns:1fr;gap:10px;}
+        
+        /* Блок маршрута */
+        .route-block{background:#1E1E1E;border-radius:14px;padding:16px;cursor:pointer;border:1px solid #2C2C2E;transition:all 0.2s ease;}
+        .route-block:active{background:#2A2A2C;border-color:#3A3A3C;}
+        .route-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+        .route-number{font-size:22px;font-weight:700;color:#007AFF;}
+        .route-type{font-size:14px;color:#AAA;font-weight:500;}
+        .route-name{font-size:16px;font-weight:600;margin-bottom:8px;line-height:1.3;}
+        .route-carrier{font-size:13px;color:#888;}
+        .no-results{text-align:center;color:#AAA;margin-top:40px;font-size:16px;}
     </style>
 </head>
 <body>
@@ -91,7 +100,7 @@
         </div>
         <input type="text" id="routesSearch" class="routes-search" placeholder="Поиск маршрута или перевозчика..." oninput="searchRoutes()">
         <div class="routes-list" id="routesList">
-            <div class="routes-empty">База маршрутов пока пуста</div>
+            <!-- Маршруты будут загружены здесь -->
         </div>
     </div>
 
@@ -151,7 +160,7 @@
                             <img src="carrier.png" class="info-icon big">
                             <div class="info-content">
                                 <div class="info-label">Перевозчик</div>
-                                <div class="info-value" id="finalCarrier">ИП Читащвили Н.С.</div>
+                                <div class="info-value" id="finalCarrier">ИП Читашвили Н.С.</div>
                             </div>
                         </div>
                         <div class="info-row">
@@ -216,6 +225,56 @@
         tg.expand(); tg.MainButton.hide();
         const userId = tg.initDataUnsafe?.user?.id;
 
+        // База маршрутов
+        const routesDatabase = [
+            {number: "1", type: "троллейбус", name: "мкрн. Северный - мкрн. Тихие зори", carrier: "МП Городской транспорт"},
+            {number: "4", type: "троллейбус", name: "Ж/д вокзал-Северо-Западный район", carrier: "МП Городской транспорт"},
+            {number: "5", type: "автобус", name: "Спорткомплекс \"Радуга\"- ООО \"Красфарма\"", carrier: "ИП Долгушина Г.И."},
+            {number: "7", type: "автобус", name: "ст. Красноярск-Северный - ДК Кировский", carrier: "ИП Галченкова Е. А."},
+            {number: "7", type: "троллейбус", name: "Ж/д вокзал-Спортзал", carrier: "МП Городской транспорт"},
+            {number: "8", type: "автобус", name: "ст. Красноярск-Северный - пос. Водников", carrier: "ООО \"Перевозчик\""},
+            {number: "9", type: "автобус", name: "Междугородный автовокзал - В.Базаиха", carrier: "ООО \"СКАД\""},
+            {number: "10", type: "автобус", name: "пос. Энергетиков-ОАО Красфарма", carrier: "КПАТП-7"},
+            {number: "11", type: "автобус", name: "3-я Дальневосточная - Молодежная", carrier: "КПАТП-5"},
+            {number: "12", type: "автобус", name: "мкрн. Северный - пос. Удачный", carrier: "КПАТП-7"},
+            {number: "13", type: "троллейбус", name: "Ж/д вокзал-Северо-Западный район", carrier: "МП Городской транспорт"},
+            {number: "15", type: "троллейбус", name: "ОАО \"Русал\" - Сельхозкомплекс", carrier: "МП Городской транспорт"},
+            {number: "18", type: "автобус", name: "КПАТП №7-мкрн. Верхние Черемушки", carrier: "КПАТП-7"},
+            {number: "19", type: "автобус", name: "Стела--Причал", carrier: "КПАТП-7"},
+            {number: "20", type: "автобус", name: "а/в Восточный-Кардиоцентр", carrier: "ИП Патрин Н. Н."},
+            {number: "23", type: "автобус", name: "ЛДК - Солнечный (60-летия СССР)", carrier: "ООО Ветеран"},
+            {number: "26", type: "автобус", name: "Ж/д больница – Плодово-ягодная станция", carrier: "КПАТП-5"},
+            {number: "27", type: "автобус", name: "Полигон - Преображенский", carrier: "ИП Ялтонский А. М."},
+            {number: "30", type: "автобус", name: "Спортзал - мкрн. Тихие зори", carrier: "КПАТП-5"},
+            {number: "31", type: "автобус", name: "ЛДК-Академия биатлона", carrier: "КПАТП-7"},
+            {number: "35", type: "автобус", name: "Кольцевой маршрут", carrier: "КПАТП-5"},
+            {number: "37", type: "автобус", name: "ж/д вокзал-Фан-парк Бобровый лог-пос.Базаиха", carrier: "КПАТП-7"},
+            {number: "38", type: "автобус", name: "Дом учёных - пос. Таймыр", carrier: "АО \"СТК\""},
+            {number: "43", type: "автобус", name: "Восточный-Сельхозкомплекс", carrier: "ООО Вавулин-К"},
+            {number: "49", type: "автобус", name: "Кардиоцентр – Спорткомплекс \"Радуга\"", carrier: "КПАТП-5"},
+            {number: "50", type: "автобус", name: "Соколовская - Стела", carrier: "ИП Читашвили Н.С."},
+            {number: "52", type: "автобус", name: "ЛДК - Озеро-парк", carrier: "КПАТП-5"},
+            {number: "55", type: "автобус", name: "пос. Водников-Железнодорожный вокзал", carrier: "КПАТП-7"},
+            {number: "56", type: "автобус", name: "пос. Шинников -Железнодорожный вокзал", carrier: "КПАТП-7"},
+            {number: "60", type: "автобус", name: "Автовокзал Восточный - Петрушина", carrier: "ИП Цугленок М.М."},
+            {number: "61", type: "автобус", name: "мкрн. Солнечный - Шинное кладбище", carrier: "ООО КПАТП"},
+            {number: "63", type: "автобус", name: "Академгородок - Солнечный", carrier: "ООО КПАТП"},
+            {number: "64", type: "автобус", name: "мкрн. Солнечный - мкрн. Тихие зори", carrier: "КПАТП-5"},
+            {number: "65", type: "автобус", name: "ДК Кировский - Агротерминал", carrier: "ИП Ялтонский А. М."},
+            {number: "69", type: "автобус", name: "мкрн. Солнечный - пос. Индустриальный", carrier: "КПАТП-7"},
+            {number: "80", type: "автобус", name: "пос.Таймыр-мкрн. Тихие Зори", carrier: "ИП Долгушин Д.Г."},
+            {number: "81", type: "автобус", name: "Ж/д больница - Сибирский элемент", carrier: "ООО Сирена"},
+            {number: "83", type: "автобус", name: "Дом учёных - пр. Ульяновский", carrier: "ИП Цугленок М.М."},
+            {number: "87", type: "автобус", name: "Солнечный – Молодежная", carrier: "КПАТП-5"},
+            {number: "88", type: "автобус", name: "Спортзал - Академия биатлона", carrier: "ИП Тагачаков В. Г."},
+            {number: "90", type: "автобус", name: "Ак. биатлона-Верхн. Базаиха", carrier: "ИП Патрин Н. Н."},
+            {number: "92", type: "автобус", name: "Красфарма (60 лет Октября) - Х/К Енисей", carrier: "ИП Патрин Н. Н."},
+            {number: "95", type: "автобус", name: "Верхние Черемушки-ЛДК", carrier: "КПАТП-7"},
+            {number: "98", type: "автобус", name: "ЛДК - ОАО \"РУСАЛ\"", carrier: "ИП Гнетов Ю.Н."},
+            {number: "5т", type: "троллейбус", name: "ст.Красноярск-Северный - Экопарк Гремячая грива", carrier: "МП Городской транспорт"},
+            {number: "173", type: "автобус", name: "Междугородный а/в - пос. Березовка", carrier: "ООО \"Контур\""}
+        ];
+
         if (!userId || !ALLOWED_USERS.includes(userId)) {
             document.getElementById('accessDenied').style.display = 'flex';
         } else {
@@ -238,9 +297,8 @@
 
             let ticketPrice = 48.00;
 
-            // Удалены функции openGallery, processImage, analyzeImageData
-
             function openRoutesDatabase() {
+                renderRoutesList(routesDatabase); // Показываем все маршруты при открытии
                 document.getElementById('routesModal').style.display = 'flex';
                 document.getElementById('routesSearch').focus();
             }
@@ -248,21 +306,75 @@
             function closeRoutesModal() {
                 document.getElementById('routesModal').style.display = 'none';
                 document.getElementById('routesSearch').value = '';
-                searchRoutes(); // Сбросить поиск
+                renderRoutesList(routesDatabase); // Сбросить к полному списку
+            }
+
+            function renderRoutesList(routes) {
+                const routesList = document.getElementById('routesList');
+                routesList.innerHTML = '';
+                
+                if (routes.length === 0) {
+                    routesList.innerHTML = '<div class="no-results">По вашему запросу ничего не найдено</div>';
+                    return;
+                }
+                
+                routes.forEach(route => {
+                    const routeBlock = document.createElement('div');
+                    routeBlock.className = 'route-block';
+                    routeBlock.onclick = () => selectRoute(route);
+                    
+                    routeBlock.innerHTML = `
+                        <div class="route-header">
+                            <div class="route-number">${route.number}</div>
+                            <div class="route-type">(${route.type})</div>
+                        </div>
+                        <div class="route-name">${route.name}</div>
+                        <div class="route-carrier">${route.carrier}</div>
+                    `;
+                    
+                    routesList.appendChild(routeBlock);
+                });
+            }
+
+            function selectRoute(route) {
+                // Подставляем данные в форму
+                document.getElementById('carrierInput').value = route.carrier;
+                document.getElementById('routeInput').value = route.name;
+                
+                // Генерируем примерный номер автобуса
+                const busPrefix = route.type === 'автобус' ? 'а' : 'т';
+                const randomNum = Math.floor(Math.random() * 900 + 100);
+                const randomLetters = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + 
+                                     String.fromCharCode(65 + Math.floor(Math.random() * 26));
+                document.getElementById('busNumberInput').value = `${busPrefix}${randomNum}${randomLetters}124`.toLowerCase();
+                
+                // Закрываем модальное окно
+                closeRoutesModal();
+                
+                // Показываем уведомление
+                tg.showPopup({
+                    title: "Маршрут выбран!",
+                    message: `Маршрут №${route.number} добавлен в форму`,
+                    buttons: [{type: 'ok', text: 'Отлично!'}]
+                });
             }
 
             function searchRoutes() {
                 const searchTerm = document.getElementById('routesSearch').value.toLowerCase();
-                const routesList = document.getElementById('routesList');
                 
-                // Пока что база пуста, но структура для будущего заполнения готова
-                if (searchTerm) {
-                    routesList.innerHTML = '<div class="routes-empty">По запросу "' + searchTerm + '" ничего не найдено</div>';
-                } else {
-                    routesList.innerHTML = '<div class="routes-empty">База маршрутов пока пуста</div>';
+                if (!searchTerm) {
+                    renderRoutesList(routesDatabase);
+                    return;
                 }
                 
-                // TODO: Здесь будет заполнение из массива маршрутов, который ты скинешь позже
+                const filtered = routesDatabase.filter(route => 
+                    route.number.toLowerCase().includes(searchTerm) ||
+                    route.name.toLowerCase().includes(searchTerm) ||
+                    route.carrier.toLowerCase().includes(searchTerm) ||
+                    route.type.toLowerCase().includes(searchTerm)
+                );
+                
+                renderRoutesList(filtered);
             }
 
             function showLoading(text = 'Загрузка...') {
@@ -289,7 +401,7 @@
 
             function payTicket() {
                 const qty = parseInt(document.getElementById('quantityRange').value);
-                const carrier = document.getElementById('carrierInput').value.trim() || "ИП Читащвили Н.С.";
+                const carrier = document.getElementById('carrierInput').value.trim() || "ИП Читашвили Н.С.";
                 const route = document.getElementById('routeInput').value.trim();
                 const busNumber = document.getElementById('busNumberInput').value.trim().toLowerCase();
                 const totalAmount = (ticketPrice * qty).toFixed(2);
