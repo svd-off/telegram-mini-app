@@ -9,12 +9,10 @@
     <style>
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
         body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#000;color:#FFF;height:100vh;overflow:hidden;}
-       
         .app-container{height:100%;display:flex;flex-direction:column;padding:0 16px 30px 16px;}
         .top-separator{height:1px;background:#2C2C2E;margin:4px 0 10px 0;}
         .final-timer{font-size:26px;font-weight:500;text-align:center;margin:0 0 20px;line-height:1.2;}
-        .page{display:none;flex-direction:column;height:100%;}
-        .page.active{display:flex;}
+        .page{display:none;flex-direction:column;height:100%;}.page.active{display:flex;}
         .final-header-row{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid #2C2C2E;margin-bottom:8px;position:relative;}
         .final-ticket-number{display:flex;align-items:center;gap:12px;color:#FF3B30;cursor:pointer;z-index:2;}
         .ticket-icon{width:48px;height:48px;flex-shrink:0;}
@@ -40,61 +38,70 @@
         .active-ticket-item:active{background:#2A2A2C;}
         .delete-btn{width:32px;height:32px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FF3B30" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1-2-2h4a2 2 0 0 1-2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>') center/20px no-repeat;cursor:pointer;}
         .close-button{background:#333;color:#FFF;padding:16px;border-radius:12px;text-align:center;font-size:17px;margin-top:16px;cursor:pointer;}
-        #accessDenied{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:9999;font-size:24px;color:#FF3B30;}
+        #accessDenied{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:9999;font-size:32px;color:#FF3B30;font-weight:900;}
         .price-selector{background:#1E1E1E;border:1px solid #333;border-radius:12px;padding:14px;margin:16px 0;cursor:pointer;}
-        .price-selector:active{background:#2A2A2C;}
-        .price-current{font-size:17px;font-weight:600;}
-        .price-options{margin-top:10px;display:none;background:#111;padding:12px;border-radius:10px;border:1px solid #333;}
-        .price-btn{background:#333;color:#FFF;padding:12px;border-radius:10px;text-align:center;margin-bottom:8px;font-size:16px;cursor:pointer;}
-        .price-btn:last-child{margin-bottom:0;}
-        .price-btn:active{background:#444;}
+        .price-options{margin-top:10px;display:none;background:#111;padding:12px;border-radius:10px;}
+        .price-btn{background:#333;color:#FFF;padding:12px;border-radius:10px;text-align:center;margin-bottom:8px;cursor:pointer;}
         .custom-price-row{display:flex;gap:8px;margin-top:8px;}
-        .custom-price{width:100%;background:#000;border:1px solid #444;border-radius:10px;padding:12px;color:#FFF;font-size:16px;text-align:center;}
-        .apply-btn{background:#30D158;color:#000;padding:12px 16px;border-radius:10px;font-weight:600;cursor:pointer;}
-        .apply-btn:active{background:#28A745;}
+        .custom-price{flex:1;background:#000;border:1px solid #444;padding:12px;border-radius:10px;color:#FFF;text-align:center;}
+        .apply-btn{background:#30D158;color:#000;padding:12px 16px;border-radius:10px;cursor:pointer;}
         .qr-container{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;flex:1;padding:5px 0 0 0;}
         .qr-code-wrapper{background:#FFF;padding:25px;border-radius:0;margin-bottom:15px;width:100%;max-width:320px;}
         #controlQrCode{width:270px!important;height:270px!important;}
         .control-ticket-number{font-size:26px;font-weight:600;text-align:center;color:#FFF;letter-spacing:0.5px;width:100%;max-width:320px;padding:0;}
         .ticket-number-prefix{color:#FFF;margin-right:8px;}
-        .photo-fill-btn{background:#007AFF;color:#FFF;font-size:17px;font-weight:600;padding:16px 0;border-radius:12px;text-align:center;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;}
-        .photo-fill-btn:active{background:#0056CC;}
-        .photo-icon{width:20px;height:20px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>') center/contain no-repeat;}
-        .loading-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:10000;}
-        .loading-spinner{width:40px;height:40px;border:4px solid #333;border-top:4px solid #007AFF;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:16px;}
-        @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-        .loading-text{color:#FFF;font-size:16px;text-align:center;}
+
+        /* КНОПКА И МОДАЛЬНОЕ ОКНО */
+        .database-btn{background:#007AFF;color:#FFF;font-size:17px;font-weight:600;padding:16px 0;border-radius:12px;text-align:center;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;}
+        .database-btn:active{background:#0056CC;}
+        #routeModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.98);z-index:99999;display:none;flex-direction:column;}
+        .modal-header{padding:20px 16px;border-bottom:1px solid #333;display:flex;justify-content:space-between;align-items:center;}
+        .modal-title{font-size:20px;font-weight:600;}
+        .modal-close{width:36px;height:36px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFF" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>') center/contain no-repeat;cursor:pointer;}
+        .modal-content{flex:1;overflow-y:auto;padding:16px;}
+        .route-item{background:#1E1E1E;border-radius:12px;padding:18px;margin-bottom:12px;cursor:pointer;transition:0.2s;}
+        .route-item:active{background:#2A2A2C;transform:scale(0.98);}
+        .route-carrier{font-size:15px;color:#888;margin-bottom:4px;}
+        .route-name{font-size:18px;font-weight:600;margin-bottom:6px;}
+        .route-number{font-size:16px;color:#30D158;}
+
+        .quantity-selector{margin:16px 0;}
+        .quantity-title{font-size:16px;font-weight:600;margin-bottom:12px;color:#FFF;}
+        .quantity-buttons{display:flex;gap:10px;justify-content:space-between;}
+        .quantity-btn{flex:1;background:#333;color:#FFF;border:none;border-radius:12px;padding:16px 0;font-size:18px;font-weight:600;text-align:center;cursor:pointer;transition:0.2s;}
+        .quantity-btn.active{background:#30D158;color:#000;}
+        .quantity-btn:active{transform:scale(0.98);}
+        input[type=text]{background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;}
     </style>
 </head>
 <body>
-    <div id="accessDenied">Недостаточно прав</div>
-    <div id="loadingOverlay" class="loading-overlay" style="display:none;">
-        <div class="loading-spinner"></div>
-        <div class="loading-text" id="loadingText">Загружаем фото...</div>
-    </div>
+    <div id="accessDenied" style="display:none;">ДОСТУП ЗАПРЕЩЁН</div>
 
     <div class="app-container" id="mainApp" style="display:none;">
-
-        <!-- ОПЛАТА — СРАЗУ ОТКРЫТА -->
         <div id="paymentPage" class="page active">
             <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Данные билета</div>
-           
-            <div class="photo-fill-btn" onclick="openGallery()">
-                <div class="photo-icon"></div>
-                Выбрать фото из галереи
-            </div>
-            <input type="text" id="carrierInput" placeholder="Перевозчик" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
-            <input type="text" id="routeInput" placeholder="Маршрут" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
-            <input type="text" id="busNumberInput" placeholder="Номер автобуса" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
 
-            <div style="display:flex;align-items:center;margin:16px 0;">
-                <span style="font-size:18px;font-weight:600;color:#FF3B30;" id="quantityValue">1</span>
-                <input type="range" min="1" max="10" value="1" id="quantityRange" oninput="updatePrice()" style="-webkit-appearance:none;flex:1;height:4px;background:#333;border-radius:2px;margin:0 12px;">
-                <span style="color:#666;">10</span>
+            <div class="database-btn" onclick="openRouteModal()">
+                Выбрать из базы маршрутов
             </div>
 
-            <div class="price-selector" onclick="document.getElementById('priceOptions').style.display = document.getElementById('priceOptions').style.display==='block'?'none':'block'">
-                <div class="price-current">Цена за 1 билет: <span id="currentPriceText">48.00 ₽</span></div>
+            <input type="text" id="carrierInput" placeholder="Перевозчик">
+            <input type="text" id="routeInput" placeholder="Маршрут">
+            <input type="text" id="busNumberInput" placeholder="Номер автобуса">
+
+            <div class="quantity-selector">
+                <div class="quantity-title">Количество билетов:</div>
+                <div class="quantity-buttons">
+                    <button class="quantity-btn active" onclick="setQuantity(1)">1</button>
+                    <button class="quantity-btn" onclick="setQuantity(2)">2</button>
+                    <button class="quantity-btn" onclick="setQuantity(3)">3</button>
+                    <button class="quantity-btn" onclick="setQuantity(4)">4</button>
+                    <button class="quantity-btn" onclick="setQuantity(5)">5</button>
+                </div>
+            </div>
+
+            <div class="price-selector" onclick="document.getElementById('priceOptions').style.display=document.getElementById('priceOptions').style.display==='block'?'none':'block'">
+                Цена за 1 билет: <span id="currentPriceText">48.00 ₽</span>
             </div>
             <div id="priceOptions" class="price-options">
                 <div class="price-btn" onclick="setPrice(48)">48.00 ₽</div>
@@ -104,21 +111,21 @@
                     <div class="apply-btn" onclick="applyCustomPrice()">OK</div>
                 </div>
             </div>
+
             <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- ФИНАЛЬНЫЙ БИЛЕТ -->
         <div id="finalTicketPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;">
                 <div class="top-separator"></div>
                 <div class="final-timer" id="timer">Действует: 15 сек.</div>
                 <div class="final-header-row">
                     <div class="final-ticket-number" onclick="switchToTicket()">
-                        <img src="big-ticket.png" class="ticket-icon" alt="Билет">
+                        <img src="big-ticket.png" class="ticket-icon">
                         <span id="currentTicketNumber">1 314 306 766</span>
                     </div>
                     <div class="final-control" onclick="switchToControl()">
-                        <img src="control.png" class="control-icon" alt="Контроль">
+                        <img src="control.png" class="control-icon">
                         <span>Контроль</span>
                     </div>
                     <div class="tab-indicator" id="indicator"></div>
@@ -143,21 +150,21 @@
                             <img src="rub.png" class="info-icon big">
                             <div class="info-content">
                                 <div class="info-label">Стоимость</div>
-                                <div class="info-value" id="finalCost">2 шт., Полный, 96.00 ₽</div>
+                                <div class="info-value" id="finalCost">1 шт., Полный, 48.00 ₽</div>
                             </div>
                         </div>
                         <div class="info-row">
                             <img src="calendar.png" class="info-icon big">
                             <div class="info-content">
                                 <div class="info-label">Дата покупки</div>
-                                <div class="info-value" id="purchaseDate">27 ноября 2025 г.</div>
+                                <div class="info-value" id="purchaseDate">1 декабря 2025 г.</div>
                             </div>
                         </div>
                         <div class="info-row">
                             <img src="clock.png" class="info-icon big">
                             <div class="info-content">
                                 <div class="info-label">Время покупки</div>
-                                <div class="info-value" id="purchaseTime">18:36</div>
+                                <div class="info-value" id="purchaseTime">14:20</div>
                             </div>
                         </div>
                     </div>
@@ -165,25 +172,33 @@
                 </div>
                 <div id="controlContent" class="control-content">
                     <div class="qr-container">
-                        <div class="qr-code-wrapper">
-                            <div id="controlQrCode"></div>
-                        </div>
-                        <div class="control-ticket-number">
-                            <span class="ticket-number-prefix">№</span>
-                            <span id="controlTicketNumber">1 314 306 766</span>
-                        </div>
+                        <div class="qr-code-wrapper"><div id="controlQrCode"></div></div>
+                        <div class="control-ticket-number"><span class="ticket-number-prefix">№</span><span id="controlTicketNumber">1 314 306 766</span></div>
                     </div>
                     <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
                 </div>
             </div>
         </div>
 
-        <!-- АКТИВНЫЕ БИЛЕТЫ -->
         <div id="activeTicketsPage" class="page">
             <div style="flex:1;display:flex;flex-direction:column;">
                 <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Действующие билеты</div>
                 <div class="active-tickets-list" id="activeTicketsList"></div>
                 <div class="close-button" onclick="showPage('paymentPage')">Назад</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО С БАЗОЙ -->
+    <div id="routeModal" onclick="if(event.target===this){closeRouteModal();document.activeElement.blur();}">
+        <div class="modal-header">
+            <div class="modal-title">Выбор маршрута</div>
+            <div class="modal-close" onclick="closeRouteModal()"></div>
+        </div>
+        <div class="modal-content" id="routesList">
+            <div style="text-align:center;color:#666;padding:80px 20px;font-size:17px;">
+                База маршрутов пока пуста<br><br>
+                Скоро здесь будут все маршруты
             </div>
         </div>
     </div>
@@ -197,225 +212,109 @@
         if (!userId || !ALLOWED_USERS.includes(userId)) {
             document.getElementById('accessDenied').style.display = 'flex';
         } else {
-            document.getElementById('accessDenied').style.display = 'none';
             document.getElementById('mainApp').style.display = 'flex';
+        }
 
-            let viewTimer, viewSecondsLeft = 15;
-            const TOTAL_DURATION = 90 * 60 * 1000;
-            let tickets = JSON.parse(localStorage.getItem('user_tickets') || '[]');
-            const now = Date.now();
-            tickets = tickets.filter(t => now - t.created_at < TOTAL_DURATION);
-            localStorage.setItem('user_tickets', JSON.stringify(tickets));
+        let viewTimer, viewSecondsLeft = 15;
+        const TOTAL_DURATION = 90 * 60 * 1000;
+        let tickets = JSON.parse(localStorage.getItem('user_tickets') || '[]');
+        const now = Date.now();
+        tickets = tickets.filter(t => now - t.created_at < TOTAL_DURATION);
+        for (let i = tickets.length - 1; i >= 0; i--) {
+            if (now - tickets[i].created_at >= TOTAL_DURATION) tickets.splice(i, 1);
+        }
+        localStorage.setItem('user_tickets', JSON.stringify(tickets));
+        if (tickets.length > 0) showPage('activeTicketsPage'); else showPage('paymentPage');
 
-            if (tickets.length > 0) {
-                showPage('activeTicketsPage');
-                renderActiveTickets();
-            } else {
-                showPage('paymentPage');
+        let ticketPrice = 48.00;
+        let currentQuantity = 1;
+
+        const routesDatabase = [];
+
+        function openRouteModal() {
+            document.getElementById('routeModal').style.display = 'flex';
+            renderRoutes();
+        }
+        function closeRouteModal() {
+            document.getElementById('routeModal').style.display = 'none';
+        }
+        function renderRoutes() {
+            const list = document.getElementById('routesList');
+            list.innerHTML = '';
+            if (routesDatabase.length === 0) {
+                list.innerHTML = '<div style="text-align:center;color:#666;padding:80px 20px;font-size:17px;">База маршрутов пока пуста<br><br>Скоро добавим</div>';
+                return;
             }
-
-            let ticketPrice = 48.00;
-
-            function openGallery() {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.style.display = 'none';
-                input.onchange = function(e) {
-                    const file = e.target.files[0];
-                    if (file) processImage(file);
+            routesDatabase.forEach(r => {
+                const el = document.createElement('div');
+                el.className = 'route-item';
+                el.onclick = (e) => {
+                    e.stopPropagation();
+                    document.getElementById('carrierInput').value = r.carrier;
+                    document.getElementById('routeInput').value = r.route;
+                    document.getElementById('busNumberInput').value = r.bus;
+                    closeRouteModal();
+                    tg.showPopup({title:"Готово!", message:"Данные подставлены из базы!"});
                 };
-                document.body.appendChild(input);
-                input.click();
-                document.body.removeChild(input);
-            }
-
-            function processImage(file) {
-                showLoading('Анализируем фото...');
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        analyzeImageData(file.name, img.width, img.height);
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-
-            function analyzeImageData(filename, width, height) {
-                setTimeout(() => {
-                    hideLoading();
-                    let carrier = 'ИП Читащвили Н.С.';
-                    let route = 'Соколовская - Стела';
-                    let busNumber = 'в523ок124';
-                    if (filename.toLowerCase().includes('север') || filename.toLowerCase().includes('north')) {
-                        route = 'Север - Запад'; busNumber = 'с456de999';
-                    } else if (filename.toLowerCase().includes('центр') || filename.toLowerCase().includes('center')) {
-                        route = 'Центр - Южный'; busNumber = 'а123bc777';
-                    } else if (filename.toLowerCase().includes('юг') || filename.toLowerCase().includes('south')) {
-                        route = 'Южный - Восток'; busNumber = 'у789fg555';
-                    }
-                    if (width > 2000 || height > 2000) carrier = 'ИП Иванов А.В.';
-                    else if (width < 1000 && height < 1000) carrier = 'ИП Петров С.К.';
-                    document.getElementById('carrierInput').value = carrier;
-                    document.getElementById('routeInput').value = route;
-                    document.getElementById('busNumberInput').value = busNumber;
-                    tg.showPopup({title: "Данные распознаны!", message: `• ${carrier}\n• ${route}\n• ${busNumber}`, buttons: [{type: 'ok', text: 'Отлично!'}]});
-                }, 2000);
-            }
-
-            function showLoading(text = 'Загрузка...') {
-                document.getElementById('loadingText').textContent = text;
-                document.getElementById('loadingOverlay').style.display = 'flex';
-            }
-            function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
-
-            function setPrice(price) {
-                ticketPrice = parseFloat(price);
-                document.getElementById('currentPriceText').textContent = ticketPrice.toFixed(2) + ' ₽';
-                document.getElementById('priceOptions').style.display = 'none';
-                updatePrice();
-            }
-            function applyCustomPrice() {
-                const val = document.getElementById('customPriceInput').value.trim();
-                if (val && parseFloat(val) > 0) setPrice(parseFloat(val));
-            }
-            function updatePrice() {
-                const qty = document.getElementById('quantityRange').value;
-                document.getElementById('quantityValue').textContent = qty;
-                document.getElementById('totalPrice').textContent = (ticketPrice * qty).toFixed(2) + ' ₽';
-            }
-
-            function payTicket() {
-                const qty = parseInt(document.getElementById('quantityRange').value);
-                const carrier = document.getElementById('carrierInput').value.trim() || "ИП Читащвили Н.С.";
-                const route = document.getElementById('routeInput').value.trim();
-                const busNumber = document.getElementById('busNumberInput').value.trim().toLowerCase();
-                const totalAmount = (ticketPrice * qty).toFixed(2);
-                const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
-                const d = new Date();
-                const purchaseDate = d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' }).replace(' ', ' ').slice(0, -3) + ' г.';
-                const purchaseTime = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-
-                tickets.push({ number: ticketNum, carrier, route, busNumber, quantity: qty, price: ticketPrice, created_at: Date.now(), purchaseDate, purchaseTime });
-                localStorage.setItem('user_tickets', JSON.stringify(tickets));
-
-                document.getElementById('currentTicketNumber').textContent = ticketNum;
-                document.getElementById('controlTicketNumber').textContent = ticketNum;
-                document.getElementById('finalCarrier').textContent = carrier;
-                document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g, '—');
-                document.getElementById('finalBusNumber').textContent = busNumber;
-                document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + totalAmount + ' ₽';
-                document.getElementById('purchaseDate').textContent = purchaseDate;
-                document.getElementById('purchaseTime').textContent = purchaseTime;
-
-                generateQrCode(ticketNum);
-                showPage('finalTicketPage');
-                switchToTicket();
-                startViewTimer();
-            }
-
-            function generateQrCode(ticketNumber) {
-                const qrContainer = document.getElementById('controlQrCode');
-                qrContainer.innerHTML = '';
-                new QRCode(qrContainer, { text: ticketNumber, width: 270, height: 270, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
-            }
-
-            function switchToTicket() {
-                document.getElementById('ticketContent').style.display = 'flex';
-                document.getElementById('controlContent').style.display = 'none';
-                document.querySelector('.final-ticket-number').style.color = '#FF3B30';
-                document.querySelector('.final-control span').style.color = '#888';
-                const indicator = document.getElementById('indicator');
-                indicator.style.left = '0px';
-                indicator.style.width = document.querySelector('.final-ticket-number').offsetWidth + 'px';
-            }
-
-            function switchToControl() {
-                document.getElementById('ticketContent').style.display = 'none';
-                document.getElementById('controlContent').style.display = 'flex';
-                document.querySelector('.final-ticket-number').style.color = '#888';
-                document.querySelector('.final-control span').style.color = '#FF3B30';
-                const controlEl = document.querySelector('.final-control');
-                const indicator = document.getElementById('indicator');
-                indicator.style.left = (controlEl.getBoundingClientRect().left - controlEl.parentElement.getBoundingClientRect().left) + 'px';
-                indicator.style.width = controlEl.offsetWidth + 'px';
-            }
-
-            function random3() { return Math.floor(Math.random() * 900) + 100; }
-
-            function startViewTimer() {
-                viewSecondsLeft = 15;
-                document.getElementById('timer').textContent = 'Действует: ' + viewSecondsLeft + ' сек.';
-                clearInterval(viewTimer);
-                viewTimer = setInterval(() => {
-                    viewSecondsLeft--;
-                    document.getElementById('timer').textContent = 'Действует: ' + viewSecondsLeft + ' сек.';
-                    if (viewSecondsLeft <= 0) {
-                        clearInterval(viewTimer);
-                        showPage(tickets.length > 0 ? 'activeTicketsPage' : 'paymentPage');
-                        renderActiveTickets();
-                    }
-                }, 1000);
-            }
-
-            function closeTicket() {
-                clearInterval(viewTimer);
-                showPage(tickets.length > 0 ? 'activeTicketsPage' : 'paymentPage');
-                renderActiveTickets();
-            }
-
-            function showPage(id) {
-                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                document.getElementById(id).classList.add('active');
-                if (id === 'finalTicketPage') setTimeout(switchToTicket, 50);
-                if (id === 'activeTicketsPage') renderActiveTickets();
-            }
-
-            function renderActiveTickets() {
-                const list = document.getElementById('activeTicketsList'); list.innerHTML = '';
-                if (tickets.length === 0) {
-                    list.innerHTML = '<div style="text-align:center;color:#AAA;margin-top:20px;">Нет билетов</div>';
-                    return;
-                }
-                tickets.forEach((t, i) => {
-                    const mins = Math.floor((TOTAL_DURATION - (Date.now() - t.created_at)) / 60000);
-                    const total = (t.price * t.quantity).toFixed(2);
-                    const el = document.createElement('div'); el.className = 'active-ticket-item';
-                    el.onclick = () => {
-                        document.getElementById('currentTicketNumber').textContent = t.number;
-                        document.getElementById('controlTicketNumber').textContent = t.number;
-                        document.getElementById('finalCarrier').textContent = t.carrier;
-                        document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g, '—');
-                        document.getElementById('finalBusNumber').textContent = t.busNumber;
-                        document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + total + ' ₽';
-                        document.getElementById('purchaseDate').textContent = t.purchaseDate;
-                        document.getElementById('purchaseTime').textContent = t.purchaseTime;
-                        generateQrCode(t.number);
-                        showPage('finalTicketPage');
-                        switchToTicket();
-                        startViewTimer();
-                    };
-                    el.innerHTML = `<div><div style="font-weight:600;">Билет № ${t.number}</div><div style="font-size:14px;color:#AAA">Осталось: ${mins} мин</div></div><div class="delete-btn" onclick="event.stopPropagation();deleteTicket(${i})"></div>`;
-                    list.appendChild(el);
-                });
-            }
-
-            function deleteTicket(i) {
-                tg.showPopup({ title: "Удалить билет?", message: "Без возврата", buttons: [{ type: 'destructive', text: 'Удалить', id: 'del' }, { type: 'cancel' }] }, b => {
-                    if (b === 'del') {
-                        tickets.splice(i, 1);
-                        localStorage.setItem('user_tickets', JSON.stringify(tickets));
-                        renderActiveTickets();
-                    }
-                });
-            }
-
-            document.addEventListener('DOMContentLoaded', () => {
-                updatePrice();
+                el.innerHTML = `<div class="route-carrier">${r.carrier}</div><div class="route-name">${r.route}</div><div class="route-number">${r.bus}</div>`;
+                list.appendChild(el);
             });
         }
+
+        function setQuantity(q) {
+            currentQuantity = q;
+            document.querySelectorAll('.quantity-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            updatePrice();
+        }
+        function updatePrice() {
+            document.getElementById('totalPrice').textContent = (ticketPrice * currentQuantity).toFixed(2) + ' ₽';
+        }
+        function setPrice(p) { ticketPrice = p; document.getElementById('currentPriceText').textContent = p.toFixed(2)+' ₽'; document.getElementById('priceOptions').style.display='none'; updatePrice(); }
+        function applyCustomPrice() { const v=document.getElementById('customPriceInput').value; if(v>0) setPrice(parseFloat(v)); }
+
+        function payTicket() {
+            const qty = currentQuantity;
+            const carrier = document.getElementById('carrierInput').value.trim() || "ИП Читащвили Н.С.";
+            const route = document.getElementById('routeInput').value.trim();
+            const busNumber = document.getElementById('busNumberInput').value.trim().toLowerCase();
+            const total = (ticketPrice * qty).toFixed(2);
+            const num = `1 ${r3()} ${r3()} ${r3()}`;
+            const d = new Date();
+            const date = d.toLocaleDateString('ru-RU',{day:'2-digit',month:'long',year:'numeric'}).replace(/ \d{4}/,'') + ' г.';
+            const time = d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+
+            tickets.push({number:num, carrier, route, busNumber, quantity:qty, price:ticketPrice, created_at:Date.now(), purchaseDate:date, purchaseTime:time});
+            localStorage.setItem('user_tickets', JSON.stringify(tickets));
+
+            document.getElementById('currentTicketNumber').textContent = num;
+            document.getElementById('controlTicketNumber').textContent = num;
+            document.getElementById('finalCarrier').textContent = carrier;
+            document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g,'—');
+            document.getElementById('finalBusNumber').textContent = busNumber;
+            document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + total + ' ₽';
+            document.getElementById('purchaseDate').textContent = date;
+            document.getElementById('purchaseTime').textContent = time;
+
+            generateQrCode(num);
+            showPage('finalTicketPage');
+            switchToTicket();
+            startViewTimer();
+        }
+
+        function r3(){return Math.floor(Math.random()*900)+100;}
+        function generateQrCode(t){document.getElementById('controlQrCode').innerHTML='';new QRCode(document.getElementById('controlQrCode'),{text:t,width:270,height:270,colorDark:"#000",colorLight:"#fff",correctLevel:QRCode.CorrectLevel.H});}
+        function switchToTicket(){document.getElementById('ticketContent').style.display='flex';document.getElementById('controlContent').style.display='none';document.querySelector('.final-ticket-number').style.color='#FF3B30';document.querySelector('.final-control span').style.color='#888';document.getElementById('indicator').style.left='0';document.getElementById('indicator').style.width=document.querySelector('.final-ticket-number').offsetWidth+'px';}
+        function switchToControl(){document.getElementById('ticketContent').style.display='none';document.getElementById('controlContent').style.display='flex';document.querySelector('.final-ticket-number').style.color='#888';document.querySelector('.final-control span').style.color='#FF3B30';const e=document.querySelector('.final-control');document.getElementById('indicator').style.left=(e.getBoundingClientRect().left-e.parentElement.getBoundingClientRect().left)+'px';document.getElementById('indicator').style.width=e.offsetWidth+'px';}
+        function startViewTimer(){viewSecondsLeft=15;document.getElementById('timer').textContent='Действует: '+viewSecondsLeft+' сек.';clearInterval(viewTimer);viewTimer=setInterval(()=>{viewSecondsLeft--;document.getElementById('timer').textContent='Действует: '+viewSecondsLeft+' сек.';if(viewSecondsLeft<=0){clearInterval(viewTimer);showPage(tickets.length>0?'activeTicketsPage':'paymentPage');renderActiveTickets();}},1000);}
+        function closeTicket(){clearInterval(viewTimer);showPage(tickets.length>0?'activeTicketsPage':'paymentPage');renderActiveTickets();}
+        function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='finalTicketPage')setTimeout(switchToTicket,50);}
+        function renderActiveTickets(){const l=document.getElementById('activeTicketsList');l.innerHTML='';if(tickets.length===0){l.innerHTML='<div style="text-align:center;color:#AAA;margin-top:30px;">Нет билетов</div>';return;}tickets.forEach((t,i)=>{const m=Math.floor((TOTAL_DURATION-(Date.now()-t.created_at))/60000);const el=document.createElement('div');el.className='active-ticket-item';el.onclick=()=>{document.getElementById('currentTicketNumber').textContent=t.number;document.getElementById('controlTicketNumber').textContent=t.number;document.getElementById('finalCarrier').textContent=t.carrier;document.getElementById('finalRouteFromTo').textContent=t.route.replace(/-/g,'—');document.getElementById('finalBusNumber').textContent=t.busNumber;document.getElementById('finalCost').textContent=t.quantity+' шт., Полный, '+(t.price*t.quantity).toFixed(2)+' ₽';document.getElementById('purchaseDate').textContent=t.purchaseDate;document.getElementById('purchaseTime').textContent=t.purchaseTime;generateQrCode(t.number);showPage('finalTicketPage');switchToTicket();startViewTimer();};el.innerHTML=`<div><div style="font-weight:600;">№ ${t.number}</div><div style="font-size:14px;color:#AAA">Осталось: ${m} мин</div></div><div class="delete-btn" onclick="event.stopPropagation();deleteTicket(${i})"></div>`;l.appendChild(el);});}
+        function deleteTicket(i){tg.showPopup({title:"Удалить?",message:"Без возврата",buttons:[{type:'destructive',text:'Удалить',id:'del'},{type:'cancel'}]},b=>{if(b==='del'){tickets.splice(i,1);localStorage.setItem('user_tickets',JSON.stringify(tickets));renderActiveTickets();}});}
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePrice();
+        });
     </script>
 </body>
 </html>
