@@ -74,11 +74,11 @@
         .routes-search::placeholder{color:#888;}
         .routes-list{flex:1;overflow-y:auto;display:grid;grid-template-columns:1fr;gap:10px;}
         
-        /* Блок маршрута */
+        /* Блок маршрута - ТОЛЬКО для базы маршрутов */
         .route-block{background:#1E1E1E;border-radius:14px;padding:16px;cursor:pointer;border:1px solid #2C2C2E;transition:all 0.2s ease;}
         .route-block:active{background:#2A2A2C;border-color:#3A3A3C;}
         .route-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-        .route-number{font-size:20px;font-weight:600;color:#007AFF;}
+        .route-number-db{font-size:20px;font-weight:600;color:#007AFF;}
         .route-type{font-size:14px;color:#AAA;font-weight:500;}
         .route-name{font-size:16px;font-weight:600;margin-bottom:8px;line-height:1.3;}
         .route-carrier{font-size:13px;color:#888;}
@@ -343,7 +343,7 @@
                     
                     routeBlock.innerHTML = `
                         <div class="route-header">
-                            <div class="route-number">${route.number}</div>
+                            <div class="route-number-db">${route.number}</div>
                             <div class="route-type">(${route.type})</div>
                         </div>
                         <div class="route-name">${route.name}</div>
