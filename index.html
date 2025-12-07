@@ -58,14 +58,12 @@
         .modal-header{padding:20px 16px;border-bottom:1px solid #333;display:flex;justify-content:space-between;align-items:center;}
         .modal-title{font-size:20px;font-weight:600;}
         .modal-close{width:36px;height:36px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FFF" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>') center/contain no-repeat;cursor:pointer;}
-        .modal-search{padding:16px;background:#111;}
-        #searchInput{width:100%;background:#222;border:none;border-radius:12px;padding:14px;color:#FFF;font-size:16px;}
         .modal-content{flex:1;overflow-y:auto;padding:16px;}
         .route-item{background:#1E1E1E;border-radius:12px;padding:18px;margin-bottom:12px;cursor:pointer;transition:0.2s;}
         .route-item:active{background:#2A2A2C;transform:scale(0.98);}
-        .route-number{font-size:22px;font-weight:700;color:#30D158;margin-bottom:6px;}
+        .route-carrier{font-size:15px;color:#888;margin-bottom:4px;}
         .route-name{font-size:18px;font-weight:600;margin-bottom:6px;}
-        .route-carrier{font-size:15px;color:#888;}
+        .route-number{font-size:16px;color:#30D158;}
 
         .quantity-selector{margin:16px 0;}
         .quantity-title{font-size:16px;font-weight:600;margin-bottom:12px;color:#FFF;}
@@ -197,10 +195,12 @@
             <div class="modal-title">Выбор маршрута</div>
             <div class="modal-close" onclick="closeRouteModal()"></div>
         </div>
-        <div class="modal-search">
-            <input type="text" id="searchInput" placeholder="Поиск по номеру или маршруту..." oninput="filterRoutes()">
+        <div class="modal-content" id="routesList">
+            <div style="text-align:center;color:#666;padding:80px 20px;font-size:17px;">
+                База маршрутов пока пуста<br><br>
+                Скоро здесь будут все маршруты
+            </div>
         </div>
-        <div class="modal-content" id="routesList"></div>
     </div>
 
     <script>
@@ -220,33 +220,16 @@
         let tickets = JSON.parse(localStorage.getItem('user_tickets') || '[]');
         const now = Date.now();
         tickets = tickets.filter(t => now - t.created_at < TOTAL_DURATION);
+        for (let i = tickets.length - 1; i >= 0; i--) {
+            if (now - tickets[i].created_at >= TOTAL_DURATION) tickets.splice(i, 1);
+        }
         localStorage.setItem('user_tickets', JSON.stringify(tickets));
         if (tickets.length > 0) showPage('activeTicketsPage'); else showPage('paymentPage');
 
         let ticketPrice = 48.00;
         let currentQuantity = 1;
 
-        // ТВОЯ ПОЛНАЯ БАЗА — 18 МАРШРУТОВ
-        const routesDatabase = [
-            { num: "1", route: "мкрн. Северный - мкрн. Тихие зори", carrier: "МП Городской транспорт" },
-            { num: "15", route: "ОАО \"Русал\" - Сельхозкомплекс", carrier: "МП Городской транспорт" },
-            { num: "60", route: "Автовокзал Восточный - Петрушина", carrier: "ИП Цугленок М.М." },
-            { num: "63", route: "Академгородок - Солнечный", carrier: "ООО КПАТП" },
-            { num: "50", route: "Соколовская - Стела", carrier: "ИП Читашвили Н.С." },
-            { num: "98", route: "ЛДК - ОАО \"РУСАЛ\"", carrier: "ИП Гнетов Ю.Н." },
-            { num: "5т", route: "ст.Красноярск-Северный - Экопарк Гремячая грива", carrier: "МП Городской транспорт" },
-            { num: "65", route: "ДК Кировский - Агротерминал", carrier: "ИП Ялтонский А. М." },
-            { num: "12", route: "мкрн. Северный - пос. Удачный", carrier: "КПАТП-7" },
-            { num: "30", route: "Спортзал - мкрн. Тихие зори", carrier: "КПАТП-5" },
-            { num: "49", route: "Кардиоцентр – Спорткомплекс \"Радуга\"", carrier: "КПАТП-5" },
-            { num: "87", route: "Солнечный – Молодежная", carrier: "КПАТП-5" },
-            { num: "9", route: "Междугородный автовокзал - В.Базаиха", carrier: "ООО \"СКАД\"" },
-            { num: "83", route: "Дом учёных - пр. Ульяновский", carrier: "ИП Цугленок М.М." },
-            { num: "27", route: "Полигон - Преображенский", carrier: "ИП Ялтонский А. М." },
-            { num: "7", route: "ст. Красноярск-Северный - ДК Кировский", carrier: "ИП Галченкова Е. А." },
-            { num: "81", route: "Ж/д больница - Сибирский элемент", carrier: "ООО Сирена" },
-            { num: "37", route: "ж/д вокзал - Фан-парк Бобровый лог - пос.Базаиха", carrier: "КПАТП-7" }
-        ];
+        const routesDatabase = [];
 
         function openRouteModal() {
             document.getElementById('routeModal').style.display = 'flex';
@@ -255,37 +238,27 @@
         function closeRouteModal() {
             document.getElementById('routeModal').style.display = 'none';
         }
-        function renderRoutes(filter = '') {
+        function renderRoutes() {
             const list = document.getElementById('routesList');
             list.innerHTML = '';
-            const filtered = routesDatabase.filter(r => 
-                r.num.toLowerCase().includes(filter.toLowerCase()) ||
-                r.route.toLowerCase().includes(filter.toLowerCase()) ||
-                r.carrier.toLowerCase().includes(filter.toLowerCase())
-            );
-            if (filtered.length === 0) {
-                list.innerHTML = '<div style="text-align:center;color:#666;padding:80px 20px;font-size:17px;">Ничего не найдено</div>';
+            if (routesDatabase.length === 0) {
+                list.innerHTML = '<div style="text-align:center;color:#666;padding:80px 20px;font-size:17px;">База маршрутов пока пуста<br><br>Скоро добавим</div>';
                 return;
             }
-            filtered.forEach(r => {
+            routesDatabase.forEach(r => {
                 const el = document.createElement('div');
                 el.className = 'route-item';
-                el.onclick = () => {
+                el.onclick = (e) => {
+                    e.stopPropagation();
                     document.getElementById('carrierInput').value = r.carrier;
                     document.getElementById('routeInput').value = r.route;
-                    document.getElementById('busNumberInput').value = '';
+                    document.getElementById('busNumberInput').value = r.bus;
                     closeRouteModal();
+                    tg.showPopup({title:"Готово!", message:"Данные подставлены из базы!"});
                 };
-                el.innerHTML = `
-                    <div class="route-number">${r.num}</div>
-                    <div class="route-name">${r.route}</div>
-                    <div class="route-carrier">${r.carrier}</div>
-                `;
+                el.innerHTML = `<div class="route-carrier">${r.carrier}</div><div class="route-name">${r.route}</div><div class="route-number">${r.bus}</div>`;
                 list.appendChild(el);
             });
-        }
-        function filterRoutes() {
-            renderRoutes(document.getElementById('searchInput').value);
         }
 
         function setQuantity(q) {
@@ -318,7 +291,7 @@
             document.getElementById('controlTicketNumber').textContent = num;
             document.getElementById('finalCarrier').textContent = carrier;
             document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g,'—');
-            document.getElementById('finalBusNumber').textContent = busNumber || '—';
+            document.getElementById('finalBusNumber').textContent = busNumber;
             document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + total + ' ₽';
             document.getElementById('purchaseDate').textContent = date;
             document.getElementById('purchaseTime').textContent = time;
