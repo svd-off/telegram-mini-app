@@ -98,7 +98,9 @@
             <div class="routes-title">База маршрутов</div>
             <div class="routes-close" onclick="closeRoutesModal()"></div>
         </div>
-        <input type="text" id="routesSearch" class="routes-search" placeholder="Поиск маршрута или перевозчика..." oninput="searchRoutes()">
+        <input type="text" id="routesSearch" class="routes-search" placeholder="Поиск маршрута или перевозчика..." 
+               oninput="searchRoutes()" 
+               onclick="handleSearchClick(event)">
         <div class="routes-list" id="routesList">
             <!-- Маршруты будут загружены здесь -->
         </div>
@@ -167,7 +169,7 @@
                             <img src="bus.png" class="info-icon big">
                             <div class="info-content">
                                 <div class="route-fromto" id="finalRouteFromTo">Соколовская — Стела</div>
-                                <div class="route-number" id="finalBusNumber">в523ок124</div>
+                                <div class="route-number" style="color:#FFFFFF;" id="finalBusNumber">в124ок124</div>
                             </div>
                         </div>
                         <div class="info-row">
@@ -297,8 +299,23 @@
 
             let ticketPrice = 48.00;
 
+            // Для скрытия клавиатуры при повторном тапе
+            let searchFieldLastClick = 0;
+            
+            function handleSearchClick(event) {
+                const now = Date.now();
+                const searchField = document.getElementById('routesSearch');
+                
+                // Если поле уже в фокусе и был недавний клик - скрываем клавиатуру
+                if (document.activeElement === searchField && (now - searchFieldLastClick < 300)) {
+                    searchField.blur(); // Скрываем клавиатуру
+                }
+                
+                searchFieldLastClick = now;
+            }
+
             function openRoutesDatabase() {
-                renderRoutesList(routesDatabase); // Показываем все маршруты при открытии
+                renderRoutesList(routesDatabase);
                 document.getElementById('routesModal').style.display = 'flex';
                 document.getElementById('routesSearch').focus();
             }
@@ -306,7 +323,8 @@
             function closeRoutesModal() {
                 document.getElementById('routesModal').style.display = 'none';
                 document.getElementById('routesSearch').value = '';
-                renderRoutesList(routesDatabase); // Сбросить к полному списку
+                document.getElementById('routesSearch').blur(); // Гарантированно скрываем клавиатуру
+                renderRoutesList(routesDatabase);
             }
 
             function renderRoutesList(routes) {
@@ -337,16 +355,12 @@
             }
 
             function selectRoute(route) {
-                // Подставляем данные в форму
+                // Подставляем только перевозчика и маршрут, номер автобуса оставляем пустым
                 document.getElementById('carrierInput').value = route.carrier;
                 document.getElementById('routeInput').value = route.name;
                 
-                // Генерируем примерный номер автобуса
-                const busPrefix = route.type === 'автобус' ? 'а' : 'т';
-                const randomNum = Math.floor(Math.random() * 900 + 100);
-                const randomLetters = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + 
-                                     String.fromCharCode(65 + Math.floor(Math.random() * 26));
-                document.getElementById('busNumberInput').value = `${busPrefix}${randomNum}${randomLetters}124`.toLowerCase();
+                // Номер автобуса НЕ заполняем автоматически - оставляем пустым
+                document.getElementById('busNumberInput').value = '';
                 
                 // Закрываем модальное окно
                 closeRoutesModal();
@@ -403,7 +417,8 @@
                 const qty = parseInt(document.getElementById('quantityRange').value);
                 const carrier = document.getElementById('carrierInput').value.trim() || "ИП Читашвили Н.С.";
                 const route = document.getElementById('routeInput').value.trim();
-                const busNumber = document.getElementById('busNumberInput').value.trim().toLowerCase();
+                // Номер автобуса теперь вводится вручную, берем как есть
+                const busNumber = document.getElementById('busNumberInput').value.trim().toLowerCase() || "в124ок124";
                 const totalAmount = (ticketPrice * qty).toFixed(2);
                 const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
                 const d = new Date();
