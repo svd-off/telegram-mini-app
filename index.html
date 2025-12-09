@@ -7,6 +7,172 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
+        /* НОВОГОДНЯЯ ЗАГРУЗКА ТОЛЬКО */
+        .new-year-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #0a0a2a 0%, #1a1a3a 50%, #0d0d1a 100%);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .snowflakes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .snowflake {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: snowfall linear infinite;
+        }
+        
+        @keyframes snowfall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .storm-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 30%, rgba(0, 200, 255, 0.1) 70%);
+            animation: stormPulse 2s infinite alternate;
+        }
+        
+        @keyframes stormPulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+        }
+        
+        .loading-content {
+            text-align: center;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .christmas-tree {
+            width: 120px;
+            height: 180px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+        
+        .tree-part {
+            position: absolute;
+            border-left: 40px solid transparent;
+            border-right: 40px solid transparent;
+            border-bottom: 60px solid #2e7d32;
+        }
+        
+        .tree-1 { top: 120px; left: 20px; border-bottom-color: #388e3c; }
+        .tree-2 { top: 90px; left: 20px; border-bottom-color: #43a047; width: 80px; }
+        .tree-3 { top: 60px; left: 20px; border-bottom-color: #4caf50; width: 60px; }
+        .tree-4 { top: 30px; left: 20px; border-bottom-color: #66bb6a; width: 40px; }
+        
+        .tree-trunk {
+            position: absolute;
+            width: 20px;
+            height: 30px;
+            background: #5d4037;
+            bottom: 0;
+            left: 50px;
+        }
+        
+        .tree-light {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: lightBlink 1.5s infinite alternate;
+        }
+        
+        @keyframes lightBlink {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        .light-1 { top: 40px; left: 45px; background: #ff3b30; animation-delay: 0s; }
+        .light-2 { top: 70px; left: 60px; background: #30d158; animation-delay: 0.2s; }
+        .light-3 { top: 100px; left: 35px; background: #007aff; animation-delay: 0.4s; }
+        .light-4 { top: 130px; left: 65px; background: #ff9500; animation-delay: 0.6s; }
+        .light-5 { top: 160px; left: 40px; background: #bf5af2; animation-delay: 0.8s; }
+        
+        .loading-title {
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            animation: titleGlow 2s infinite alternate;
+        }
+        
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
+            100% { text-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 59, 48, 0.5); }
+        }
+        
+        .loading-subtitle {
+            color: #aaa;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+        
+        .progress-bar {
+            width: 200px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff3b30, #ff9500, #30d158, #007aff, #bf5af2);
+            width: 0%;
+            animation: progressFill 5s ease-in-out forwards;
+            border-radius: 3px;
+        }
+        
+        @keyframes progressFill {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* Остальные стили как в исходном коде */
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
         body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#000;color:#FFF;height:100vh;overflow:hidden;}
        
@@ -109,6 +275,34 @@
     </style>
 </head>
 <body>
+    <!-- НОВОГОДНЯЯ ЗАГРУЗКА (только в начале) -->
+    <div id="newYearLoading" class="new-year-overlay">
+        <div class="snowflakes" id="snowContainer"></div>
+        <div class="storm-effect"></div>
+        
+        <div class="loading-content">
+            <div class="christmas-tree">
+                <div class="tree-trunk"></div>
+                <div class="tree-part tree-1"></div>
+                <div class="tree-part tree-2"></div>
+                <div class="tree-part tree-3"></div>
+                <div class="tree-part tree-4"></div>
+                <div class="tree-light light-1"></div>
+                <div class="tree-light light-2"></div>
+                <div class="tree-light light-3"></div>
+                <div class="tree-light light-4"></div>
+                <div class="tree-light light-5"></div>
+            </div>
+            
+            <div class="loading-title">С НОВЫМ ГОДОМ! 🎄</div>
+            <div class="loading-subtitle">Загружаем билеты для праздничных поездок...</div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Остальной код как в оригинале -->
     <div id="accessDenied">Недостаточно прав</div>
     <div id="loadingOverlay" class="loading-overlay" style="display:none;">
         <div class="loading-spinner"></div>
@@ -266,433 +460,477 @@
     </div>
 
     <script>
-        const ALLOWED_USERS = [6107814655, 1777702236];
-        const tg = window.Telegram.WebApp;
-        tg.expand(); tg.MainButton.hide();
-        const userId = tg.initDataUnsafe?.user?.id;
-
-        // База маршрутов (обновленная с несколькими перевозчиками)
-        const routesDatabase = [
-            // Обычные маршруты (один перевозчик)
-            {number: "1", type: "троллейбус", name: "мкрн. Северный - мкрн. Тихие зори", carrier: "МП Городской транспорт"},
-            {number: "2", type: "автобус", name: "Дом ученых - А/В Восточный", carriers: ["ИП Галченкова Е. А.", "ИП Багаев Д.Б."]},
-            {number: "3", type: "автобус", name: "Академгородок - а.вокз. Восточный", carrier: "ООО \"СТК\""},
-            {number: "3", type: "автобус", name: "Студгородок - а.вокз. Восточный", carrier: "ИП Патрин Н. Н."},
-            {number: "4", type: "троллейбус", name: "Ж/д вокзал-Северо-Западный район", carrier: "МП Городской транспорт"},
-            {number: "5", type: "автобус", name: "Спорткомплекс \"Радуга\"- ООО \"Красфарма\"", carrier: "ИП Долгушина Г.И."},
-            {number: "6", type: "автобус", name: "дк \"Кировский\" - Кардиоцентр", carriers: ["ИП Тагачаков В. Г.", "ООО Триумф-7"]},
-            {number: "6", type: "троллейбус", name: "Студенческий городок - Утиный плёс", carrier: "МП Городской транспорт"},
-            {number: "7", type: "автобус", name: "ст. Красноярск-Северный - ДК Кировский", carrier: "ИП Галченкова Е. А."},
-            {number: "7", type: "троллейбус", name: "Ж/д вокзал-Спортзал", carrier: "МП Городской транспорт"},
-            {number: "8", type: "автобус", name: "ст. Красноярск-Северный - пос. Водников", carrier: "ООО \"Перевозчик\""},
-            {number: "9", type: "автобус", name: "Междугородный автовокзал - В.Базаиха", carrier: "ООО \"СКАД\""},
-            {number: "10", type: "автобус", name: "пос. Энергетиков-ОАО Красфарма", carrier: "КПАТП-7"},
-            {number: "11", type: "автобус", name: "3-я Дальневосточная - Молодежная", carrier: "КПАТП-5"},
-            {number: "12", type: "автобус", name: "мкрн. Северный - пос. Удачный", carrier: "КПАТП-7"},
-            {number: "13", type: "троллейбус", name: "Ж/д вокзал-Северо-Западный район", carrier: "МП Городской транспорт"},
-            {number: "14", type: "автобус", name: "п. Овинный-Жд.больница", carriers: ["АО \"СТК\"", "КПАТП-5"]},
-            {number: "15", type: "троллейбус", name: "ОАО \"Русал\" - Сельхозкомплекс", carrier: "МП Городской транспорт"},
-            {number: "18", type: "автобус", name: "КПАТП №7-мкрн. Верхние Черемушки", carrier: "КПАТП-7"},
-            {number: "19", type: "автобус", name: "Стела--Причал", carrier: "КПАТП-7"},
-            {number: "20", type: "автобус", name: "а/в Восточный-Кардиоцентр", carrier: "ИП Патрин Н. Н."},
-            {number: "21", type: "автобус", name: "Парк \"Прищепка\" - Спортзал", carriers: ["ИП Патрин Н. Н.", "ООО \"СТК\""]},
-            {number: "22", type: "автобус", name: "ЖК \"Ясный\"-пос. Индустриальный", carriers: ["КПАТП-7", "ООО \"СКАД\""]},
-            {number: "23", type: "автобус", name: "ЛДК - Солнечный (60-летия СССР)", carrier: "ООО Ветеран"},
-            {number: "26", type: "автобус", name: "Ж/д больница – Плодово-ягодная станция", carrier: "КПАТП-5"},
-            {number: "27", type: "автобус", name: "Полигон - Преображенский", carrier: "ИП Ялтонский А. М."},
-            {number: "30", type: "автобус", name: "Спортзал - мкрн. Тихие зори", carrier: "КПАТП-5"},
-            {number: "31", type: "автобус", name: "ЛДК-Академия биатлона", carrier: "КПАТП-7"},
-            {number: "35", type: "автобус", name: "Кольцевой маршрут", carrier: "КПАТП-5"},
-            {number: "37", type: "автобус", name: "ж/д вокзал-Фан-парк Бобровый лог-пос.Базаиха", carrier: "КПАТП-7"},
-            {number: "38", type: "автобус", name: "Дом учёных - пос. Таймыр", carrier: "АО \"СТК\""},
-            {number: "43", type: "автобус", name: "Восточный-Сельхозкомплекс", carrier: "ООО Вавулин-К"},
-            {number: "49", type: "автобус", name: "Кардиоцентр – Спорткомплекс \"Радуга\"", carrier: "КПАТП-5"},
-            {number: "50", type: "автобус", name: "Соколовская - Стела", carrier: "ИП Читашвили Н.С."},
-            {number: "52", type: "автобус", name: "ЛДК - Озеро-парк", carrier: "КПАТП-5"},
-            {number: "55", type: "автобус", name: "пос. Водников-Железнодорожный вокзал", carrier: "КПАТП-7"},
-            {number: "56", type: "автобус", name: "пос. Шинников -Железнодорожный вокзал", carrier: "КПАТП-7"},
-            {number: "58", type: "автобус", name: "Парашютная - Спортзал", carriers: ["ИП Голунцов С. В.", "ИП Кривоногов И.Г."]},
-            {number: "60", type: "автобус", name: "Автовокзал Восточный - Петрушина", carrier: "ИП Цугленок М.М."},
-            {number: "61", type: "автобус", name: "мкрн. Солнечный - Шинное кладбище", carrier: "ООО КПАТП"},
-            {number: "63", type: "автобус", name: "Академгородок - Солнечный", carrier: "ООО КПАТП"},
-            {number: "64", type: "автобус", name: "мкрн. Солнечный - мкрн. Тихие зори", carrier: "КПАТП-5"},
-            {number: "65", type: "автобус", name: "ДК Кировский - Агротерминал", carrier: "ИП Ялтонский А. М."},
-            {number: "69", type: "автобус", name: "мкрн. Солнечный - пос. Индустриальный", carrier: "КПАТП-7"},
-            {number: "71", type: "автобус", name: "Спортзал - пос. Таймыр", carriers: ["ИП Галченкова Е. А.", "ИП Галченкова О. Г."]},
-            {number: "77", type: "автобус", name: "Ж/д больница - пос. Песчанка", carriers: ["ООО Практик", "ООО СибирьАвто"]},
-            {number: "78", type: "автобус", name: "Стела - Контейнерный двор", carriers: ["ИП Бронников А.И.", "ИП Бронников М. А."]},
-            {number: "80", type: "автобус", name: "пос.Таймыр-мкрн. Тихие Зори", carrier: "ИП Долгушин Д.Г."},
-            {number: "81", type: "автобус", name: "Ж/д больница - Сибирский элемент", carrier: "ООО Сирена"},
-            {number: "83", type: "автобус", name: "Дом учёных - пр. Ульяновский", carrier: "ИП Цугленок М.М."},
-            {number: "85", type: "автобус", name: "Даурская - Сельхозкомплекс", carriers: ["ООО \"СКАД\"", "ООО \"СТК\""]},
-            {number: "87", type: "автобус", name: "Солнечный – Молодежная", carrier: "КПАТП-5"},
-            {number: "88", type: "автобус", name: "Спортзал - Академия биатлона", carrier: "ИП Тагачаков В. Г."},
-            {number: "90", type: "автобус", name: "Ак. биатлона-Верхн. Базаиха", carrier: "ИП Патрин Н. Н."},
-            {number: "92", type: "автобус", name: "Красфарма (60 лет Октября) - Х/К Енисей", carrier: "ИП Патрин Н. Н."},
-            {number: "94", type: "автобус", name: "ЛДК - ТЭЦ-3", carriers: ["ИП Карасева Н. Н.", "ООО МаршрутАвто", "ООО Практик"]},
-            {number: "95", type: "автобус", name: "Верхние Черемушки-ЛДК", carrier: "КПАТП-7"},
-            {number: "98", type: "автобус", name: "ЛДК - ОАО \"РУСАЛ\"", carrier: "ИП Гнетов Ю.Н."},
-            {number: "99", type: "автобус", name: "Северный-Цимлянская", carriers: ["ИП Патрин Н. Н.", "ООО \"СТК\""]},
-            {number: "5т", type: "троллейбус", name: "ст.Красноярск-Северный - Экопарк Гремячая грива", carrier: "МП Городской транспорт"},
-            {number: "173", type: "автобус", name: "Междугородный а/в - пос. Березовка", carrier: "ООО \"Контур\""}
-        ];
-
-        if (!userId || !ALLOWED_USERS.includes(userId)) {
-            document.getElementById('accessDenied').style.display = 'flex';
-        } else {
-            document.getElementById('accessDenied').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'flex';
-
-            let viewTimer, viewSecondsLeft = 15;
-            const TOTAL_DURATION = 90 * 60 * 1000;
-            let tickets = JSON.parse(localStorage.getItem('user_tickets') || '[]');
-            const now = Date.now();
-            tickets = tickets.filter(t => now - t.created_at < TOTAL_DURATION);
-            localStorage.setItem('user_tickets', JSON.stringify(tickets));
-
-            if (tickets.length > 0) {
-                showPage('activeTicketsPage');
-                renderActiveTickets();
-            } else {
-                showPage('paymentPage');
+        // Функции для новогодней загрузки
+        function createSnowflakes(containerId, count = 50, sizeMin = 2, sizeMax = 6, speedMin = 10, speedMax = 20) {
+            const container = document.getElementById(containerId);
+            for (let i = 0; i < count; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                
+                const size = Math.random() * (sizeMax - sizeMin) + sizeMin;
+                snowflake.style.width = `${size}px`;
+                snowflake.style.height = `${size}px`;
+                snowflake.style.left = `${Math.random() * 100}%`;
+                
+                const duration = Math.random() * (speedMax - speedMin) + speedMin;
+                const delay = Math.random() * 5;
+                snowflake.style.animationDuration = `${duration}s`;
+                snowflake.style.animationDelay = `${delay}s`;
+                
+                container.appendChild(snowflake);
             }
-
-            let ticketPrice = 48.00;
-            let selectedQuantity = 1;
-            let selectedRouteForCarrier = null; // Для хранения выбранного маршрута при выборе перевозчика
-
-            // Для скрытия клавиатуры при повторном тапе
-            let searchFieldLastClick = 0;
+        }
+        
+        function startNewYearLoading() {
+            // Создаем снег для загрузки
+            createSnowflakes('snowContainer', 80, 3, 8, 8, 15);
             
-            function handleSearchClick(event) {
+            // Ждем 5 секунд и плавно переходим к основному приложению
+            setTimeout(() => {
+                const overlay = document.getElementById('newYearLoading');
+                overlay.style.opacity = '0';
+                overlay.style.transition = 'opacity 0.8s ease-in-out';
+                
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    
+                    // Запускаем основное приложение
+                    initMainApp();
+                }, 800);
+            }, 5000);
+        }
+        
+        // Запускаем новогоднюю загрузку сразу
+        document.addEventListener('DOMContentLoaded', startNewYearLoading);
+
+        // ОСНОВНОЕ ПРИЛОЖЕНИЕ (полностью исходный код)
+        function initMainApp() {
+            const ALLOWED_USERS = [6107814655, 1777702236];
+            const tg = window.Telegram.WebApp;
+            tg.expand(); tg.MainButton.hide();
+            const userId = tg.initDataUnsafe?.user?.id;
+
+            const routesDatabase = [
+                {number: "1", type: "троллейбус", name: "мкрн. Северный - мкрн. Тихие зори", carrier: "МП Городской транспорт"},
+                {number: "2", type: "автобус", name: "Дом ученых - А/В Восточный", carriers: ["ИП Галченкова Е. А.", "ИП Багаев Д.Б."]},
+                {number: "3", type: "автобус", name: "Академгородок - а.вокз. Восточный", carrier: "ООО \"СТК\""},
+                {number: "3", type: "автобус", name: "Студгородок - а.вокз. Восточный", carrier: "ИП Патрин Н. Н."},
+                {number: "4", type: "троллейбус", name: "Ж/д вокзал-Северо-Западный район", carrier: "МП Городской транспорт"},
+                {number: "5", type: "автобус", name: "Спорткомплекс \"Радуга\"- ООО \"Красфарма\"", carrier: "ИП Долгушина Г.И."},
+                {number: "6", type: "автобус", name: "дк \"Кировский\" - Кардиоцентр", carriers: ["ИП Тагачаков В. Г.", "ООО Триумф-7"]},
+                {number: "6", type: "троллейбус", name: "Студенческий городок - Утиный плёс", carrier: "МП Городской транспорт"},
+                {number: "7", type: "автобус", name: "ст. Красноярск-Северный - ДК Кировский", carrier: "ИП Галченкова Е. А."},
+                {number: "7", type: "троллейбус", name: "Ж/д вокзал-Спортзал", carrier: "МП Городской транспорт"},
+                {number: "8", type: "автобус", name: "ст. Красноярск-Северный - пос. Водников", carrier: "ООО \"Перевозчик\""},
+                {number: "9", type: "автобус", name: "Междугородный автовокзал - В.Базаиха", carrier: "ООО \"СКАД\""},
+                {number: "10", type: "автобус", name: "пос. Энергетиков-ОАО Красфарма", carrier: "КПАТП-7"},
+                {number: "11", type: "автобус", name: "3-я Дальневосточная - Молодежная", carrier: "КПАТП-5"},
+                {number: "12", type: "автобус", name: "мкрн. Северный - пос. Удачный", carrier: "КПАТП-7"},
+                {number: "13", type: "троллейбус", name: "Ж/д вокзал-Северо-Западный район", carrier: "МП Городской транспорт"},
+                {number: "14", type: "автобус", name: "п. Овинный-Жд.больница", carriers: ["АО \"СТК\"", "КПАТП-5"]},
+                {number: "15", type: "троллейбус", name: "ОАО \"Русал\" - Сельхозкомплекс", carrier: "МП Городской транспорт"},
+                {number: "18", type: "автобус", name: "КПАТП №7-мкрн. Верхние Черемушки", carrier: "КПАТП-7"},
+                {number: "19", type: "автобус", name: "Стела--Причал", carrier: "КПАТП-7"},
+                {number: "20", type: "автобус", name: "а/в Восточный-Кардиоцентр", carrier: "ИП Патрин Н. Н."},
+                {number: "21", type: "автобус", name: "Парк \"Прищепка\" - Спортзал", carriers: ["ИП Патрин Н. Н.", "ООО \"СТК\""]},
+                {number: "22", type: "автобус", name: "ЖК \"Ясный\"-пос. Индустриальный", carriers: ["КПАТП-7", "ООО \"СКАД\""]},
+                {number: "23", type: "автобус", name: "ЛДК - Солнечный (60-летия СССР)", carrier: "ООО Ветеран"},
+                {number: "26", type: "автобус", name: "Ж/д больница – Плодово-ягодная станция", carrier: "КПАТП-5"},
+                {number: "27", type: "автобус", name: "Полигон - Преображенский", carrier: "ИП Ялтонский А. М."},
+                {number: "30", type: "автобус", name: "Спортзал - мкрн. Тихие зори", carrier: "КПАТП-5"},
+                {number: "31", type: "автобус", name: "ЛДК-Академия биатлона", carrier: "КПАТП-7"},
+                {number: "35", type: "автобус", name: "Кольцевой маршрут", carrier: "КПАТП-5"},
+                {number: "37", type: "автобус", name: "ж/д вокзал-Фан-парк Бобровый лог-пос.Базаиха", carrier: "КПАТП-7"},
+                {number: "38", type: "автобус", name: "Дом учёных - пос. Таймыр", carrier: "АО \"СТК\""},
+                {number: "43", type: "автобус", name: "Восточный-Сельхозкомплекс", carrier: "ООО Вавулин-К"},
+                {number: "49", type: "автобус", name: "Кардиоцентр – Спорткомплекс \"Радуга\"", carrier: "КПАТП-5"},
+                {number: "50", type: "автобус", name: "Соколовская - Стела", carrier: "ИП Читашвили Н.С."},
+                {number: "52", type: "автобус", name: "ЛДК - Озеро-парк", carrier: "КПАТП-5"},
+                {number: "55", type: "автобус", name: "пос. Водников-Железнодорожный вокзал", carrier: "КПАТП-7"},
+                {number: "56", type: "автобус", name: "пос. Шинников -Железнодорожный вокзал", carrier: "КПАТП-7"},
+                {number: "58", type: "автобус", name: "Парашютная - Спортзал", carriers: ["ИП Голунцов С. В.", "ИП Кривоногов И.Г."]},
+                {number: "60", type: "автобус", name: "Автовокзал Восточный - Петрушина", carrier: "ИП Цугленок М.М."},
+                {number: "61", type: "автобус", name: "мкрн. Солнечный - Шинное кладбище", carrier: "ООО КПАТП"},
+                {number: "63", type: "автобус", name: "Академгородок - Солнечный", carrier: "ООО КПАТП"},
+                {number: "64", type: "автобус", name: "мкрн. Солнечный - мкрн. Тихие зори", carrier: "КПАТП-5"},
+                {number: "65", type: "автобус", name: "ДК Кировский - Агротерминал", carrier: "ИП Ялтонский А. М."},
+                {number: "69", type: "автобус", name: "мкрн. Солнечный - пос. Индустриальный", carrier: "КПАТП-7"},
+                {number: "71", type: "автобус", name: "Спортзал - пос. Таймыр", carriers: ["ИП Галченкова Е. А.", "ИП Галченкова О. Г."]},
+                {number: "77", type: "автобус", name: "Ж/д больница - пос. Песчанка", carriers: ["ООО Практик", "ООО СибирьАвто"]},
+                {number: "78", type: "автобус", name: "Стела - Контейнерный двор", carriers: ["ИП Бронников А.И.", "ИП Бронников М. А."]},
+                {number: "80", type: "автобус", name: "пос.Таймыр-мкрн. Тихие Зори", carrier: "ИП Долгушин Д.Г."},
+                {number: "81", type: "автобус", name: "Ж/д больница - Сибирский элемент", carrier: "ООО Сирена"},
+                {number: "83", type: "автобус", name: "Дом учёных - пр. Ульяновский", carrier: "ИП Цугленок М.М."},
+                {number: "85", type: "автобус", name: "Даурская - Сельхозкомплекс", carriers: ["ООО \"СКАД\"", "ООО \"СТК\""]},
+                {number: "87", type: "автобус", name: "Солнечный – Молодежная", carrier: "КПАТП-5"},
+                {number: "88", type: "автобус", name: "Спортзал - Академия биатлона", carrier: "ИП Тагачаков В. Г."},
+                {number: "90", type: "автобус", name: "Ак. биатлона-Верхн. Базаиха", carrier: "ИП Патрин Н. Н."},
+                {number: "92", type: "автобус", name: "Красфарма (60 лет Октября) - Х/К Енисей", carrier: "ИП Патрин Н. Н."},
+                {number: "94", type: "автобус", name: "ЛДК - ТЭЦ-3", carriers: ["ИП Карасева Н. Н.", "ООО МаршрутАвто", "ООО Практик"]},
+                {number: "95", type: "автобус", name: "Верхние Черемушки-ЛДК", carrier: "КПАТП-7"},
+                {number: "98", type: "автобус", name: "ЛДК - ОАО \"РУСАЛ\"", carrier: "ИП Гнетов Ю.Н."},
+                {number: "99", type: "автобус", name: "Северный-Цимлянская", carriers: ["ИП Патрин Н. Н.", "ООО \"СТК\""]},
+                {number: "5т", type: "троллейбус", name: "ст.Красноярск-Северный - Экопарк Гремячая грива", carrier: "МП Городской транспорт"},
+                {number: "173", type: "автобус", name: "Междугородный а/в - пос. Березовка", carrier: "ООО \"Контур\""}
+            ];
+
+            if (!userId || !ALLOWED_USERS.includes(userId)) {
+                document.getElementById('accessDenied').style.display = 'flex';
+            } else {
+                document.getElementById('accessDenied').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'flex';
+
+                let viewTimer, viewSecondsLeft = 15;
+                const TOTAL_DURATION = 90 * 60 * 1000;
+                let tickets = JSON.parse(localStorage.getItem('user_tickets') || '[]');
                 const now = Date.now();
-                const searchField = document.getElementById('routesSearch');
-                
-                // Если поле уже в фокусе и был недавний клик - скрываем клавиатуру
-                if (document.activeElement === searchField && (now - searchFieldLastClick < 300)) {
-                    searchField.blur(); // Скрываем клавиатуру
-                }
-                
-                searchFieldLastClick = now;
-            }
-
-            function openRoutesDatabase() {
-                renderRoutesList(routesDatabase);
-                document.getElementById('routesModal').style.display = 'flex';
-                document.getElementById('routesSearch').focus();
-            }
-
-            function closeRoutesModal() {
-                document.getElementById('routesModal').style.display = 'none';
-                document.getElementById('routesSearch').value = '';
-                document.getElementById('routesSearch').blur();
-                renderRoutesList(routesDatabase);
-            }
-
-            function closeCarrierModal() {
-                document.getElementById('carrierModal').style.display = 'none';
-                selectedRouteForCarrier = null;
-            }
-
-            function renderRoutesList(routes) {
-                const routesList = document.getElementById('routesList');
-                routesList.innerHTML = '';
-                
-                if (routes.length === 0) {
-                    routesList.innerHTML = '<div class="no-results">По вашему запросу ничего не найдено</div>';
-                    return;
-                }
-                
-                routes.forEach(route => {
-                    const routeBlock = document.createElement('div');
-                    routeBlock.className = 'route-block';
-                    
-                    // Определяем, есть ли несколько перевозчиков
-                    const hasMultipleCarriers = route.carriers && route.carriers.length > 1;
-                    
-                    routeBlock.onclick = () => handleRouteClick(route);
-                    
-                    // Создаем HTML в зависимости от типа маршрута
-                    let carriersHTML = '';
-                    
-                    if (hasMultipleCarriers) {
-                        // Для маршрутов с несколькими перевозчиками
-                        route.carriers.forEach((carrier, index) => {
-                            carriersHTML += `<div class="route-carrier">${index + 1}. ${carrier}</div>`;
-                        });
-                        carriersHTML += `<div class="route-multiple">Выберите перевозчика</div>`;
-                    } else {
-                        // Для обычных маршрутов (один перевозчик)
-                        const carrier = route.carrier || (route.carriers && route.carriers[0]) || '';
-                        carriersHTML = `<div class="route-carrier">${carrier}</div>`;
-                    }
-                    
-                    routeBlock.innerHTML = `
-                        <div class="route-header">
-                            <div class="route-number-db">${route.number}</div>
-                            <div class="route-type">(${route.type})</div>
-                        </div>
-                        <div class="route-name">${route.name}</div>
-                        ${carriersHTML}
-                    `;
-                    
-                    routesList.appendChild(routeBlock);
-                });
-            }
-
-            function handleRouteClick(route) {
-                // Проверяем, есть ли несколько перевозчиков
-                const hasMultipleCarriers = route.carriers && route.carriers.length > 1;
-                
-                if (hasMultipleCarriers) {
-                    // Показываем окно выбора перевозчика
-                    selectedRouteForCarrier = route;
-                    showCarrierSelection(route);
-                } else {
-                    // Обычный маршрут - сразу подставляем
-                    const carrier = route.carrier || (route.carriers && route.carriers[0]) || '';
-                    selectRoute(route, carrier);
-                }
-            }
-
-            function showCarrierSelection(route) {
-                document.getElementById('selectedRouteNumber').textContent = `Маршрут №${route.number} (${route.type})`;
-                document.getElementById('selectedRouteName').textContent = route.name;
-                
-                const carrierList = document.getElementById('carrierList');
-                carrierList.innerHTML = '';
-                
-                route.carriers.forEach((carrier, index) => {
-                    const carrierItem = document.createElement('div');
-                    carrierItem.className = 'carrier-item';
-                    carrierItem.onclick = () => selectCarrier(carrier);
-                    
-                    carrierItem.innerHTML = `
-                        <div class="carrier-item-text">${carrier}</div>
-                    `;
-                    
-                    carrierList.appendChild(carrierItem);
-                });
-                
-                document.getElementById('carrierModal').style.display = 'flex';
-            }
-
-            function selectCarrier(carrier) {
-                if (selectedRouteForCarrier) {
-                    selectRoute(selectedRouteForCarrier, carrier);
-                    closeCarrierModal();
-                }
-            }
-
-            function selectRoute(route, carrier) {
-                document.getElementById('carrierInput').value = carrier;
-                document.getElementById('routeInput').value = route.name;
-                document.getElementById('busNumberInput').value = '';
-                closeRoutesModal();
-                
-                tg.showPopup({
-                    title: "Маршрут выбран!",
-                    message: `Маршрут №${route.number} (${carrier})`,
-                    buttons: [{type: 'ok', text: 'Отлично!'}]
-                });
-            }
-
-            function searchRoutes() {
-                const searchTerm = document.getElementById('routesSearch').value.toLowerCase();
-                
-                if (!searchTerm) {
-                    renderRoutesList(routesDatabase);
-                    return;
-                }
-                
-                const filtered = routesDatabase.filter(route => {
-                    // Проверяем номер маршрута
-                    if (route.number.toLowerCase().includes(searchTerm)) return true;
-                    
-                    // Проверяем название маршрута
-                    if (route.name.toLowerCase().includes(searchTerm)) return true;
-                    
-                    // Проверяем тип транспорта
-                    if (route.type.toLowerCase().includes(searchTerm)) return true;
-                    
-                    // Проверяем перевозчиков (один или несколько)
-                    if (route.carrier && route.carrier.toLowerCase().includes(searchTerm)) return true;
-                    if (route.carriers) {
-                        for (const carrier of route.carriers) {
-                            if (carrier.toLowerCase().includes(searchTerm)) return true;
-                        }
-                    }
-                    
-                    return false;
-                });
-                
-                renderRoutesList(filtered);
-            }
-
-            function selectQuantity(qty) {
-                selectedQuantity = qty;
-                
-                // Убираем активный класс у всех кнопок
-                document.querySelectorAll('.quantity-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                
-                // Добавляем активный класс к выбранной кнопке
-                document.querySelector(`.quantity-btn[data-quantity="${qty}"]`).classList.add('active');
-                
-                // Обновляем цену
-                updatePrice();
-            }
-
-            function showLoading(text = 'Загрузка...') {
-                document.getElementById('loadingText').textContent = text;
-                document.getElementById('loadingOverlay').style.display = 'flex';
-            }
-            function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
-
-            function setPrice(price) {
-                ticketPrice = parseFloat(price);
-                document.getElementById('currentPriceText').textContent = ticketPrice.toFixed(2) + ' ₽';
-                document.getElementById('priceOptions').style.display = 'none';
-                updatePrice();
-            }
-            function applyCustomPrice() {
-                const val = document.getElementById('customPriceInput').value.trim();
-                if (val && parseFloat(val) > 0) setPrice(parseFloat(val));
-            }
-            function updatePrice() {
-                const total = (ticketPrice * selectedQuantity).toFixed(2);
-                document.getElementById('totalPrice').textContent = total + ' ₽';
-            }
-
-            function payTicket() {
-                const qty = selectedQuantity;
-                const carrier = document.getElementById('carrierInput').value.trim() || "ИП Читашвили Н.С.";
-                const route = document.getElementById('routeInput').value.trim();
-                const busNumber = document.getElementById('busNumberInput').value.trim().toLowerCase() || "в124ок124";
-                const totalAmount = (ticketPrice * qty).toFixed(2);
-                const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
-                const d = new Date();
-                const purchaseDate = d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' }).replace(' ', ' ').slice(0, -3) + ' г.';
-                const purchaseTime = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-
-                tickets.push({ number: ticketNum, carrier, route, busNumber, quantity: qty, price: ticketPrice, created_at: Date.now(), purchaseDate, purchaseTime });
+                tickets = tickets.filter(t => now - t.created_at < TOTAL_DURATION);
                 localStorage.setItem('user_tickets', JSON.stringify(tickets));
 
-                document.getElementById('currentTicketNumber').textContent = ticketNum;
-                document.getElementById('controlTicketNumber').textContent = ticketNum;
-                document.getElementById('finalCarrier').textContent = carrier;
-                document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g, '—');
-                document.getElementById('finalBusNumber').textContent = busNumber;
-                document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + totalAmount + ' ₽';
-                document.getElementById('purchaseDate').textContent = purchaseDate;
-                document.getElementById('purchaseTime').textContent = purchaseTime;
-
-                generateQrCode(ticketNum);
-                showPage('finalTicketPage');
-                switchToTicket();
-                startViewTimer();
-            }
-
-            function generateQrCode(ticketNumber) {
-                const qrContainer = document.getElementById('controlQrCode');
-                qrContainer.innerHTML = '';
-                new QRCode(qrContainer, { text: ticketNumber, width: 270, height: 270, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
-            }
-
-            function switchToTicket() {
-                document.getElementById('ticketContent').style.display = 'flex';
-                document.getElementById('controlContent').style.display = 'none';
-                document.querySelector('.final-ticket-number').style.color = '#FF3B30';
-                document.querySelector('.final-control span').style.color = '#888';
-                const indicator = document.getElementById('indicator');
-                indicator.style.left = '0px';
-                indicator.style.width = document.querySelector('.final-ticket-number').offsetWidth + 'px';
-            }
-
-            function switchToControl() {
-                document.getElementById('ticketContent').style.display = 'none';
-                document.getElementById('controlContent').style.display = 'flex';
-                document.querySelector('.final-ticket-number').style.color = '#888';
-                document.querySelector('.final-control span').style.color = '#FF3B30';
-                const controlEl = document.querySelector('.final-control');
-                const indicator = document.getElementById('indicator');
-                indicator.style.left = (controlEl.getBoundingClientRect().left - controlEl.parentElement.getBoundingClientRect().left) + 'px';
-                indicator.style.width = controlEl.offsetWidth + 'px';
-            }
-
-            function random3() { return Math.floor(Math.random() * 900) + 100; }
-
-            function startViewTimer() {
-                viewSecondsLeft = 15;
-                document.getElementById('timer').textContent = 'Действует: ' + viewSecondsLeft + ' сек.';
-                clearInterval(viewTimer);
-                viewTimer = setInterval(() => {
-                    viewSecondsLeft--;
-                    document.getElementById('timer').textContent = 'Действует: ' + viewSecondsLeft + ' сек.';
-                    if (viewSecondsLeft <= 0) {
-                        clearInterval(viewTimer);
-                        showPage(tickets.length > 0 ? 'activeTicketsPage' : 'paymentPage');
-                        renderActiveTickets();
-                    }
-                }, 1000);
-            }
-
-            function closeTicket() {
-                clearInterval(viewTimer);
-                showPage(tickets.length > 0 ? 'activeTicketsPage' : 'paymentPage');
-                renderActiveTickets();
-            }
-
-            function showPage(id) {
-                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                document.getElementById(id).classList.add('active');
-                if (id === 'finalTicketPage') setTimeout(switchToTicket, 50);
-                if (id === 'activeTicketsPage') renderActiveTickets();
-            }
-
-            function renderActiveTickets() {
-                const list = document.getElementById('activeTicketsList'); list.innerHTML = '';
-                if (tickets.length === 0) {
-                    list.innerHTML = '<div style="text-align:center;color:#AAA;margin-top:20px;">Нет билетов</div>';
-                    return;
+                if (tickets.length > 0) {
+                    showPage('activeTicketsPage');
+                    renderActiveTickets();
+                } else {
+                    showPage('paymentPage');
                 }
-                tickets.forEach((t, i) => {
-                    const mins = Math.floor((TOTAL_DURATION - (Date.now() - t.created_at)) / 60000);
-                    const total = (t.price * t.quantity).toFixed(2);
-                    const el = document.createElement('div'); el.className = 'active-ticket-item';
-                    el.onclick = () => {
-                        document.getElementById('currentTicketNumber').textContent = t.number;
-                        document.getElementById('controlTicketNumber').textContent = t.number;
-                        document.getElementById('finalCarrier').textContent = t.carrier;
-                        document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g, '—');
-                        document.getElementById('finalBusNumber').textContent = t.busNumber;
-                        document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + total + ' ₽';
-                        document.getElementById('purchaseDate').textContent = t.purchaseDate;
-                        document.getElementById('purchaseTime').textContent = t.purchaseTime;
-                        generateQrCode(t.number);
-                        showPage('finalTicketPage');
-                        switchToTicket();
-                        startViewTimer();
-                    };
-                    el.innerHTML = `<div><div style="font-weight:600;">Билет № ${t.number}</div><div style="font-size:14px;color:#AAA">Осталось: ${mins} мин</div></div><div class="delete-btn" onclick="event.stopPropagation();deleteTicket(${i})"></div>`;
-                    list.appendChild(el);
-                });
-            }
 
-            function deleteTicket(i) {
-                tg.showPopup({ title: "Удалить билет?", message: "Без возврата", buttons: [{ type: 'destructive', text: 'Удалить', id: 'del' }, { type: 'cancel' }] }, b => {
-                    if (b === 'del') {
-                        tickets.splice(i, 1);
-                        localStorage.setItem('user_tickets', JSON.stringify(tickets));
-                        renderActiveTickets();
+                let ticketPrice = 48.00;
+                let selectedQuantity = 1;
+                let selectedRouteForCarrier = null; // Для хранения выбранного маршрута при выборе перевозчика
+
+                // Для скрытия клавиатуры при повторном тапе
+                let searchFieldLastClick = 0;
+                
+                function handleSearchClick(event) {
+                    const now = Date.now();
+                    const searchField = document.getElementById('routesSearch');
+                    
+                    // Если поле уже в фокусе и был недавний клик - скрываем клавиатуру
+                    if (document.activeElement === searchField && (now - searchFieldLastClick < 300)) {
+                        searchField.blur(); // Скрываем клавиатуру
                     }
+                    
+                    searchFieldLastClick = now;
+                }
+
+                function openRoutesDatabase() {
+                    renderRoutesList(routesDatabase);
+                    document.getElementById('routesModal').style.display = 'flex';
+                    document.getElementById('routesSearch').focus();
+                }
+
+                function closeRoutesModal() {
+                    document.getElementById('routesModal').style.display = 'none';
+                    document.getElementById('routesSearch').value = '';
+                    document.getElementById('routesSearch').blur();
+                    renderRoutesList(routesDatabase);
+                }
+
+                function closeCarrierModal() {
+                    document.getElementById('carrierModal').style.display = 'none';
+                    selectedRouteForCarrier = null;
+                }
+
+                function renderRoutesList(routes) {
+                    const routesList = document.getElementById('routesList');
+                    routesList.innerHTML = '';
+                    
+                    if (routes.length === 0) {
+                        routesList.innerHTML = '<div class="no-results">По вашему запросу ничего не найдено</div>';
+                        return;
+                    }
+                    
+                    routes.forEach(route => {
+                        const routeBlock = document.createElement('div');
+                        routeBlock.className = 'route-block';
+                        
+                        // Определяем, есть ли несколько перевозчиков
+                        const hasMultipleCarriers = route.carriers && route.carriers.length > 1;
+                        
+                        routeBlock.onclick = () => handleRouteClick(route);
+                        
+                        // Создаем HTML в зависимости от типа маршрута
+                        let carriersHTML = '';
+                        
+                        if (hasMultipleCarriers) {
+                            // Для маршрутов с несколькими перевозчиками
+                            route.carriers.forEach((carrier, index) => {
+                                carriersHTML += `<div class="route-carrier">${index + 1}. ${carrier}</div>`;
+                            });
+                            carriersHTML += `<div class="route-multiple">Выберите перевозчика</div>`;
+                        } else {
+                            // Для обычных маршрутов (один перевозчик)
+                            const carrier = route.carrier || (route.carriers && route.carriers[0]) || '';
+                            carriersHTML = `<div class="route-carrier">${carrier}</div>`;
+                        }
+                        
+                        routeBlock.innerHTML = `
+                            <div class="route-header">
+                                <div class="route-number-db">${route.number}</div>
+                                <div class="route-type">(${route.type})</div>
+                            </div>
+                            <div class="route-name">${route.name}</div>
+                            ${carriersHTML}
+                        `;
+                        
+                        routesList.appendChild(routeBlock);
+                    });
+                }
+
+                function handleRouteClick(route) {
+                    // Проверяем, есть ли несколько перевозчиков
+                    const hasMultipleCarriers = route.carriers && route.carriers.length > 1;
+                    
+                    if (hasMultipleCarriers) {
+                        // Показываем окно выбора перевозчика
+                        selectedRouteForCarrier = route;
+                        showCarrierSelection(route);
+                    } else {
+                        // Обычный маршрут - сразу подставляем
+                        const carrier = route.carrier || (route.carriers && route.carriers[0]) || '';
+                        selectRoute(route, carrier);
+                    }
+                }
+
+                function showCarrierSelection(route) {
+                    document.getElementById('selectedRouteNumber').textContent = `Маршрут №${route.number} (${route.type})`;
+                    document.getElementById('selectedRouteName').textContent = route.name;
+                    
+                    const carrierList = document.getElementById('carrierList');
+                    carrierList.innerHTML = '';
+                    
+                    route.carriers.forEach((carrier, index) => {
+                        const carrierItem = document.createElement('div');
+                        carrierItem.className = 'carrier-item';
+                        carrierItem.onclick = () => selectCarrier(carrier);
+                        
+                        carrierItem.innerHTML = `
+                            <div class="carrier-item-text">${carrier}</div>
+                        `;
+                        
+                        carrierList.appendChild(carrierItem);
+                    });
+                    
+                    document.getElementById('carrierModal').style.display = 'flex';
+                }
+
+                function selectCarrier(carrier) {
+                    if (selectedRouteForCarrier) {
+                        selectRoute(selectedRouteForCarrier, carrier);
+                        closeCarrierModal();
+                    }
+                }
+
+                function selectRoute(route, carrier) {
+                    document.getElementById('carrierInput').value = carrier;
+                    document.getElementById('routeInput').value = route.name;
+                    document.getElementById('busNumberInput').value = '';
+                    closeRoutesModal();
+                    
+                    tg.showPopup({
+                        title: "Маршрут выбран!",
+                        message: `Маршрут №${route.number} (${carrier})`,
+                        buttons: [{type: 'ok', text: 'Отлично!'}]
+                    });
+                }
+
+                function searchRoutes() {
+                    const searchTerm = document.getElementById('routesSearch').value.toLowerCase();
+                    
+                    if (!searchTerm) {
+                        renderRoutesList(routesDatabase);
+                        return;
+                    }
+                    
+                    const filtered = routesDatabase.filter(route => {
+                        // Проверяем номер маршрута
+                        if (route.number.toLowerCase().includes(searchTerm)) return true;
+                        
+                        // Проверяем название маршрута
+                        if (route.name.toLowerCase().includes(searchTerm)) return true;
+                        
+                        // Проверяем тип транспорта
+                        if (route.type.toLowerCase().includes(searchTerm)) return true;
+                        
+                        // Проверяем перевозчиков (один или несколько)
+                        if (route.carrier && route.carrier.toLowerCase().includes(searchTerm)) return true;
+                        if (route.carriers) {
+                            for (const carrier of route.carriers) {
+                                if (carrier.toLowerCase().includes(searchTerm)) return true;
+                            }
+                        }
+                        
+                        return false;
+                    });
+                    
+                    renderRoutesList(filtered);
+                }
+
+                function selectQuantity(qty) {
+                    selectedQuantity = qty;
+                    
+                    // Убираем активный класс у всех кнопок
+                    document.querySelectorAll('.quantity-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // Добавляем активный класс к выбранной кнопке
+                    document.querySelector(`.quantity-btn[data-quantity="${qty}"]`).classList.add('active');
+                    
+                    // Обновляем цену
+                    updatePrice();
+                }
+
+                function showLoading(text = 'Загрузка...') {
+                    document.getElementById('loadingText').textContent = text;
+                    document.getElementById('loadingOverlay').style.display = 'flex';
+                }
+                function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
+
+                function setPrice(price) {
+                    ticketPrice = parseFloat(price);
+                    document.getElementById('currentPriceText').textContent = ticketPrice.toFixed(2) + ' ₽';
+                    document.getElementById('priceOptions').style.display = 'none';
+                    updatePrice();
+                }
+                function applyCustomPrice() {
+                    const val = document.getElementById('customPriceInput').value.trim();
+                    if (val && parseFloat(val) > 0) setPrice(parseFloat(val));
+                }
+                function updatePrice() {
+                    const total = (ticketPrice * selectedQuantity).toFixed(2);
+                    document.getElementById('totalPrice').textContent = total + ' ₽';
+                }
+
+                function payTicket() {
+                    const qty = selectedQuantity;
+                    const carrier = document.getElementById('carrierInput').value.trim() || "ИП Читашвили Н.С.";
+                    const route = document.getElementById('routeInput').value.trim();
+                    const busNumber = document.getElementById('busNumberInput').value.trim().toLowerCase() || "в124ок124";
+                    const totalAmount = (ticketPrice * qty).toFixed(2);
+                    const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
+                    const d = new Date();
+                    const purchaseDate = d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' }).replace(' ', ' ').slice(0, -3) + ' г.';
+                    const purchaseTime = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+                    tickets.push({ number: ticketNum, carrier, route, busNumber, quantity: qty, price: ticketPrice, created_at: Date.now(), purchaseDate, purchaseTime });
+                    localStorage.setItem('user_tickets', JSON.stringify(tickets));
+
+                    document.getElementById('currentTicketNumber').textContent = ticketNum;
+                    document.getElementById('controlTicketNumber').textContent = ticketNum;
+                    document.getElementById('finalCarrier').textContent = carrier;
+                    document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g, '—');
+                    document.getElementById('finalBusNumber').textContent = busNumber;
+                    document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + totalAmount + ' ₽';
+                    document.getElementById('purchaseDate').textContent = purchaseDate;
+                    document.getElementById('purchaseTime').textContent = purchaseTime;
+
+                    generateQrCode(ticketNum);
+                    showPage('finalTicketPage');
+                    switchToTicket();
+                    startViewTimer();
+                }
+
+                function generateQrCode(ticketNumber) {
+                    const qrContainer = document.getElementById('controlQrCode');
+                    qrContainer.innerHTML = '';
+                    new QRCode(qrContainer, { text: ticketNumber, width: 270, height: 270, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+                }
+
+                function switchToTicket() {
+                    document.getElementById('ticketContent').style.display = 'flex';
+                    document.getElementById('controlContent').style.display = 'none';
+                    document.querySelector('.final-ticket-number').style.color = '#FF3B30';
+                    document.querySelector('.final-control span').style.color = '#888';
+                    const indicator = document.getElementById('indicator');
+                    indicator.style.left = '0px';
+                    indicator.style.width = document.querySelector('.final-ticket-number').offsetWidth + 'px';
+                }
+
+                function switchToControl() {
+                    document.getElementById('ticketContent').style.display = 'none';
+                    document.getElementById('controlContent').style.display = 'flex';
+                    document.querySelector('.final-ticket-number').style.color = '#888';
+                    document.querySelector('.final-control span').style.color = '#FF3B30';
+                    const controlEl = document.querySelector('.final-control');
+                    const indicator = document.getElementById('indicator');
+                    indicator.style.left = (controlEl.getBoundingClientRect().left - controlEl.parentElement.getBoundingClientRect().left) + 'px';
+                    indicator.style.width = controlEl.offsetWidth + 'px';
+                }
+
+                function random3() { return Math.floor(Math.random() * 900) + 100; }
+
+                function startViewTimer() {
+                    viewSecondsLeft = 15;
+                    document.getElementById('timer').textContent = 'Действует: ' + viewSecondsLeft + ' сек.';
+                    clearInterval(viewTimer);
+                    viewTimer = setInterval(() => {
+                        viewSecondsLeft--;
+                        document.getElementById('timer').textContent = 'Действует: ' + viewSecondsLeft + ' сек.';
+                        if (viewSecondsLeft <= 0) {
+                            clearInterval(viewTimer);
+                            showPage(tickets.length > 0 ? 'activeTicketsPage' : 'paymentPage');
+                            renderActiveTickets();
+                        }
+                    }, 1000);
+                }
+
+                function closeTicket() {
+                    clearInterval(viewTimer);
+                    showPage(tickets.length > 0 ? 'activeTicketsPage' : 'paymentPage');
+                    renderActiveTickets();
+                }
+
+                function showPage(id) {
+                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                    document.getElementById(id).classList.add('active');
+                    if (id === 'finalTicketPage') setTimeout(switchToTicket, 50);
+                    if (id === 'activeTicketsPage') renderActiveTickets();
+                }
+
+                function renderActiveTickets() {
+                    const list = document.getElementById('activeTicketsList'); list.innerHTML = '';
+                    if (tickets.length === 0) {
+                        list.innerHTML = '<div style="text-align:center;color:#AAA;margin-top:20px;">Нет билетов</div>';
+                        return;
+                    }
+                    tickets.forEach((t, i) => {
+                        const mins = Math.floor((TOTAL_DURATION - (Date.now() - t.created_at)) / 60000);
+                        const total = (t.price * t.quantity).toFixed(2);
+                        const el = document.createElement('div'); el.className = 'active-ticket-item';
+                        el.onclick = () => {
+                            document.getElementById('currentTicketNumber').textContent = t.number;
+                            document.getElementById('controlTicketNumber').textContent = t.number;
+                            document.getElementById('finalCarrier').textContent = t.carrier;
+                            document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g, '—');
+                            document.getElementById('finalBusNumber').textContent = t.busNumber;
+                            document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + total + ' ₽';
+                            document.getElementById('purchaseDate').textContent = t.purchaseDate;
+                            document.getElementById('purchaseTime').textContent = t.purchaseTime;
+                            generateQrCode(t.number);
+                            showPage('finalTicketPage');
+                            switchToTicket();
+                            startViewTimer();
+                        };
+                        el.innerHTML = `<div><div style="font-weight:600;">Билет № ${t.number}</div><div style="font-size:14px;color:#AAA">Осталось: ${mins} мин</div></div><div class="delete-btn" onclick="event.stopPropagation();deleteTicket(${i})"></div>`;
+                        list.appendChild(el);
+                    });
+                }
+
+                function deleteTicket(i) {
+                    tg.showPopup({ title: "Удалить билет?", message: "Без возврата", buttons: [{ type: 'destructive', text: 'Удалить', id: 'del' }, { type: 'cancel' }] }, b => {
+                        if (b === 'del') {
+                            tickets.splice(i, 1);
+                            localStorage.setItem('user_tickets', JSON.stringify(tickets));
+                            renderActiveTickets();
+                        }
+                    });
+                }
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    updatePrice();
                 });
             }
-
-            document.addEventListener('DOMContentLoaded', () => {
-                updatePrice();
-            });
         }
     </script>
 </body>
