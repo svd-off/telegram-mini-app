@@ -106,28 +106,16 @@
         .carrier-item{background:#1E1E1E;border-radius:14px;padding:16px;cursor:pointer;border:1px solid #2C2C2E;transition:all 0.2s ease;}
         .carrier-item:active{background:#2A2A2C;border-color:#3A3A3C;}
         .carrier-item-text{font-size:15px;font-weight:500;}
-
-        /* Стили для проверки доступа */
-        .checking-access{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:9998;}
-        .checking-spinner{width:40px;height:40px;border:4px solid #333;border-top:4px solid #007AFF;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:16px;}
-        .checking-text{color:#FFF;font-size:16px;text-align:center;}
     </style>
 </head>
 <body>
-    <!-- Экран проверки доступа -->
-    <div id="checkingAccess" class="checking-access">
-        <div class="checking-spinner"></div>
-        <div class="checking-text" id="checkingText">Проверка доступа...</div>
-    </div>
-
-    <!-- Основной интерфейс (скрыт до проверки) -->
-    <div id="accessDenied" style="display:none;">Недостаточно прав</div>
+    <div id="accessDenied">Недостаточно прав</div>
     <div id="loadingOverlay" class="loading-overlay" style="display:none;">
         <div class="loading-spinner"></div>
         <div class="loading-text" id="loadingText">Загружаем фото...</div>
     </div>
 
-    <!-- Модальные окна -->
+    <!-- Модальное окно базы маршрутов -->
     <div id="routesModal" class="routes-modal" style="display:none;">
         <div class="routes-header">
             <div class="routes-title">База маршрутов</div>
@@ -136,9 +124,12 @@
         <input type="text" id="routesSearch" class="routes-search" placeholder="Поиск маршрута или перевозчика..." 
                oninput="searchRoutes()" 
                onclick="handleSearchClick(event)">
-        <div class="routes-list" id="routesList"></div>
+        <div class="routes-list" id="routesList">
+            <!-- Маршруты будут загружены здесь -->
+        </div>
     </div>
 
+    <!-- Модальное окно выбора перевозчика -->
     <div id="carrierModal" class="carrier-modal" style="display:none;">
         <div class="carrier-header">
             <div class="carrier-title">Выберите перевозчика</div>
@@ -148,11 +139,14 @@
             <div class="carrier-route-number" id="selectedRouteNumber"></div>
             <div class="carrier-route-name" id="selectedRouteName"></div>
         </div>
-        <div class="carrier-list" id="carrierList"></div>
+        <div class="carrier-list" id="carrierList">
+            <!-- Перевозчики будут загружены здесь -->
+        </div>
     </div>
 
     <div class="app-container" id="mainApp" style="display:none;">
-        <!-- ОПЛАТА -->
+
+        <!-- ОПЛАТА — СРАЗУ ОТКРЫТА -->
         <div id="paymentPage" class="page active">
             <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Данные билета</div>
            
@@ -164,6 +158,7 @@
             <input type="text" id="routeInput" placeholder="Маршрут" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
             <input type="text" id="busNumberInput" placeholder="Номер автобуса" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
 
+            <!-- Кнопки выбора количества -->
             <div class="quantity-selector">
                 <div class="quantity-label">Количество билетов:</div>
                 <div class="quantity-buttons">
@@ -271,115 +266,83 @@
     </div>
 
     <script>
-        // ============================================
-        // КОНФИГУРАЦИЯ И РЕЗЕРВНЫЙ ДОСТУП
-        // ============================================
-        
-        // Суперадмин (твой ID) - всегда имеет доступ через резерв
-        const SUPER_ADMIN_ID = 6107814655;
-        
-        // Резервный доступ (если бот упал, можно вписать ID вручную)
-        // Добавляй сюда ID пользователей вручную в экстренных случаях
-        const BACKUP_ALLOWED_USERS = [SUPER_ADMIN_ID];
-        
-        // URL API бота для проверки доступа
-        const BOT_API_URL = 'https://api.telegram.org/bot8466381912:AAF9Bvq-mOjIw3N1vWcdCFosOmmNDjlulR4';
-        
-        // Кэш разрешений (чтобы не спрашивать бота каждый раз)
-        let accessCache = {
-            allowed: false,
-            timestamp: 0,
-            cacheDuration: 5 * 60 * 1000 // 5 минут кэш
-        };
-        
-        // ============================================
-        // ИНИЦИАЛИЗАЦИЯ TELEGRAM WEB APP
-        // ============================================
+        const ALLOWED_USERS = [6107814655, 1777702236];
         const tg = window.Telegram.WebApp;
-        tg.expand(); 
-        tg.MainButton.hide();
+        tg.expand(); tg.MainButton.hide();
         const userId = tg.initDataUnsafe?.user?.id;
-        
-        // ============================================
-        // ФУНКЦИИ ПРОВЕРКИ ДОСТУПА
-        // ============================================
-        
-        async function checkUserAccess() {
-            // 1. Проверяем кэш (если не устарел)
-            const now = Date.now();
-            if (accessCache.allowed && (now - accessCache.timestamp) < accessCache.cacheDuration) {
-                return accessCache.allowed;
-            }
-            
-            // 2. Проверяем резервный доступ (для экстренных случаев)
-            if (BACKUP_ALLOWED_USERS.includes(userId)) {
-                console.log('Доступ через резервный список');
-                updateAccessCache(true);
-                return true;
-            }
-            
-            // 3. Пытаемся проверить через API бота
-            try {
-                const isAllowed = await checkAccessViaBot();
-                updateAccessCache(isAllowed);
-                return isAllowed;
-            } catch (error) {
-                console.error('Ошибка проверки через API:', error);
-                // 4. Если API не сработало, проверяем через резерв
-                const backupAllowed = BACKUP_ALLOWED_USERS.includes(userId);
-                updateAccessCache(backupAllowed);
-                return backupAllowed;
-            }
-        }
-        
-        async function checkAccessViaBot() {
-            // Пока используем простую проверку через резерв
-            // В будущем можно настроить запрос к своему серверу
-            return false;
-        }
-        
-        function updateAccessCache(allowed) {
-            accessCache.allowed = allowed;
-            accessCache.timestamp = Date.now();
-        }
-        
-        // ============================================
-        // ОСНОВНАЯ ЛОГИКА ПРИЛОЖЕНИЯ
-        // ============================================
-        
-        async function initApp() {
-            if (!userId) {
-                document.getElementById('checkingText').textContent = 'Ошибка: не удалось получить ID пользователя';
-                setTimeout(() => {
-                    document.getElementById('accessDenied').style.display = 'flex';
-                    document.getElementById('checkingAccess').style.display = 'none';
-                }, 2000);
-                return;
-            }
-            
-            document.getElementById('checkingText').textContent = `Проверка доступа для ID: ${userId}...`;
-            
-            // Проверяем доступ
-            const hasAccess = await checkUserAccess();
-            
-            setTimeout(() => {
-                if (hasAccess) {
-                    // Доступ разрешен - показываем приложение
-                    document.getElementById('checkingAccess').style.display = 'none';
-                    document.getElementById('mainApp').style.display = 'flex';
-                    
-                    // Инициализируем основное приложение
-                    initializeMainApp();
-                } else {
-                    // Доступ запрещен
-                    document.getElementById('checkingAccess').style.display = 'none';
-                    document.getElementById('accessDenied').style.display = 'flex';
-                }
-            }, 1000);
-        }
-        
-        function initializeMainApp() {
-            // Все оригинальные функции из твоего кода
+
+        // База маршрутов (обновленная с несколькими перевозчиками)
+        const routesDatabase = [
+            // Обычные маршруты (один перевозчик)
+            {number: "1", type: "троллейбус", name: "мкрн. Северный - мкрн. Тихие зори", carrier: "МП Городской транспорт"},
+            {number: "2", type: "автобус", name: "Дом ученых - А/В Восточный", carriers: ["ИП Галченкова Е. А.", "ИП Багаев Д.Б."]},
+            {number: "3", type: "автобус", name: "Академгородок - а.вокз. Восточный", carrier: "ООО \"СТК\""},
+            {number: "3", type: "автобус", name: "Студгородок - а.вокз. Восточный", carrier: "ИП Патрин Н. Н."},
+            {number: "4", type: "троллейбус", name: "Ж/д вокзал-Северо-Западный район", carrier: "МП Городской транспорт"},
+            {number: "5", type: "автобус", name: "Спорткомплекс \"Радуга\"- ООО \"Красфарма\"", carrier: "ИП Долгушина Г.И."},
+            {number: "6", type: "автобус", name: "дк \"Кировский\" - Кардиоцентр", carriers: ["ИП Тагачаков В. Г.", "ООО Триумф-7"]},
+            {number: "6", type: "троллейбус", name: "Студенческий городок - Утиный плёс", carrier: "МП Городской транспорт"},
+            {number: "7", type: "автобус", name: "ст. Красноярск-Северный - ДК Кировский", carrier: "ИП Галченкова Е. А."},
+            {number: "7", type: "троллейбус", name: "Ж/д вокзал-Спортзал", carrier: "МП Городской транспорт"},
+            {number: "8", type: "автобус", name: "ст. Красноярск-Северный - пос. Водников", carrier: "ООО \"Перевозчик\""},
+            {number: "9", type: "автобус", name: "Междугородный автовокзал - В.Базаиха", carrier: "ООО \"СКАД\""},
+            {number: "10", type: "автобус", name: "пос. Энергетиков-ОАО Красфарма", carrier: "КПАТП-7"},
+            {number: "11", type: "автобус", name: "3-я Дальневосточная - Молодежная", carrier: "КПАТП-5"},
+            {number: "12", type: "автобус", name: "мкрн. Северный - пос. Удачный", carrier: "КПАТП-7"},
+            {number: "13", type: "троллейбус", name: "Ж/д вокзал-Северо-Западный район", carrier: "МП Городской транспорт"},
+            {number: "14", type: "автобус", name: "п. Овинный-Жд.больница", carriers: ["АО \"СТК\"", "КПАТП-5"]},
+            {number: "15", type: "троллейбус", name: "ОАО \"Русал\" - Сельхозкомплекс", carrier: "МП Городской транспорт"},
+            {number: "18", type: "автобус", name: "КПАТП №7-мкрн. Верхние Черемушки", carrier: "КПАТП-7"},
+            {number: "19", type: "автобус", name: "Стела--Причал", carrier: "КПАТП-7"},
+            {number: "20", type: "автобус", name: "а/в Восточный-Кардиоцентр", carrier: "ИП Патрин Н. Н."},
+            {number: "21", type: "автобус", name: "Парк \"Прищепка\" - Спортзал", carriers: ["ИП Патрин Н. Н.", "ООО \"СТК\""]},
+            {number: "22", type: "автобус", name: "ЖК \"Ясный\"-пос. Индустриальный", carriers: ["КПАТП-7", "ООО \"СКАД\""]},
+            {number: "23", type: "автобус", name: "ЛДК - Солнечный (60-летия СССР)", carrier: "ООО Ветеран"},
+            {number: "26", type: "автобус", name: "Ж/д больница – Плодово-ягодная станция", carrier: "КПАТП-5"},
+            {number: "27", type: "автобус", name: "Полигон - Преображенский", carrier: "ИП Ялтонский А. М."},
+            {number: "30", type: "автобус", name: "Спортзал - мкрн. Тихие зори", carrier: "КПАТП-5"},
+            {number: "31", type: "автобус", name: "ЛДК-Академия биатлона", carrier: "КПАТП-7"},
+            {number: "35", type: "автобус", name: "Кольцевой маршрут", carrier: "КПАТП-5"},
+            {number: "37", type: "автобус", name: "ж/д вокзал-Фан-парк Бобровый лог-пос.Базаиха", carrier: "КПАТП-7"},
+            {number: "38", type: "автобус", name: "Дом учёных - пос. Таймыр", carrier: "АО \"СТК\""},
+            {number: "43", type: "автобус", name: "Восточный-Сельхозкомплекс", carrier: "ООО Вавулин-К"},
+            {number: "49", type: "автобус", name: "Кардиоцентр – Спорткомплекс \"Радуга\"", carrier: "КПАТП-5"},
+            {number: "50", type: "автобус", name: "Соколовская - Стела", carrier: "ИП Читашвили Н.С."},
+            {number: "52", type: "автобус", name: "ЛДК - Озеро-парк", carrier: "КПАТП-5"},
+            {number: "55", type: "автобус", name: "пос. Водников-Железнодорожный вокзал", carrier: "КПАТП-7"},
+            {number: "56", type: "автобус", name: "пос. Шинников -Железнодорожный вокзал", carrier: "КПАТП-7"},
+            {number: "58", type: "автобус", name: "Парашютная - Спортзал", carriers: ["ИП Голунцов С. В.", "ИП Кривоногов И.Г."]},
+            {number: "60", type: "автобус", name: "Автовокзал Восточный - Петрушина", carrier: "ИП Цугленок М.М."},
+            {number: "61", type: "автобус", name: "мкрн. Солнечный - Шинное кладбище", carrier: "ООО КПАТП"},
+            {number: "63", type: "автобус", name: "Академгородок - Солнечный", carrier: "ООО КПАТП"},
+            {number: "64", type: "автобус", name: "мкрн. Солнечный - мкрн. Тихие зори", carrier: "КПАТП-5"},
+            {number: "65", type: "автобус", name: "ДК Кировский - Агротерминал", carrier: "ИП Ялтонский А. М."},
+            {number: "69", type: "автобус", name: "мкрн. Солнечный - пос. Индустриальный", carrier: "КПАТП-7"},
+            {number: "71", type: "автобус", name: "Спортзал - пос. Таймыр", carriers: ["ИП Галченкова Е. А.", "ИП Галченкова О. Г."]},
+            {number: "77", type: "автобус", name: "Ж/д больница - пос. Песчанка", carriers: ["ООО Практик", "ООО СибирьАвто"]},
+            {number: "78", type: "автобус", name: "Стела - Контейнерный двор", carriers: ["ИП Бронников А.И.", "ИП Бронников М. А."]},
+            {number: "80", type: "автобус", name: "пос.Таймыр-мкрн. Тихие Зори", carrier: "ИП Долгушин Д.Г."},
+            {number: "81", type: "автобус", name: "Ж/д больница - Сибирский элемент", carrier: "ООО Сирена"},
+            {number: "83", type: "автобус", name: "Дом учёных - пр. Ульяновский", carrier: "ИП Цугленок М.М."},
+            {number: "85", type: "автобус", name: "Даурская - Сельхозкомплекс", carriers: ["ООО \"СКАД\"", "ООО \"СТК\""]},
+            {number: "87", type: "автобус", name: "Солнечный – Молодежная", carrier: "КПАТП-5"},
+            {number: "88", type: "автобус", name: "Спортзал - Академия биатлона", carrier: "ИП Тагачаков В. Г."},
+            {number: "90", type: "автобус", name: "Ак. биатлона-Верхн. Базаиха", carrier: "ИП Патрин Н. Н."},
+            {number: "92", type: "автобус", name: "Красфарма (60 лет Октября) - Х/К Енисей", carrier: "ИП Патрин Н. Н."},
+            {number: "94", type: "автобус", name: "ЛДК - ТЭЦ-3", carriers: ["ИП Карасева Н. Н.", "ООО МаршрутАвто", "ООО Практик"]},
+            {number: "95", type: "автобус", name: "Верхние Черемушки-ЛДК", carrier: "КПАТП-7"},
+            {number: "98", type: "автобус", name: "ЛДК - ОАО \"РУСАЛ\"", carrier: "ИП Гнетов Ю.Н."},
+            {number: "99", type: "автобус", name: "Северный-Цимлянская", carriers: ["ИП Патрин Н. Н.", "ООО \"СТК\""]},
+            {number: "5т", type: "троллейбус", name: "ст.Красноярск-Северный - Экопарк Гремячая грива", carrier: "МП Городской транспорт"},
+            {number: "173", type: "автобус", name: "Междугородный а/в - пос. Березовка", carrier: "ООО \"Контур\""}
+        ];
+
+        if (!userId || !ALLOWED_USERS.includes(userId)) {
+            document.getElementById('accessDenied').style.display = 'flex';
+        } else {
+            document.getElementById('accessDenied').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'flex';
+
             let viewTimer, viewSecondsLeft = 15;
             const TOTAL_DURATION = 90 * 60 * 1000;
             let tickets = JSON.parse(localStorage.getItem('user_tickets') || '[]');
@@ -396,73 +359,7 @@
 
             let ticketPrice = 48.00;
             let selectedQuantity = 1;
-            let selectedRouteForCarrier = null;
-
-            // База маршрутов
-            const routesDatabase = [
-                // Обычные маршруты (один перевозчик)
-                {number: "1", type: "троллейбус", name: "мкрн. Северный - мкрн. Тихие зори", carrier: "МП Городской транспорт"},
-                {number: "2", type: "автобус", name: "Дом ученых - А/В Восточный", carriers: ["ИП Галченкова Е. А.", "ИП Багаев Д.Б."]},
-                {number: "3", type: "автобус", name: "Академгородок - а.вокз. Восточный", carrier: "ООО \"СТК\""},
-                {number: "3", type: "автобус", name: "Студгородок - а.вокз. Восточный", carrier: "ИП Патрин Н. Н."},
-                {number: "4", type: "троллейбус", name: "Ж/д вокзал-Северо-Западный район", carrier: "МП Городской транспорт"},
-                {number: "5", type: "автобус", name: "Спорткомплекс \"Радуга\"- ООО \"Красфарма\"", carrier: "ИП Долгушина Г.И."},
-                {number: "6", type: "автобус", name: "дк \"Кировский\" - Кардиоцентр", carriers: ["ИП Тагачаков В. Г.", "ООО Триумф-7"]},
-                {number: "6", type: "троллейбус", name: "Студенческий городок - Утиный плёс", carrier: "МП Городской транспорт"},
-                {number: "7", type: "автобус", name: "ст. Красноярск-Северный - ДК Кировский", carrier: "ИП Галченкова Е. А."},
-                {number: "7", type: "троллейбус", name: "Ж/д вокзал-Спортзал", carrier: "МП Городской транспорт"},
-                {number: "8", type: "автобус", name: "ст. Красноярск-Северный - пос. Водников", carrier: "ООО \"Перевозчик\""},
-                {number: "9", type: "автобус", name: "Междугородный автовокзал - В.Базаиха", carrier: "ООО \"СКАД\""},
-                {number: "10", type: "автобус", name: "пос. Энергетиков-ОАО Красфарма", carrier: "КПАТП-7"},
-                {number: "11", type: "автобус", name: "3-я Дальневосточная - Молодежная", carrier: "КПАТП-5"},
-                {number: "12", type: "автобус", name: "мкрн. Северный - пос. Удачный", carrier: "КПАТП-7"},
-                {number: "13", type: "троллейбус", name: "Ж/д вокзал-Северо-Западный район", carrier: "МП Городской транспорт"},
-                {number: "14", type: "автобус", name: "п. Овинный-Жд.больница", carriers: ["АО \"СТК\"", "КПАТП-5"]},
-                {number: "15", type: "троллейбус", name: "ОАО \"Русал\" - Сельхозкомплекс", carrier: "МП Городской транспорт"},
-                {number: "18", type: "автобус", name: "КПАТП №7-мкрн. Верхние Черемушки", carrier: "КПАТП-7"},
-                {number: "19", type: "автобус", name: "Стела--Причал", carrier: "КПАТП-7"},
-                {number: "20", type: "автобус", name: "а/в Восточный-Кардиоцентр", carrier: "ИП Патрин Н. Н."},
-                {number: "21", type: "автобус", name: "Парк \"Прищепка\" - Спортзал", carriers: ["ИП Патрин Н. Н.", "ООО \"СТК\""]},
-                {number: "22", type: "автобус", name: "ЖК \"Ясный\"-пос. Индустриальный", carriers: ["КПАТП-7", "ООО \"СКАД\""]},
-                {number: "23", type: "автобус", name: "ЛДК - Солнечный (60-летия СССР)", carrier: "ООО Ветеран"},
-                {number: "26", type: "автобус", name: "Ж/д больница – Плодово-ягодная станция", carrier: "КПАТП-5"},
-                {number: "27", type: "автобус", name: "Полигон - Преображенский", carrier: "ИП Ялтонский А. М."},
-                {number: "30", type: "автобус", name: "Спортзал - мкрн. Тихие зори", carrier: "КПАТП-5"},
-                {number: "31", type: "автобус", name: "ЛДК-Академия биатлона", carrier: "КПАТП-7"},
-                {number: "35", type: "автобус", name: "Кольцевой маршрут", carrier: "КПАТП-5"},
-                {number: "37", type: "автобус", name: "ж/д вокзал-Фан-парк Бобровый лог-пос.Базаиха", carrier: "КПАТП-7"},
-                {number: "38", type: "автобус", name: "Дом учёных - пос. Таймыр", carrier: "АО \"СТК\""},
-                {number: "43", type: "автобус", name: "Восточный-Сельхозкомплекс", carrier: "ООО Вавулин-К"},
-                {number: "49", type: "автобус", name: "Кардиоцентр – Спорткомплекс \"Радуга\"", carrier: "КПАТП-5"},
-                {number: "50", type: "автобус", name: "Соколовская - Стела", carrier: "ИП Читашвили Н.С."},
-                {number: "52", type: "автобус", name: "ЛДК - Озеро-парк", carrier: "КПАТП-5"},
-                {number: "55", type: "автобус", name: "пос. Водников-Железнодорожный вокзал", carrier: "КПАТП-7"},
-                {number: "56", type: "автобус", name: "пос. Шинников -Железнодорожный вокзал", carrier: "КПАТП-7"},
-                {number: "58", type: "автобус", name: "Парашютная - Спортзал", carriers: ["ИП Голунцов С. В.", "ИП Кривоногов И.Г."]},
-                {number: "60", type: "автобус", name: "Автовокзал Восточный - Петрушина", carrier: "ИП Цугленок М.М."},
-                {number: "61", type: "автобус", name: "мкрн. Солнечный - Шинное кладбище", carrier: "ООО КПАТП"},
-                {number: "63", type: "автобус", name: "Академгородок - Солнечный", carrier: "ООО КПАТП"},
-                {number: "64", type: "автобус", name: "мкрн. Солнечный - мкрн. Тихие зори", carrier: "КПАТП-5"},
-                {number: "65", type: "автобус", name: "ДК Кировский - Агротерминал", carrier: "ИП Ялтонский А. М."},
-                {number: "69", type: "автобус", name: "мкрн. Солнечный - пос. Индустриальный", carrier: "КПАТП-7"},
-                {number: "71", type: "автобус", name: "Спортзал - пос. Таймыр", carriers: ["ИП Галченкова Е. А.", "ИП Галченкова О. Г."]},
-                {number: "77", type: "автобус", name: "Ж/д больница - пос. Песчанка", carriers: ["ООО Практик", "ООО СибирьАвто"]},
-                {number: "78", type: "автобус", name: "Стела - Контейнерный двор", carriers: ["ИП Бронников А.И.", "ИП Бронников М. А."]},
-                {number: "80", type: "автобус", name: "пос.Таймыр-мкрн. Тихие Зори", carrier: "ИП Долгушин Д.Г."},
-                {number: "81", type: "автобус", name: "Ж/д больница - Сибирский элемент", carrier: "ООО Сирена"},
-                {number: "83", type: "автобус", name: "Дом учёных - пр. Ульяновский", carrier: "ИП Цугленок М.М."},
-                {number: "85", type: "автобус", name: "Даурская - Сельхозкомплекс", carriers: ["ООО \"СКАД\"", "ООО \"СТК\""]},
-                {number: "87", type: "автобус", name: "Солнечный – Молодежная", carrier: "КПАТП-5"},
-                {number: "88", type: "автобус", name: "Спортзал - Академия биатлона", carrier: "ИП Тагачаков В. Г."},
-                {number: "90", type: "автобус", name: "Ак. биатлона-Верхн. Базаиха", carrier: "ИП Патрин Н. Н."},
-                {number: "92", type: "автобус", name: "Красфарма (60 лет Октября) - Х/К Енисей", carrier: "ИП Патрин Н. Н."},
-                {number: "94", type: "автобус", name: "ЛДК - ТЭЦ-3", carriers: ["ИП Карасева Н. Н.", "ООО МаршрутАвто", "ООО Практик"]},
-                {number: "95", type: "автобус", name: "Верхние Черемушки-ЛДК", carrier: "КПАТП-7"},
-                {number: "98", type: "автобус", name: "ЛДК - ОАО \"РУСАЛ\"", carrier: "ИП Гнетов Ю.Н."},
-                {number: "99", type: "автобус", name: "Северный-Цимлянская", carriers: ["ИП Патрин Н. Н.", "ООО \"СТК\""]},
-                {number: "5т", type: "троллейбус", name: "ст.Красноярск-Северный - Экопарк Гремячая грива", carrier: "МП Городской транспорт"},
-                {number: "173", type: "автобус", name: "Междугородный а/в - пос. Березовка", carrier: "ООО \"Контур\""}
-            ];
+            let selectedRouteForCarrier = null; // Для хранения выбранного маршрута при выборе перевозчика
 
             // Для скрытия клавиатуры при повторном тапе
             let searchFieldLastClick = 0;
@@ -471,8 +368,9 @@
                 const now = Date.now();
                 const searchField = document.getElementById('routesSearch');
                 
+                // Если поле уже в фокусе и был недавний клик - скрываем клавиатуру
                 if (document.activeElement === searchField && (now - searchFieldLastClick < 300)) {
-                    searchField.blur();
+                    searchField.blur(); // Скрываем клавиатуру
                 }
                 
                 searchFieldLastClick = now;
@@ -509,18 +407,22 @@
                     const routeBlock = document.createElement('div');
                     routeBlock.className = 'route-block';
                     
+                    // Определяем, есть ли несколько перевозчиков
                     const hasMultipleCarriers = route.carriers && route.carriers.length > 1;
                     
                     routeBlock.onclick = () => handleRouteClick(route);
                     
+                    // Создаем HTML в зависимости от типа маршрута
                     let carriersHTML = '';
                     
                     if (hasMultipleCarriers) {
+                        // Для маршрутов с несколькими перевозчиками
                         route.carriers.forEach((carrier, index) => {
                             carriersHTML += `<div class="route-carrier">${index + 1}. ${carrier}</div>`;
                         });
                         carriersHTML += `<div class="route-multiple">Выберите перевозчика</div>`;
                     } else {
+                        // Для обычных маршрутов (один перевозчик)
                         const carrier = route.carrier || (route.carriers && route.carriers[0]) || '';
                         carriersHTML = `<div class="route-carrier">${carrier}</div>`;
                     }
@@ -539,12 +441,15 @@
             }
 
             function handleRouteClick(route) {
+                // Проверяем, есть ли несколько перевозчиков
                 const hasMultipleCarriers = route.carriers && route.carriers.length > 1;
                 
                 if (hasMultipleCarriers) {
+                    // Показываем окно выбора перевозчика
                     selectedRouteForCarrier = route;
                     showCarrierSelection(route);
                 } else {
+                    // Обычный маршрут - сразу подставляем
                     const carrier = route.carrier || (route.carriers && route.carriers[0]) || '';
                     selectRoute(route, carrier);
                 }
@@ -601,9 +506,16 @@
                 }
                 
                 const filtered = routesDatabase.filter(route => {
+                    // Проверяем номер маршрута
                     if (route.number.toLowerCase().includes(searchTerm)) return true;
+                    
+                    // Проверяем название маршрута
                     if (route.name.toLowerCase().includes(searchTerm)) return true;
+                    
+                    // Проверяем тип транспорта
                     if (route.type.toLowerCase().includes(searchTerm)) return true;
+                    
+                    // Проверяем перевозчиков (один или несколько)
                     if (route.carrier && route.carrier.toLowerCase().includes(searchTerm)) return true;
                     if (route.carriers) {
                         for (const carrier of route.carriers) {
@@ -620,12 +532,15 @@
             function selectQuantity(qty) {
                 selectedQuantity = qty;
                 
+                // Убираем активный класс у всех кнопок
                 document.querySelectorAll('.quantity-btn').forEach(btn => {
                     btn.classList.remove('active');
                 });
                 
+                // Добавляем активный класс к выбранной кнопке
                 document.querySelector(`.quantity-btn[data-quantity="${qty}"]`).classList.add('active');
                 
+                // Обновляем цену
                 updatePrice();
             }
 
@@ -633,10 +548,7 @@
                 document.getElementById('loadingText').textContent = text;
                 document.getElementById('loadingOverlay').style.display = 'flex';
             }
-            
-            function hideLoading() { 
-                document.getElementById('loadingOverlay').style.display = 'none'; 
-            }
+            function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
 
             function setPrice(price) {
                 ticketPrice = parseFloat(price);
@@ -644,12 +556,10 @@
                 document.getElementById('priceOptions').style.display = 'none';
                 updatePrice();
             }
-            
             function applyCustomPrice() {
                 const val = document.getElementById('customPriceInput').value.trim();
                 if (val && parseFloat(val) > 0) setPrice(parseFloat(val));
             }
-            
             function updatePrice() {
                 const total = (ticketPrice * selectedQuantity).toFixed(2);
                 document.getElementById('totalPrice').textContent = total + ' ₽';
@@ -711,9 +621,7 @@
                 indicator.style.width = controlEl.offsetWidth + 'px';
             }
 
-            function random3() { 
-                return Math.floor(Math.random() * 900) + 100; 
-            }
+            function random3() { return Math.floor(Math.random() * 900) + 100; }
 
             function startViewTimer() {
                 viewSecondsLeft = 15;
@@ -744,8 +652,7 @@
             }
 
             function renderActiveTickets() {
-                const list = document.getElementById('activeTicketsList'); 
-                list.innerHTML = '';
+                const list = document.getElementById('activeTicketsList'); list.innerHTML = '';
                 if (tickets.length === 0) {
                     list.innerHTML = '<div style="text-align:center;color:#AAA;margin-top:20px;">Нет билетов</div>';
                     return;
@@ -753,8 +660,7 @@
                 tickets.forEach((t, i) => {
                     const mins = Math.floor((TOTAL_DURATION - (Date.now() - t.created_at)) / 60000);
                     const total = (t.price * t.quantity).toFixed(2);
-                    const el = document.createElement('div'); 
-                    el.className = 'active-ticket-item';
+                    const el = document.createElement('div'); el.className = 'active-ticket-item';
                     el.onclick = () => {
                         document.getElementById('currentTicketNumber').textContent = t.number;
                         document.getElementById('controlTicketNumber').textContent = t.number;
@@ -775,11 +681,7 @@
             }
 
             function deleteTicket(i) {
-                tg.showPopup({ 
-                    title: "Удалить билет?", 
-                    message: "Без возврата", 
-                    buttons: [{ type: 'destructive', text: 'Удалить', id: 'del' }, { type: 'cancel' }] 
-                }, b => {
+                tg.showPopup({ title: "Удалить билет?", message: "Без возврата", buttons: [{ type: 'destructive', text: 'Удалить', id: 'del' }, { type: 'cancel' }] }, b => {
                     if (b === 'del') {
                         tickets.splice(i, 1);
                         localStorage.setItem('user_tickets', JSON.stringify(tickets));
@@ -788,14 +690,10 @@
                 });
             }
 
-            // Инициализация цены
-            updatePrice();
+            document.addEventListener('DOMContentLoaded', () => {
+                updatePrice();
+            });
         }
-        
-        // ============================================
-        // ЗАПУСК ПРИЛОЖЕНИЯ
-        // ============================================
-        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
