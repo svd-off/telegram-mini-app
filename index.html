@@ -1,277 +1,404 @@
-    <!DOCTYPE html>
-    <html lang="ru">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <title>Городской Транспорт</title>
-        <script src="https://telegram.org/js/telegram-web-app.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-        <style>
-            *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-            body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#000;color:#FFF;height:100vh;overflow:hidden;}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Городской Транспорт</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#000;color:#FFF;height:100vh;overflow:hidden;}
+       
+        .app-container{height:100%;display:flex;flex-direction:column;padding:0 16px 30px 16px;}
+        .top-separator{height:1px;background:#2C2C2E;margin:4px 0 10px 0;}
+        .final-timer{font-size:26px;font-weight:500;text-align:center;margin:0 0 20px;line-height:1.2;}
+        .page{display:none;flex-direction:column;height:100%;}
+        .page.active{display:flex;}
+        .final-header-row{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid #2C2C2E;margin-bottom:8px;position:relative;}
+        .final-ticket-number{display:flex;align-items:center;gap:12px;color:#FF3B30;cursor:pointer;z-index:2;}
+        .ticket-icon{width:48px;height:48px;flex-shrink:0;}
+        #currentTicketNumber{font-size:21px;font-weight:500;letter-spacing:0.3px;white-space:nowrap;}
+        .final-control{display:flex;align-items:center;gap:12px;font-size:18px;color:#888;cursor:pointer;z-index:2;}
+        .control-icon{width:48px;height:48px;flex-shrink:0;}
+        .tab-indicator{position:absolute;bottom:-1px;height:2.5px;background:#FF3B30;border-radius:2px;transition:all 0.3s ease;z-index:1;}
+        .ticket-content{flex:1;display:flex;flex-direction:column;}
+        .control-content{flex:1;display:none;flex-direction:column;justify-content:flex-start;}
+        .final-info-block{flex:1;}
+        .info-row{display:flex;align-items:flex-start;gap:0;padding:6px 0 7px;border-bottom:1px solid #2C2C2E;}
+        .info-row:last-child{border-bottom:none;}
+        .info-icon.big{width:60px;height:60px;margin-right:16px;margin-top:-3px;flex-shrink:0;}
+        .info-content{flex:1;}
+        .info-label,.route-fromto{font-size:15px;color:#AAAAAA;font-weight:500;margin-bottom:2px;}
+        .info-value,.route-number{font-size:19px;font-weight:600;color:#FFFFFF;}
+        .final-close-btn{background:#FF3B30;color:#FFF;font-size:19px;font-weight:600;padding:18px 0;border-radius:16px;text-align:center;cursor:pointer;margin-top:28px;box-shadow:0 4px 12px rgba(255,59,48,0.3);}
+        .final-close-btn:active{background:#E01E1E;}
+        .pay-button{background:#30D158;color:#000;font-size:18px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;}
+        .pay-button:active{background:#28A745;}
+        .active-tickets-list{flex:1;overflow-y:auto;margin-bottom:12px;}
+        .active-ticket-item{background:#1E1E1E;border-radius:12px;padding:16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+        .active-ticket-item:active{background:#2A2A2C;}
+        .delete-btn{width:32px;height:32px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FF3B30" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1-2-2h4a2 2 0 0 1-2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>') center/20px no-repeat;cursor:pointer;}
+        .close-button{background:#333;color:#FFF;padding:16px;border-radius:12px;text-align:center;font-size:17px;margin-top:16px;cursor:pointer;}
+        #accessDenied{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:9999;font-size:24px;color:#FF3B30;}
+        .price-selector{background:#1E1E1E;border:1px solid #333;border-radius:12px;padding:14px;margin:16px 0;cursor:pointer;}
+        .price-selector:active{background:#2A2A2C;}
+        .price-current{font-size:17px;font-weight:600;}
+        .price-options{margin-top:10px;display:none;background:#111;padding:12px;border-radius:10px;border:1px solid #333;}
+        .price-btn{background:#333;color:#FFF;padding:12px;border-radius:10px;text-align:center;margin-bottom:8px;font-size:16px;cursor:pointer;}
+        .price-btn:last-child{margin-bottom:0;}
+        .price-btn:active{background:#444;}
+        .custom-price-row{display:flex;gap:8px;margin-top:8px;}
+        .custom-price{width:100%;background:#000;border:1px solid #444;border-radius:10px;padding:12px;color:#FFF;font-size:16px;text-align:center;}
+        .apply-btn{background:#30D158;color:#000;padding:12px 16px;border-radius:10px;font-weight:600;cursor:pointer;}
+        .apply-btn:active{background:#28A745;}
+        .qr-container{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;flex:1;padding:5px 0 0 0;}
+        .qr-code-wrapper{background:#FFF;padding:25px;border-radius:0;margin-bottom:15px;width:100%;max-width:320px;}
+        #controlQrCode{width:270px!important;height:270px!important;}
+        .control-ticket-number{font-size:26px;font-weight:600;text-align:center;color:#FFF;letter-spacing:0.5px;width:100%;max-width:320px;padding:0;}
+        .ticket-number-prefix{color:#FFF;margin-right:8px;}
+        .route-database-btn{background:#007AFF;color:#FFF;font-size:17px;font-weight:600;padding:16px 0;border-radius:12px;text-align:center;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;}
+        .route-database-btn:active{background:#0056CC;}
+        .route-icon{width:20px;height:20px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>') center/contain no-repeat;}
+        .loading-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:10000;}
+        .loading-spinner{width:40px;height:40px;border:4px solid #333;border-top:4px solid #007AFF;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:16px;}
+        @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+        .loading-text{color:#FFF;font-size:16px;text-align:center;}
         
-            .app-container{height:100%;display:flex;flex-direction:column;padding:0 16px 30px 16px;}
-            .top-separator{height:1px;background:#2C2C2E;margin:4px 0 10px 0;}
-            .final-timer{font-size:26px;font-weight:500;text-align:center;margin:0 0 20px;line-height:1.2;}
-            .page{display:none;flex-direction:column;height:100%;}
-            .page.active{display:flex;}
-            .final-header-row{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid #2C2C2E;margin-bottom:8px;position:relative;}
-            .final-ticket-number{display:flex;align-items:center;gap:12px;color:#FF3B30;cursor:pointer;z-index:2;}
-            .ticket-icon{width:48px;height:48px;flex-shrink:0;}
-            #currentTicketNumber{font-size:21px;font-weight:500;letter-spacing:0.3px;white-space:nowrap;}
-            .final-control{display:flex;align-items:center;gap:12px;font-size:18px;color:#888;cursor:pointer;z-index:2;}
-            .control-icon{width:48px;height:48px;flex-shrink:0;}
-            .tab-indicator{position:absolute;bottom:-1px;height:2.5px;background:#FF3B30;border-radius:2px;transition:all 0.3s ease;z-index:1;}
-            .ticket-content{flex:1;display:flex;flex-direction:column;}
-            .control-content{flex:1;display:none;flex-direction:column;justify-content:flex-start;}
-            .final-info-block{flex:1;}
-            .info-row{display:flex;align-items:flex-start;gap:0;padding:6px 0 7px;border-bottom:1px solid #2C2C2E;}
-            .info-row:last-child{border-bottom:none;}
-            .info-icon.big{width:60px;height:60px;margin-right:16px;margin-top:-3px;flex-shrink:0;}
-            .info-content{flex:1;}
-            .info-label,.route-fromto{font-size:15px;color:#AAAAAA;font-weight:500;margin-bottom:2px;}
-            .info-value,.route-number{font-size:19px;font-weight:600;color:#FFFFFF;}
-            .final-close-btn{background:#FF3B30;color:#FFF;font-size:19px;font-weight:600;padding:18px 0;border-radius:16px;text-align:center;cursor:pointer;margin-top:28px;box-shadow:0 4px 12px rgba(255,59,48,0.3);}
-            .final-close-btn:active{background:#E01E1E;}
-            .pay-button{background:#30D158;color:#000;font-size:18px;font-weight:600;padding:20px;border-radius:16px;text-align:center;margin-top:auto;cursor:pointer;}
-            .pay-button:active{background:#28A745;}
-            .active-tickets-list{flex:1;overflow-y:auto;margin-bottom:12px;}
-            .active-ticket-item{background:#1E1E1E;border-radius:12px;padding:16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
-            .active-ticket-item:active{background:#2A2A2C;}
-            .delete-btn{width:32px;height:32px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23FF3B30" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1-2-2h4a2 2 0 0 1-2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>') center/20px no-repeat;cursor:pointer;}
-            .close-button{background:#333;color:#FFF;padding:16px;border-radius:12px;text-align:center;font-size:17px;margin-top:16px;cursor:pointer;}
-            #accessDenied{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:9999;font-size:24px;color:#FF3B30;}
-            .price-selector{background:#1E1E1E;border:1px solid #333;border-radius:12px;padding:14px;margin:16px 0;cursor:pointer;}
-            .price-selector:active{background:#2A2A2C;}
-            .price-current{font-size:17px;font-weight:600;}
-            .price-options{margin-top:10px;display:none;background:#111;padding:12px;border-radius:10px;border:1px solid #333;}
-            .price-btn{background:#333;color:#FFF;padding:12px;border-radius:10px;text-align:center;margin-bottom:8px;font-size:16px;cursor:pointer;}
-            .price-btn:last-child{margin-bottom:0;}
-            .price-btn:active{background:#444;}
-            .custom-price-row{display:flex;gap:8px;margin-top:8px;}
-            .custom-price{width:100%;background:#000;border:1px solid #444;border-radius:10px;padding:12px;color:#FFF;font-size:16px;text-align:center;}
-            .apply-btn{background:#30D158;color:#000;padding:12px 16px;border-radius:10px;font-weight:600;cursor:pointer;}
-            .apply-btn:active{background:#28A745;}
-            .qr-container{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;flex:1;padding:5px 0 0 0;}
-            .qr-code-wrapper{background:#FFF;padding:25px;border-radius:0;margin-bottom:15px;width:100%;max-width:320px;}
-            #controlQrCode{width:270px!important;height:270px!important;}
-            .control-ticket-number{font-size:26px;font-weight:600;text-align:center;color:#FFF;letter-spacing:0.5px;width:100%;max-width:320px;padding:0;}
-            .ticket-number-prefix{color:#FFF;margin-right:8px;}
-            .route-database-btn{background:#007AFF;color:#FFF;font-size:17px;font-weight:600;padding:16px 0;border-radius:12px;text-align:center;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;}
-            .route-database-btn:active{background:#0056CC;}
-            .route-icon{width:20px;height:20px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>') center/contain no-repeat;}
-            .loading-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:10000;}
-            .loading-spinner{width:40px;height:40px;border:4px solid #333;border-top:4px solid #007AFF;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:16px;}
-            @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-            .loading-text{color:#FFF;font-size:16px;text-align:center;}
-            
-            /* Модальное окно базы маршрутов */
-            .routes-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:10001;display:flex;flex-direction:column;padding:20px;}
-            .routes-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
-            .routes-title{font-size:22px;font-weight:600;}
-            .routes-close{width:24px;height:24px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>') center/contain no-repeat;cursor:pointer;}
-            .routes-search{background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;}
-            .routes-search::placeholder{color:#888;}
-            .routes-list{flex:1;overflow-y:auto;display:grid;grid-template-columns:1fr;gap:10px;}
-            
-            /* Блок маршрута - ТОЛЬКО для базы маршрутов */
-            .route-block{background:#1E1E1E;border-radius:14px;padding:16px;cursor:pointer;border:1px solid #2C2C2E;transition:all 0.2s ease;}
-            .route-block:active{background:#2A2A2C;border-color:#3A3A3C;}
-            .route-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-            .route-number-db{font-size:20px;font-weight:600;color:#007AFF;}
-            .route-type{font-size:14px;color:#AAA;font-weight:500;}
-            .route-name{font-size:16px;font-weight:600;margin-bottom:8px;line-height:1.3;}
-            .route-carrier{font-size:13px;color:#888;margin-bottom:3px;}
-            .route-carrier:last-child{margin-bottom:0;}
-            .route-multiple{font-size:12px;color:#007AFF;margin-top:5px;font-weight:500;}
-            .no-results{text-align:center;color:#AAA;margin-top:40px;font-size:16px;}
-            
-            /* Кнопки выбора количества */
-            .quantity-selector{margin:16px 0;}
-            .quantity-label{font-size:16px;color:#AAA;margin-bottom:12px;}
-            .quantity-buttons{display:flex;gap:10px;}
-            .quantity-btn{flex:1;background:#1E1E1E;border:2px solid #333;border-radius:12px;padding:16px 0;text-align:center;font-size:18px;font-weight:600;color:#FFF;cursor:pointer;transition:all 0.2s ease;}
-            .quantity-btn.active{background:#007AFF;border-color:#007AFF;color:#FFF;}
-            .quantity-btn:active{background:#2A2A2C;}
-            
-            /* Модальное окно выбора перевозчика */
-            .carrier-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:10002;display:flex;flex-direction:column;padding:20px;}
-            .carrier-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
-            .carrier-title{font-size:22px;font-weight:600;}
-            .carrier-close{width:24px;height:24px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>') center/contain no-repeat;cursor:pointer;}
-            .carrier-route-info{margin-bottom:20px;}
-            .carrier-route-number{font-size:20px;font-weight:600;color:#007AFF;margin-bottom:5px;}
-            .carrier-route-name{font-size:16px;font-weight:600;}
-            .carrier-list{flex:1;overflow-y:auto;display:grid;grid-template-columns:1fr;gap:10px;}
-            .carrier-item{background:#1E1E1E;border-radius:14px;padding:16px;cursor:pointer;border:1px solid #2C2C2E;transition:all 0.2s ease;}
-            .carrier-item:active{background:#2A2A2C;border-color:#3A3A3C;}
-            .carrier-item-text{font-size:15px;font-weight:500;}
-        </style>
-    </head>
-    <body>
-        <div id="accessDenied">Недостаточно прав</div>
-        <div id="loadingOverlay" class="loading-overlay" style="display:none;">
-            <div class="loading-spinner"></div>
-            <div class="loading-text" id="loadingText">Загружаем фото...</div>
+        /* Модальное окно базы маршрутов */
+        .routes-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:10001;display:flex;flex-direction:column;padding:20px;}
+        .routes-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+        .routes-title{font-size:22px;font-weight:600;}
+        .routes-close{width:24px;height:24px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>') center/contain no-repeat;cursor:pointer;}
+        .routes-search{background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;}
+        .routes-search::placeholder{color:#888;}
+        .routes-list{flex:1;overflow-y:auto;display:grid;grid-template-columns:1fr;gap:10px;}
+        
+        /* Блок маршрута - ТОЛЬКО для базы маршрутов */
+        .route-block{background:#1E1E1E;border-radius:14px;padding:16px;cursor:pointer;border:1px solid #2C2C2E;transition:all 0.2s ease;}
+        .route-block:active{background:#2A2A2C;border-color:#3A3A3C;}
+        .route-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+        .route-number-db{font-size:20px;font-weight:600;color:#007AFF;}
+        .route-type{font-size:14px;color:#AAA;font-weight:500;}
+        .route-name{font-size:16px;font-weight:600;margin-bottom:8px;line-height:1.3;}
+        .route-carrier{font-size:13px;color:#888;margin-bottom:3px;}
+        .route-carrier:last-child{margin-bottom:0;}
+        .route-multiple{font-size:12px;color:#007AFF;margin-top:5px;font-weight:500;}
+        .no-results{text-align:center;color:#AAA;margin-top:40px;font-size:16px;}
+        
+        /* Кнопки выбора количества */
+        .quantity-selector{margin:16px 0;}
+        .quantity-label{font-size:16px;color:#AAA;margin-bottom:12px;}
+        .quantity-buttons{display:flex;gap:10px;}
+        .quantity-btn{flex:1;background:#1E1E1E;border:2px solid #333;border-radius:12px;padding:16px 0;text-align:center;font-size:18px;font-weight:600;color:#FFF;cursor:pointer;transition:all 0.2s ease;}
+        .quantity-btn.active{background:#007AFF;border-color:#007AFF;color:#FFF;}
+        .quantity-btn:active{background:#2A2A2C;}
+        
+        /* Модальное окно выбора перевозчика */
+        .carrier-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:10002;display:flex;flex-direction:column;padding:20px;}
+        .carrier-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+        .carrier-title{font-size:22px;font-weight:600;}
+        .carrier-close{width:24px;height:24px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>') center/contain no-repeat;cursor:pointer;}
+        .carrier-route-info{margin-bottom:20px;}
+        .carrier-route-number{font-size:20px;font-weight:600;color:#007AFF;margin-bottom:5px;}
+        .carrier-route-name{font-size:16px;font-weight:600;}
+        .carrier-list{flex:1;overflow-y:auto;display:grid;grid-template-columns:1fr;gap:10px;}
+        .carrier-item{background:#1E1E1E;border-radius:14px;padding:16px;cursor:pointer;border:1px solid #2C2C2E;transition:all 0.2s ease;}
+        .carrier-item:active{background:#2A2A2C;border-color:#3A3A3C;}
+        .carrier-item-text{font-size:15px;font-weight:500;}
+
+        /* Стили для проверки доступа */
+        .checking-access{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:9998;}
+        .checking-spinner{width:40px;height:40px;border:4px solid #333;border-top:4px solid #007AFF;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:16px;}
+        .checking-text{color:#FFF;font-size:16px;text-align:center;}
+    </style>
+</head>
+<body>
+    <!-- Экран проверки доступа -->
+    <div id="checkingAccess" class="checking-access">
+        <div class="checking-spinner"></div>
+        <div class="checking-text" id="checkingText">Проверка доступа...</div>
+    </div>
+
+    <!-- Основной интерфейс (скрыт до проверки) -->
+    <div id="accessDenied" style="display:none;">Недостаточно прав</div>
+    <div id="loadingOverlay" class="loading-overlay" style="display:none;">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingText">Загружаем фото...</div>
+    </div>
+
+    <!-- Модальные окна -->
+    <div id="routesModal" class="routes-modal" style="display:none;">
+        <div class="routes-header">
+            <div class="routes-title">База маршрутов</div>
+            <div class="routes-close" onclick="closeRoutesModal()"></div>
+        </div>
+        <input type="text" id="routesSearch" class="routes-search" placeholder="Поиск маршрута или перевозчика..." 
+               oninput="searchRoutes()" 
+               onclick="handleSearchClick(event)">
+        <div class="routes-list" id="routesList"></div>
+    </div>
+
+    <div id="carrierModal" class="carrier-modal" style="display:none;">
+        <div class="carrier-header">
+            <div class="carrier-title">Выберите перевозчика</div>
+            <div class="carrier-close" onclick="closeCarrierModal()"></div>
+        </div>
+        <div class="carrier-route-info">
+            <div class="carrier-route-number" id="selectedRouteNumber"></div>
+            <div class="carrier-route-name" id="selectedRouteName"></div>
+        </div>
+        <div class="carrier-list" id="carrierList"></div>
+    </div>
+
+    <div class="app-container" id="mainApp" style="display:none;">
+        <!-- ОПЛАТА -->
+        <div id="paymentPage" class="page active">
+            <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Данные билета</div>
+           
+            <div class="route-database-btn" onclick="openRoutesDatabase()">
+                <div class="route-icon"></div>
+                База маршрутов
+            </div>
+            <input type="text" id="carrierInput" placeholder="Перевозчик" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
+            <input type="text" id="routeInput" placeholder="Маршрут" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
+            <input type="text" id="busNumberInput" placeholder="Номер автобуса" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
+
+            <div class="quantity-selector">
+                <div class="quantity-label">Количество билетов:</div>
+                <div class="quantity-buttons">
+                    <div class="quantity-btn active" data-quantity="1" onclick="selectQuantity(1)">1</div>
+                    <div class="quantity-btn" data-quantity="2" onclick="selectQuantity(2)">2</div>
+                    <div class="quantity-btn" data-quantity="3" onclick="selectQuantity(3)">3</div>
+                    <div class="quantity-btn" data-quantity="4" onclick="selectQuantity(4)">4</div>
+                    <div class="quantity-btn" data-quantity="5" onclick="selectQuantity(5)">5</div>
+                </div>
+            </div>
+
+            <div class="price-selector" onclick="document.getElementById('priceOptions').style.display = document.getElementById('priceOptions').style.display==='block'?'none':'block'">
+                <div class="price-current">Цена за 1 билет: <span id="currentPriceText">48.00 ₽</span></div>
+            </div>
+            <div id="priceOptions" class="price-options">
+                <div class="price-btn" onclick="setPrice(48)">48.00 ₽</div>
+                <div class="price-btn" onclick="setPrice(46)">46.00 ₽</div>
+                <div class="custom-price-row">
+                    <input type="number" id="customPriceInput" class="custom-price" placeholder="Своя цена">
+                    <div class="apply-btn" onclick="applyCustomPrice()">OK</div>
+                </div>
+            </div>
+            <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
         </div>
 
-        <!-- Модальное окно базы маршрутов -->
-        <div id="routesModal" class="routes-modal" style="display:none;">
-            <div class="routes-header">
-                <div class="routes-title">База маршрутов</div>
-                <div class="routes-close" onclick="closeRoutesModal()"></div>
-            </div>
-            <input type="text" id="routesSearch" class="routes-search" placeholder="Поиск маршрута или перевозчика..." 
-                oninput="searchRoutes()" 
-                onclick="handleSearchClick(event)">
-            <div class="routes-list" id="routesList">
-                <!-- Маршруты будут загружены здесь -->
-            </div>
-        </div>
-
-        <!-- Модальное окно выбора перевозчика -->
-        <div id="carrierModal" class="carrier-modal" style="display:none;">
-            <div class="carrier-header">
-                <div class="carrier-title">Выберите перевозчика</div>
-                <div class="carrier-close" onclick="closeCarrierModal()"></div>
-            </div>
-            <div class="carrier-route-info">
-                <div class="carrier-route-number" id="selectedRouteNumber"></div>
-                <div class="carrier-route-name" id="selectedRouteName"></div>
-            </div>
-            <div class="carrier-list" id="carrierList">
-                <!-- Перевозчики будут загружены здесь -->
-            </div>
-        </div>
-
-        <div class="app-container" id="mainApp" style="display:none;">
-
-            <!-- ОПЛАТА — СРАЗУ ОТКРЫТА -->
-            <div id="paymentPage" class="page active">
-                <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Данные билета</div>
-            
-                <div class="route-database-btn" onclick="openRoutesDatabase()">
-                    <div class="route-icon"></div>
-                    База маршрутов
-                </div>
-                <input type="text" id="carrierInput" placeholder="Перевозчик" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
-                <input type="text" id="routeInput" placeholder="Маршрут" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
-                <input type="text" id="busNumberInput" placeholder="Номер автобуса" style="background:#1E1E1E;border:1px solid #3A3A3C;border-radius:12px;padding:14px;color:#FFF;font-size:16px;width:100%;margin-bottom:16px;">
-
-                <!-- Кнопки выбора количества -->
-                <div class="quantity-selector">
-                    <div class="quantity-label">Количество билетов:</div>
-                    <div class="quantity-buttons">
-                        <div class="quantity-btn active" data-quantity="1" onclick="selectQuantity(1)">1</div>
-                        <div class="quantity-btn" data-quantity="2" onclick="selectQuantity(2)">2</div>
-                        <div class="quantity-btn" data-quantity="3" onclick="selectQuantity(3)">3</div>
-                        <div class="quantity-btn" data-quantity="4" onclick="selectQuantity(4)">4</div>
-                        <div class="quantity-btn" data-quantity="5" onclick="selectQuantity(5)">5</div>
+        <!-- ФИНАЛЬНЫЙ БИЛЕТ -->
+        <div id="finalTicketPage" class="page">
+            <div style="flex:1;display:flex;flex-direction:column;">
+                <div class="top-separator"></div>
+                <div class="final-timer" id="timer">Действует: 15 сек.</div>
+                <div class="final-header-row">
+                    <div class="final-ticket-number" onclick="switchToTicket()">
+                        <img src="big-ticket.png" class="ticket-icon" alt="Билет">
+                        <span id="currentTicketNumber">1 314 306 766</span>
                     </div>
-                </div>
-
-                <div class="price-selector" onclick="document.getElementById('priceOptions').style.display = document.getElementById('priceOptions').style.display==='block'?'none':'block'">
-                    <div class="price-current">Цена за 1 билет: <span id="currentPriceText">48.00 ₽</span></div>
-                </div>
-                <div id="priceOptions" class="price-options">
-                    <div class="price-btn" onclick="setPrice(48)">48.00 ₽</div>
-                    <div class="price-btn" onclick="setPrice(46)">46.00 ₽</div>
-                    <div class="custom-price-row">
-                        <input type="number" id="customPriceInput" class="custom-price" placeholder="Своя цена">
-                        <div class="apply-btn" onclick="applyCustomPrice()">OK</div>
+                    <div class="final-control" onclick="switchToControl()">
+                        <img src="control.png" class="control-icon" alt="Контроль">
+                        <span>Контроль</span>
                     </div>
+                    <div class="tab-indicator" id="indicator"></div>
                 </div>
-                <div class="pay-button" onclick="payTicket()">ОПЛАТИТЬ — <span id="totalPrice">48.00 ₽</span></div>
-            </div>
-
-            <!-- ФИНАЛЬНЫЙ БИЛЕТ -->
-            <div id="finalTicketPage" class="page">
-                <div style="flex:1;display:flex;flex-direction:column;">
-                    <div class="top-separator"></div>
-                    <div class="final-timer" id="timer">Действует: 15 сек.</div>
-                    <div class="final-header-row">
-                        <div class="final-ticket-number" onclick="switchToTicket()">
-                            <img src="big-ticket.png" class="ticket-icon" alt="Билет">
-                            <span id="currentTicketNumber">1 314 306 766</span>
-                        </div>
-                        <div class="final-control" onclick="switchToControl()">
-                            <img src="control.png" class="control-icon" alt="Контроль">
-                            <span>Контроль</span>
-                        </div>
-                        <div class="tab-indicator" id="indicator"></div>
-                    </div>
-                    <div id="ticketContent" class="ticket-content">
-                        <div class="final-info-block">
-                            <div class="info-row">
-                                <img src="carrier.png" class="info-icon big">
-                                <div class="info-content">
-                                    <div class="info-label">Перевозчик</div>
-                                    <div class="info-value" id="finalCarrier">ИП Читашвили Н.С.</div>
-                                </div>
-                            </div>
-                            <div class="info-row">
-                                <img src="bus.png" class="info-icon big">
-                                <div class="info-content">
-                                    <div class="route-fromto" id="finalRouteFromTo">Соколовская — Стела</div>
-                                    <div class="route-number" id="finalBusNumber">в124ок124</div>
-                                </div>
-                            </div>
-                            <div class="info-row">
-                                <img src="rub.png" class="info-icon big">
-                                <div class="info-content">
-                                    <div class="info-label">Стоимость</div>
-                                    <div class="info-value" id="finalCost">2 шт., Полный, 96.00 ₽</div>
-                                </div>
-                            </div>
-                            <div class="info-row">
-                                <img src="calendar.png" class="info-icon big">
-                                <div class="info-content">
-                                    <div class="info-label">Дата покупки</div>
-                                    <div class="info-value" id="purchaseDate">27 ноября 2025 г.</div>
-                                </div>
-                            </div>
-                            <div class="info-row">
-                                <img src="clock.png" class="info-icon big">
-                                <div class="info-content">
-                                    <div class="info-label">Время покупки</div>
-                                    <div class="info-value" id="purchaseTime">18:36</div>
-                                </div>
+                <div id="ticketContent" class="ticket-content">
+                    <div class="final-info-block">
+                        <div class="info-row">
+                            <img src="carrier.png" class="info-icon big">
+                            <div class="info-content">
+                                <div class="info-label">Перевозчик</div>
+                                <div class="info-value" id="finalCarrier">ИП Читашвили Н.С.</div>
                             </div>
                         </div>
-                        <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
-                    </div>
-                    <div id="controlContent" class="control-content">
-                        <div class="qr-container">
-                            <div class="qr-code-wrapper">
-                                <div id="controlQrCode"></div>
-                            </div>
-                            <div class="control-ticket-number">
-                                <span class="ticket-number-prefix">№</span>
-                                <span id="controlTicketNumber">1 314 306 766</span>
+                        <div class="info-row">
+                            <img src="bus.png" class="info-icon big">
+                            <div class="info-content">
+                                <div class="route-fromto" id="finalRouteFromTo">Соколовская — Стела</div>
+                                <div class="route-number" id="finalBusNumber">в124ок124</div>
                             </div>
                         </div>
-                        <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
+                        <div class="info-row">
+                            <img src="rub.png" class="info-icon big">
+                            <div class="info-content">
+                                <div class="info-label">Стоимость</div>
+                                <div class="info-value" id="finalCost">2 шт., Полный, 96.00 ₽</div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <img src="calendar.png" class="info-icon big">
+                            <div class="info-content">
+                                <div class="info-label">Дата покупки</div>
+                                <div class="info-value" id="purchaseDate">27 ноября 2025 г.</div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <img src="clock.png" class="info-icon big">
+                            <div class="info-content">
+                                <div class="info-label">Время покупки</div>
+                                <div class="info-value" id="purchaseTime">18:36</div>
+                            </div>
+                        </div>
                     </div>
+                    <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
                 </div>
-            </div>
-
-            <!-- АКТИВНЫЕ БИЛЕТЫ -->
-            <div id="activeTicketsPage" class="page">
-                <div style="flex:1;display:flex;flex-direction:column;">
-                    <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Действующие билеты</div>
-                    <div class="active-tickets-list" id="activeTicketsList"></div>
-                    <div class="close-button" onclick="showPage('paymentPage')">Назад</div>
+                <div id="controlContent" class="control-content">
+                    <div class="qr-container">
+                        <div class="qr-code-wrapper">
+                            <div id="controlQrCode"></div>
+                        </div>
+                        <div class="control-ticket-number">
+                            <span class="ticket-number-prefix">№</span>
+                            <span id="controlTicketNumber">1 314 306 766</span>
+                        </div>
+                    </div>
+                    <div class="final-close-btn" onclick="closeTicket()">ЗАКРЫТЬ</div>
                 </div>
             </div>
         </div>
 
-        <script>
-            const ALLOWED_USERS = [6107814655, 1777702236];
-            const tg = window.Telegram.WebApp;
-            tg.expand(); tg.MainButton.hide();
-            const userId = tg.initDataUnsafe?.user?.id;
+        <!-- АКТИВНЫЕ БИЛЕТЫ -->
+        <div id="activeTicketsPage" class="page">
+            <div style="flex:1;display:flex;flex-direction:column;">
+                <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Действующие билеты</div>
+                <div class="active-tickets-list" id="activeTicketsList"></div>
+                <div class="close-button" onclick="showPage('paymentPage')">Назад</div>
+            </div>
+        </div>
+    </div>
 
-            // База маршрутов (обновленная с несколькими перевозчиками)
+    <script>
+        // ============================================
+        // КОНФИГУРАЦИЯ И РЕЗЕРВНЫЙ ДОСТУП
+        // ============================================
+        
+        // Суперадмин (твой ID) - всегда имеет доступ через резерв
+        const SUPER_ADMIN_ID = 6107814655;
+        
+        // Резервный доступ (если бот упал, можно вписать ID вручную)
+        // Добавляй сюда ID пользователей вручную в экстренных случаях
+        const BACKUP_ALLOWED_USERS = [SUPER_ADMIN_ID];
+        
+        // URL API бота для проверки доступа
+        const BOT_API_URL = 'https://api.telegram.org/bot8466381912:AAF9Bvq-mOjIw3N1vWcdCFosOmmNDjlulR4';
+        
+        // Кэш разрешений (чтобы не спрашивать бота каждый раз)
+        let accessCache = {
+            allowed: false,
+            timestamp: 0,
+            cacheDuration: 5 * 60 * 1000 // 5 минут кэш
+        };
+        
+        // ============================================
+        // ИНИЦИАЛИЗАЦИЯ TELEGRAM WEB APP
+        // ============================================
+        const tg = window.Telegram.WebApp;
+        tg.expand(); 
+        tg.MainButton.hide();
+        const userId = tg.initDataUnsafe?.user?.id;
+        
+        // ============================================
+        // ФУНКЦИИ ПРОВЕРКИ ДОСТУПА
+        // ============================================
+        
+        async function checkUserAccess() {
+            // 1. Проверяем кэш (если не устарел)
+            const now = Date.now();
+            if (accessCache.allowed && (now - accessCache.timestamp) < accessCache.cacheDuration) {
+                return accessCache.allowed;
+            }
+            
+            // 2. Проверяем резервный доступ (для экстренных случаев)
+            if (BACKUP_ALLOWED_USERS.includes(userId)) {
+                console.log('Доступ через резервный список');
+                updateAccessCache(true);
+                return true;
+            }
+            
+            // 3. Пытаемся проверить через API бота
+            try {
+                const isAllowed = await checkAccessViaBot();
+                updateAccessCache(isAllowed);
+                return isAllowed;
+            } catch (error) {
+                console.error('Ошибка проверки через API:', error);
+                // 4. Если API не сработало, проверяем через резерв
+                const backupAllowed = BACKUP_ALLOWED_USERS.includes(userId);
+                updateAccessCache(backupAllowed);
+                return backupAllowed;
+            }
+        }
+        
+        async function checkAccessViaBot() {
+            // Пока используем простую проверку через резерв
+            // В будущем можно настроить запрос к своему серверу
+            return false;
+        }
+        
+        function updateAccessCache(allowed) {
+            accessCache.allowed = allowed;
+            accessCache.timestamp = Date.now();
+        }
+        
+        // ============================================
+        // ОСНОВНАЯ ЛОГИКА ПРИЛОЖЕНИЯ
+        // ============================================
+        
+        async function initApp() {
+            if (!userId) {
+                document.getElementById('checkingText').textContent = 'Ошибка: не удалось получить ID пользователя';
+                setTimeout(() => {
+                    document.getElementById('accessDenied').style.display = 'flex';
+                    document.getElementById('checkingAccess').style.display = 'none';
+                }, 2000);
+                return;
+            }
+            
+            document.getElementById('checkingText').textContent = `Проверка доступа для ID: ${userId}...`;
+            
+            // Проверяем доступ
+            const hasAccess = await checkUserAccess();
+            
+            setTimeout(() => {
+                if (hasAccess) {
+                    // Доступ разрешен - показываем приложение
+                    document.getElementById('checkingAccess').style.display = 'none';
+                    document.getElementById('mainApp').style.display = 'flex';
+                    
+                    // Инициализируем основное приложение
+                    initializeMainApp();
+                } else {
+                    // Доступ запрещен
+                    document.getElementById('checkingAccess').style.display = 'none';
+                    document.getElementById('accessDenied').style.display = 'flex';
+                }
+            }, 1000);
+        }
+        
+        function initializeMainApp() {
+            // Все оригинальные функции из твоего кода
+            let viewTimer, viewSecondsLeft = 15;
+            const TOTAL_DURATION = 90 * 60 * 1000;
+            let tickets = JSON.parse(localStorage.getItem('user_tickets') || '[]');
+            const now = Date.now();
+            tickets = tickets.filter(t => now - t.created_at < TOTAL_DURATION);
+            localStorage.setItem('user_tickets', JSON.stringify(tickets));
+
+            if (tickets.length > 0) {
+                showPage('activeTicketsPage');
+                renderActiveTickets();
+            } else {
+                showPage('paymentPage');
+            }
+
+            let ticketPrice = 48.00;
+            let selectedQuantity = 1;
+            let selectedRouteForCarrier = null;
+
+            // База маршрутов
             const routesDatabase = [
                 // Обычные маршруты (один перевозчик)
                 {number: "1", type: "троллейбус", name: "мкрн. Северный - мкрн. Тихие зори", carrier: "МП Городской транспорт"},
@@ -337,363 +464,338 @@
                 {number: "173", type: "автобус", name: "Междугородный а/в - пос. Березовка", carrier: "ООО \"Контур\""}
             ];
 
-            if (!userId || !ALLOWED_USERS.includes(userId)) {
-                document.getElementById('accessDenied').style.display = 'flex';
-            } else {
-                document.getElementById('accessDenied').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'flex';
-
-                let viewTimer, viewSecondsLeft = 15;
-                const TOTAL_DURATION = 90 * 60 * 1000;
-                let tickets = JSON.parse(localStorage.getItem('user_tickets') || '[]');
+            // Для скрытия клавиатуры при повторном тапе
+            let searchFieldLastClick = 0;
+            
+            function handleSearchClick(event) {
                 const now = Date.now();
-                tickets = tickets.filter(t => now - t.created_at < TOTAL_DURATION);
-                localStorage.setItem('user_tickets', JSON.stringify(tickets));
-
-                if (tickets.length > 0) {
-                    showPage('activeTicketsPage');
-                    renderActiveTickets();
-                } else {
-                    showPage('paymentPage');
-                }
-
-                let ticketPrice = 48.00;
-                let selectedQuantity = 1;
-                let selectedRouteForCarrier = null; // Для хранения выбранного маршрута при выборе перевозчика
-
-                // Для скрытия клавиатуры при повторном тапе
-                let searchFieldLastClick = 0;
+                const searchField = document.getElementById('routesSearch');
                 
-                function handleSearchClick(event) {
-                    const now = Date.now();
-                    const searchField = document.getElementById('routesSearch');
+                if (document.activeElement === searchField && (now - searchFieldLastClick < 300)) {
+                    searchField.blur();
+                }
+                
+                searchFieldLastClick = now;
+            }
+
+            function openRoutesDatabase() {
+                renderRoutesList(routesDatabase);
+                document.getElementById('routesModal').style.display = 'flex';
+                document.getElementById('routesSearch').focus();
+            }
+
+            function closeRoutesModal() {
+                document.getElementById('routesModal').style.display = 'none';
+                document.getElementById('routesSearch').value = '';
+                document.getElementById('routesSearch').blur();
+                renderRoutesList(routesDatabase);
+            }
+
+            function closeCarrierModal() {
+                document.getElementById('carrierModal').style.display = 'none';
+                selectedRouteForCarrier = null;
+            }
+
+            function renderRoutesList(routes) {
+                const routesList = document.getElementById('routesList');
+                routesList.innerHTML = '';
+                
+                if (routes.length === 0) {
+                    routesList.innerHTML = '<div class="no-results">По вашему запросу ничего не найдено</div>';
+                    return;
+                }
+                
+                routes.forEach(route => {
+                    const routeBlock = document.createElement('div');
+                    routeBlock.className = 'route-block';
                     
-                    // Если поле уже в фокусе и был недавний клик - скрываем клавиатуру
-                    if (document.activeElement === searchField && (now - searchFieldLastClick < 300)) {
-                        searchField.blur(); // Скрываем клавиатуру
-                    }
-                    
-                    searchFieldLastClick = now;
-                }
-
-                function openRoutesDatabase() {
-                    renderRoutesList(routesDatabase);
-                    document.getElementById('routesModal').style.display = 'flex';
-                    document.getElementById('routesSearch').focus();
-                }
-
-                function closeRoutesModal() {
-                    document.getElementById('routesModal').style.display = 'none';
-                    document.getElementById('routesSearch').value = '';
-                    document.getElementById('routesSearch').blur();
-                    renderRoutesList(routesDatabase);
-                }
-
-                function closeCarrierModal() {
-                    document.getElementById('carrierModal').style.display = 'none';
-                    selectedRouteForCarrier = null;
-                }
-
-                function renderRoutesList(routes) {
-                    const routesList = document.getElementById('routesList');
-                    routesList.innerHTML = '';
-                    
-                    if (routes.length === 0) {
-                        routesList.innerHTML = '<div class="no-results">По вашему запросу ничего не найдено</div>';
-                        return;
-                    }
-                    
-                    routes.forEach(route => {
-                        const routeBlock = document.createElement('div');
-                        routeBlock.className = 'route-block';
-                        
-                        // Определяем, есть ли несколько перевозчиков
-                        const hasMultipleCarriers = route.carriers && route.carriers.length > 1;
-                        
-                        routeBlock.onclick = () => handleRouteClick(route);
-                        
-                        // Создаем HTML в зависимости от типа маршрута
-                        let carriersHTML = '';
-                        
-                        if (hasMultipleCarriers) {
-                            // Для маршрутов с несколькими перевозчиками
-                            route.carriers.forEach((carrier, index) => {
-                                carriersHTML += `<div class="route-carrier">${index + 1}. ${carrier}</div>`;
-                            });
-                            carriersHTML += `<div class="route-multiple">Выберите перевозчика</div>`;
-                        } else {
-                            // Для обычных маршрутов (один перевозчик)
-                            const carrier = route.carrier || (route.carriers && route.carriers[0]) || '';
-                            carriersHTML = `<div class="route-carrier">${carrier}</div>`;
-                        }
-                        
-                        routeBlock.innerHTML = `
-                            <div class="route-header">
-                                <div class="route-number-db">${route.number}</div>
-                                <div class="route-type">(${route.type})</div>
-                            </div>
-                            <div class="route-name">${route.name}</div>
-                            ${carriersHTML}
-                        `;
-                        
-                        routesList.appendChild(routeBlock);
-                    });
-                }
-
-                function handleRouteClick(route) {
-                    // Проверяем, есть ли несколько перевозчиков
                     const hasMultipleCarriers = route.carriers && route.carriers.length > 1;
                     
+                    routeBlock.onclick = () => handleRouteClick(route);
+                    
+                    let carriersHTML = '';
+                    
                     if (hasMultipleCarriers) {
-                        // Показываем окно выбора перевозчика
-                        selectedRouteForCarrier = route;
-                        showCarrierSelection(route);
+                        route.carriers.forEach((carrier, index) => {
+                            carriersHTML += `<div class="route-carrier">${index + 1}. ${carrier}</div>`;
+                        });
+                        carriersHTML += `<div class="route-multiple">Выберите перевозчика</div>`;
                     } else {
-                        // Обычный маршрут - сразу подставляем
                         const carrier = route.carrier || (route.carriers && route.carriers[0]) || '';
-                        selectRoute(route, carrier);
-                    }
-                }
-
-                function showCarrierSelection(route) {
-                    document.getElementById('selectedRouteNumber').textContent = `Маршрут №${route.number} (${route.type})`;
-                    document.getElementById('selectedRouteName').textContent = route.name;
-                    
-                    const carrierList = document.getElementById('carrierList');
-                    carrierList.innerHTML = '';
-                    
-                    route.carriers.forEach((carrier, index) => {
-                        const carrierItem = document.createElement('div');
-                        carrierItem.className = 'carrier-item';
-                        carrierItem.onclick = () => selectCarrier(carrier);
-                        
-                        carrierItem.innerHTML = `
-                            <div class="carrier-item-text">${carrier}</div>
-                        `;
-                        
-                        carrierList.appendChild(carrierItem);
-                    });
-                    
-                    document.getElementById('carrierModal').style.display = 'flex';
-                }
-
-                function selectCarrier(carrier) {
-                    if (selectedRouteForCarrier) {
-                        selectRoute(selectedRouteForCarrier, carrier);
-                        closeCarrierModal();
-                    }
-                }
-
-                function selectRoute(route, carrier) {
-                    document.getElementById('carrierInput').value = carrier;
-                    document.getElementById('routeInput').value = route.name;
-                    document.getElementById('busNumberInput').value = '';
-                    closeRoutesModal();
-                    
-                    tg.showPopup({
-                        title: "Маршрут выбран!",
-                        message: `Маршрут №${route.number} (${carrier})`,
-                        buttons: [{type: 'ok', text: 'Отлично!'}]
-                    });
-                }
-
-                function searchRoutes() {
-                    const searchTerm = document.getElementById('routesSearch').value.toLowerCase();
-                    
-                    if (!searchTerm) {
-                        renderRoutesList(routesDatabase);
-                        return;
+                        carriersHTML = `<div class="route-carrier">${carrier}</div>`;
                     }
                     
-                    const filtered = routesDatabase.filter(route => {
-                        // Проверяем номер маршрута
-                        if (route.number.toLowerCase().includes(searchTerm)) return true;
-                        
-                        // Проверяем название маршрута
-                        if (route.name.toLowerCase().includes(searchTerm)) return true;
-                        
-                        // Проверяем тип транспорта
-                        if (route.type.toLowerCase().includes(searchTerm)) return true;
-                        
-                        // Проверяем перевозчиков (один или несколько)
-                        if (route.carrier && route.carrier.toLowerCase().includes(searchTerm)) return true;
-                        if (route.carriers) {
-                            for (const carrier of route.carriers) {
-                                if (carrier.toLowerCase().includes(searchTerm)) return true;
-                            }
-                        }
-                        
-                        return false;
-                    });
+                    routeBlock.innerHTML = `
+                        <div class="route-header">
+                            <div class="route-number-db">${route.number}</div>
+                            <div class="route-type">(${route.type})</div>
+                        </div>
+                        <div class="route-name">${route.name}</div>
+                        ${carriersHTML}
+                    `;
                     
-                    renderRoutesList(filtered);
-                }
-
-                function selectQuantity(qty) {
-                    selectedQuantity = qty;
-                    
-                    // Убираем активный класс у всех кнопок
-                    document.querySelectorAll('.quantity-btn').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    
-                    // Добавляем активный класс к выбранной кнопке
-                    document.querySelector(`.quantity-btn[data-quantity="${qty}"]`).classList.add('active');
-                    
-                    // Обновляем цену
-                    updatePrice();
-                }
-
-                function showLoading(text = 'Загрузка...') {
-                    document.getElementById('loadingText').textContent = text;
-                    document.getElementById('loadingOverlay').style.display = 'flex';
-                }
-                function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
-
-                function setPrice(price) {
-                    ticketPrice = parseFloat(price);
-                    document.getElementById('currentPriceText').textContent = ticketPrice.toFixed(2) + ' ₽';
-                    document.getElementById('priceOptions').style.display = 'none';
-                    updatePrice();
-                }
-                function applyCustomPrice() {
-                    const val = document.getElementById('customPriceInput').value.trim();
-                    if (val && parseFloat(val) > 0) setPrice(parseFloat(val));
-                }
-                function updatePrice() {
-                    const total = (ticketPrice * selectedQuantity).toFixed(2);
-                    document.getElementById('totalPrice').textContent = total + ' ₽';
-                }
-
-                function payTicket() {
-                    const qty = selectedQuantity;
-                    const carrier = document.getElementById('carrierInput').value.trim() || "ИП Читашвили Н.С.";
-                    const route = document.getElementById('routeInput').value.trim();
-                    const busNumber = document.getElementById('busNumberInput').value.trim().toLowerCase() || "в124ок124";
-                    const totalAmount = (ticketPrice * qty).toFixed(2);
-                    const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
-                    const d = new Date();
-                    const purchaseDate = d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' }).replace(' ', ' ').slice(0, -3) + ' г.';
-                    const purchaseTime = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-
-                    tickets.push({ number: ticketNum, carrier, route, busNumber, quantity: qty, price: ticketPrice, created_at: Date.now(), purchaseDate, purchaseTime });
-                    localStorage.setItem('user_tickets', JSON.stringify(tickets));
-
-                    document.getElementById('currentTicketNumber').textContent = ticketNum;
-                    document.getElementById('controlTicketNumber').textContent = ticketNum;
-                    document.getElementById('finalCarrier').textContent = carrier;
-                    document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g, '—');
-                    document.getElementById('finalBusNumber').textContent = busNumber;
-                    document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + totalAmount + ' ₽';
-                    document.getElementById('purchaseDate').textContent = purchaseDate;
-                    document.getElementById('purchaseTime').textContent = purchaseTime;
-
-                    generateQrCode(ticketNum);
-                    showPage('finalTicketPage');
-                    switchToTicket();
-                    startViewTimer();
-                }
-
-                function generateQrCode(ticketNumber) {
-                    const qrContainer = document.getElementById('controlQrCode');
-                    qrContainer.innerHTML = '';
-                    new QRCode(qrContainer, { text: ticketNumber, width: 270, height: 270, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
-                }
-
-                function switchToTicket() {
-                    document.getElementById('ticketContent').style.display = 'flex';
-                    document.getElementById('controlContent').style.display = 'none';
-                    document.querySelector('.final-ticket-number').style.color = '#FF3B30';
-                    document.querySelector('.final-control span').style.color = '#888';
-                    const indicator = document.getElementById('indicator');
-                    indicator.style.left = '0px';
-                    indicator.style.width = document.querySelector('.final-ticket-number').offsetWidth + 'px';
-                }
-
-                function switchToControl() {
-                    document.getElementById('ticketContent').style.display = 'none';
-                    document.getElementById('controlContent').style.display = 'flex';
-                    document.querySelector('.final-ticket-number').style.color = '#888';
-                    document.querySelector('.final-control span').style.color = '#FF3B30';
-                    const controlEl = document.querySelector('.final-control');
-                    const indicator = document.getElementById('indicator');
-                    indicator.style.left = (controlEl.getBoundingClientRect().left - controlEl.parentElement.getBoundingClientRect().left) + 'px';
-                    indicator.style.width = controlEl.offsetWidth + 'px';
-                }
-
-                function random3() { return Math.floor(Math.random() * 900) + 100; }
-
-                function startViewTimer() {
-                    viewSecondsLeft = 15;
-                    document.getElementById('timer').textContent = 'Действует: ' + viewSecondsLeft + ' сек.';
-                    clearInterval(viewTimer);
-                    viewTimer = setInterval(() => {
-                        viewSecondsLeft--;
-                        document.getElementById('timer').textContent = 'Действует: ' + viewSecondsLeft + ' сек.';
-                        if (viewSecondsLeft <= 0) {
-                            clearInterval(viewTimer);
-                            showPage(tickets.length > 0 ? 'activeTicketsPage' : 'paymentPage');
-                            renderActiveTickets();
-                        }
-                    }, 1000);
-                }
-
-                function closeTicket() {
-                    clearInterval(viewTimer);
-                    showPage(tickets.length > 0 ? 'activeTicketsPage' : 'paymentPage');
-                    renderActiveTickets();
-                }
-
-                function showPage(id) {
-                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                    document.getElementById(id).classList.add('active');
-                    if (id === 'finalTicketPage') setTimeout(switchToTicket, 50);
-                    if (id === 'activeTicketsPage') renderActiveTickets();
-                }
-
-                function renderActiveTickets() {
-                    const list = document.getElementById('activeTicketsList'); list.innerHTML = '';
-                    if (tickets.length === 0) {
-                        list.innerHTML = '<div style="text-align:center;color:#AAA;margin-top:20px;">Нет билетов</div>';
-                        return;
-                    }
-                    tickets.forEach((t, i) => {
-                        const mins = Math.floor((TOTAL_DURATION - (Date.now() - t.created_at)) / 60000);
-                        const total = (t.price * t.quantity).toFixed(2);
-                        const el = document.createElement('div'); el.className = 'active-ticket-item';
-                        el.onclick = () => {
-                            document.getElementById('currentTicketNumber').textContent = t.number;
-                            document.getElementById('controlTicketNumber').textContent = t.number;
-                            document.getElementById('finalCarrier').textContent = t.carrier;
-                            document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g, '—');
-                            document.getElementById('finalBusNumber').textContent = t.busNumber;
-                            document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + total + ' ₽';
-                            document.getElementById('purchaseDate').textContent = t.purchaseDate;
-                            document.getElementById('purchaseTime').textContent = t.purchaseTime;
-                            generateQrCode(t.number);
-                            showPage('finalTicketPage');
-                            switchToTicket();
-                            startViewTimer();
-                        };
-                        el.innerHTML = `<div><div style="font-weight:600;">Билет № ${t.number}</div><div style="font-size:14px;color:#AAA">Осталось: ${mins} мин</div></div><div class="delete-btn" onclick="event.stopPropagation();deleteTicket(${i})"></div>`;
-                        list.appendChild(el);
-                    });
-                }
-
-                function deleteTicket(i) {
-                    tg.showPopup({ title: "Удалить билет?", message: "Без возврата", buttons: [{ type: 'destructive', text: 'Удалить', id: 'del' }, { type: 'cancel' }] }, b => {
-                        if (b === 'del') {
-                            tickets.splice(i, 1);
-                            localStorage.setItem('user_tickets', JSON.stringify(tickets));
-                            renderActiveTickets();
-                        }
-                    });
-                }
-
-                document.addEventListener('DOMContentLoaded', () => {
-                    updatePrice();
+                    routesList.appendChild(routeBlock);
                 });
             }
-        </script>
-    </body>
-    </html>
+
+            function handleRouteClick(route) {
+                const hasMultipleCarriers = route.carriers && route.carriers.length > 1;
+                
+                if (hasMultipleCarriers) {
+                    selectedRouteForCarrier = route;
+                    showCarrierSelection(route);
+                } else {
+                    const carrier = route.carrier || (route.carriers && route.carriers[0]) || '';
+                    selectRoute(route, carrier);
+                }
+            }
+
+            function showCarrierSelection(route) {
+                document.getElementById('selectedRouteNumber').textContent = `Маршрут №${route.number} (${route.type})`;
+                document.getElementById('selectedRouteName').textContent = route.name;
+                
+                const carrierList = document.getElementById('carrierList');
+                carrierList.innerHTML = '';
+                
+                route.carriers.forEach((carrier, index) => {
+                    const carrierItem = document.createElement('div');
+                    carrierItem.className = 'carrier-item';
+                    carrierItem.onclick = () => selectCarrier(carrier);
+                    
+                    carrierItem.innerHTML = `
+                        <div class="carrier-item-text">${carrier}</div>
+                    `;
+                    
+                    carrierList.appendChild(carrierItem);
+                });
+                
+                document.getElementById('carrierModal').style.display = 'flex';
+            }
+
+            function selectCarrier(carrier) {
+                if (selectedRouteForCarrier) {
+                    selectRoute(selectedRouteForCarrier, carrier);
+                    closeCarrierModal();
+                }
+            }
+
+            function selectRoute(route, carrier) {
+                document.getElementById('carrierInput').value = carrier;
+                document.getElementById('routeInput').value = route.name;
+                document.getElementById('busNumberInput').value = '';
+                closeRoutesModal();
+                
+                tg.showPopup({
+                    title: "Маршрут выбран!",
+                    message: `Маршрут №${route.number} (${carrier})`,
+                    buttons: [{type: 'ok', text: 'Отлично!'}]
+                });
+            }
+
+            function searchRoutes() {
+                const searchTerm = document.getElementById('routesSearch').value.toLowerCase();
+                
+                if (!searchTerm) {
+                    renderRoutesList(routesDatabase);
+                    return;
+                }
+                
+                const filtered = routesDatabase.filter(route => {
+                    if (route.number.toLowerCase().includes(searchTerm)) return true;
+                    if (route.name.toLowerCase().includes(searchTerm)) return true;
+                    if (route.type.toLowerCase().includes(searchTerm)) return true;
+                    if (route.carrier && route.carrier.toLowerCase().includes(searchTerm)) return true;
+                    if (route.carriers) {
+                        for (const carrier of route.carriers) {
+                            if (carrier.toLowerCase().includes(searchTerm)) return true;
+                        }
+                    }
+                    
+                    return false;
+                });
+                
+                renderRoutesList(filtered);
+            }
+
+            function selectQuantity(qty) {
+                selectedQuantity = qty;
+                
+                document.querySelectorAll('.quantity-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                document.querySelector(`.quantity-btn[data-quantity="${qty}"]`).classList.add('active');
+                
+                updatePrice();
+            }
+
+            function showLoading(text = 'Загрузка...') {
+                document.getElementById('loadingText').textContent = text;
+                document.getElementById('loadingOverlay').style.display = 'flex';
+            }
+            
+            function hideLoading() { 
+                document.getElementById('loadingOverlay').style.display = 'none'; 
+            }
+
+            function setPrice(price) {
+                ticketPrice = parseFloat(price);
+                document.getElementById('currentPriceText').textContent = ticketPrice.toFixed(2) + ' ₽';
+                document.getElementById('priceOptions').style.display = 'none';
+                updatePrice();
+            }
+            
+            function applyCustomPrice() {
+                const val = document.getElementById('customPriceInput').value.trim();
+                if (val && parseFloat(val) > 0) setPrice(parseFloat(val));
+            }
+            
+            function updatePrice() {
+                const total = (ticketPrice * selectedQuantity).toFixed(2);
+                document.getElementById('totalPrice').textContent = total + ' ₽';
+            }
+
+            function payTicket() {
+                const qty = selectedQuantity;
+                const carrier = document.getElementById('carrierInput').value.trim() || "ИП Читашвили Н.С.";
+                const route = document.getElementById('routeInput').value.trim();
+                const busNumber = document.getElementById('busNumberInput').value.trim().toLowerCase() || "в124ок124";
+                const totalAmount = (ticketPrice * qty).toFixed(2);
+                const ticketNum = `1 ${random3()} ${random3()} ${random3()}`;
+                const d = new Date();
+                const purchaseDate = d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' }).replace(' ', ' ').slice(0, -3) + ' г.';
+                const purchaseTime = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+                tickets.push({ number: ticketNum, carrier, route, busNumber, quantity: qty, price: ticketPrice, created_at: Date.now(), purchaseDate, purchaseTime });
+                localStorage.setItem('user_tickets', JSON.stringify(tickets));
+
+                document.getElementById('currentTicketNumber').textContent = ticketNum;
+                document.getElementById('controlTicketNumber').textContent = ticketNum;
+                document.getElementById('finalCarrier').textContent = carrier;
+                document.getElementById('finalRouteFromTo').textContent = route.replace(/-/g, '—');
+                document.getElementById('finalBusNumber').textContent = busNumber;
+                document.getElementById('finalCost').textContent = qty + ' шт., Полный, ' + totalAmount + ' ₽';
+                document.getElementById('purchaseDate').textContent = purchaseDate;
+                document.getElementById('purchaseTime').textContent = purchaseTime;
+
+                generateQrCode(ticketNum);
+                showPage('finalTicketPage');
+                switchToTicket();
+                startViewTimer();
+            }
+
+            function generateQrCode(ticketNumber) {
+                const qrContainer = document.getElementById('controlQrCode');
+                qrContainer.innerHTML = '';
+                new QRCode(qrContainer, { text: ticketNumber, width: 270, height: 270, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+            }
+
+            function switchToTicket() {
+                document.getElementById('ticketContent').style.display = 'flex';
+                document.getElementById('controlContent').style.display = 'none';
+                document.querySelector('.final-ticket-number').style.color = '#FF3B30';
+                document.querySelector('.final-control span').style.color = '#888';
+                const indicator = document.getElementById('indicator');
+                indicator.style.left = '0px';
+                indicator.style.width = document.querySelector('.final-ticket-number').offsetWidth + 'px';
+            }
+
+            function switchToControl() {
+                document.getElementById('ticketContent').style.display = 'none';
+                document.getElementById('controlContent').style.display = 'flex';
+                document.querySelector('.final-ticket-number').style.color = '#888';
+                document.querySelector('.final-control span').style.color = '#FF3B30';
+                const controlEl = document.querySelector('.final-control');
+                const indicator = document.getElementById('indicator');
+                indicator.style.left = (controlEl.getBoundingClientRect().left - controlEl.parentElement.getBoundingClientRect().left) + 'px';
+                indicator.style.width = controlEl.offsetWidth + 'px';
+            }
+
+            function random3() { 
+                return Math.floor(Math.random() * 900) + 100; 
+            }
+
+            function startViewTimer() {
+                viewSecondsLeft = 15;
+                document.getElementById('timer').textContent = 'Действует: ' + viewSecondsLeft + ' сек.';
+                clearInterval(viewTimer);
+                viewTimer = setInterval(() => {
+                    viewSecondsLeft--;
+                    document.getElementById('timer').textContent = 'Действует: ' + viewSecondsLeft + ' сек.';
+                    if (viewSecondsLeft <= 0) {
+                        clearInterval(viewTimer);
+                        showPage(tickets.length > 0 ? 'activeTicketsPage' : 'paymentPage');
+                        renderActiveTickets();
+                    }
+                }, 1000);
+            }
+
+            function closeTicket() {
+                clearInterval(viewTimer);
+                showPage(tickets.length > 0 ? 'activeTicketsPage' : 'paymentPage');
+                renderActiveTickets();
+            }
+
+            function showPage(id) {
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+                if (id === 'finalTicketPage') setTimeout(switchToTicket, 50);
+                if (id === 'activeTicketsPage') renderActiveTickets();
+            }
+
+            function renderActiveTickets() {
+                const list = document.getElementById('activeTicketsList'); 
+                list.innerHTML = '';
+                if (tickets.length === 0) {
+                    list.innerHTML = '<div style="text-align:center;color:#AAA;margin-top:20px;">Нет билетов</div>';
+                    return;
+                }
+                tickets.forEach((t, i) => {
+                    const mins = Math.floor((TOTAL_DURATION - (Date.now() - t.created_at)) / 60000);
+                    const total = (t.price * t.quantity).toFixed(2);
+                    const el = document.createElement('div'); 
+                    el.className = 'active-ticket-item';
+                    el.onclick = () => {
+                        document.getElementById('currentTicketNumber').textContent = t.number;
+                        document.getElementById('controlTicketNumber').textContent = t.number;
+                        document.getElementById('finalCarrier').textContent = t.carrier;
+                        document.getElementById('finalRouteFromTo').textContent = t.route.replace(/-/g, '—');
+                        document.getElementById('finalBusNumber').textContent = t.busNumber;
+                        document.getElementById('finalCost').textContent = t.quantity + ' шт., Полный, ' + total + ' ₽';
+                        document.getElementById('purchaseDate').textContent = t.purchaseDate;
+                        document.getElementById('purchaseTime').textContent = t.purchaseTime;
+                        generateQrCode(t.number);
+                        showPage('finalTicketPage');
+                        switchToTicket();
+                        startViewTimer();
+                    };
+                    el.innerHTML = `<div><div style="font-weight:600;">Билет № ${t.number}</div><div style="font-size:14px;color:#AAA">Осталось: ${mins} мин</div></div><div class="delete-btn" onclick="event.stopPropagation();deleteTicket(${i})"></div>`;
+                    list.appendChild(el);
+                });
+            }
+
+            function deleteTicket(i) {
+                tg.showPopup({ 
+                    title: "Удалить билет?", 
+                    message: "Без возврата", 
+                    buttons: [{ type: 'destructive', text: 'Удалить', id: 'del' }, { type: 'cancel' }] 
+                }, b => {
+                    if (b === 'del') {
+                        tickets.splice(i, 1);
+                        localStorage.setItem('user_tickets', JSON.stringify(tickets));
+                        renderActiveTickets();
+                    }
+                });
+            }
+
+            // Инициализация цены
+            updatePrice();
+        }
+        
+        // ============================================
+        // ЗАПУСК ПРИЛОЖЕНИЯ
+        // ============================================
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
